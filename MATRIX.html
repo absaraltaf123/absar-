@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>3×3 Matrix Eigen Calculator</title>
+  <!-- MathJax for LaTeX rendering -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+   /* Fixed gradient animation with multiple colors */
+    body {
+        margin: 0;
+        padding: 20px;
+        font-family: 'Courier New', monospace;
+        color: #e0e0e0;
+        background: linear-gradient(135deg, #4ecdc4, #45b7d1, #96c93d);
+        background-size: 400% 400%;
+        animation: gradientAnimation 6s ease infinite;
+    }
+    @keyframes gradientAnimation {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    .container {
+      max-width: 700px;
+      margin: 50px auto;
+      padding: 25px;
+      background: rgba(20,20,20,0.95);
+      border: 2px solid #39ff14;
+      border-radius: 15px;
+      box-shadow: 0 0 20px #39ff14;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2em;
+      text-shadow: 0 0 10px #39ff14;
+    }
+    .matrix-input {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .matrix-input input {
+      width: 100%;
+      padding: 10px;
+      font-size: 1.2em;
+      text-align: center;
+      background: #222;
+      color: #39ff14;
+      border: none;
+      border-radius: 5px;
+      box-shadow: 0 0 10px #39ff14;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background: #39ff14;
+      border: none;
+      border-radius: 5px;
+      font-size: 1.3em;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .btn:hover {
+      background: #32d10e;
+    }
+    .output {
+      margin-top: 25px;
+      text-align: center;
+    }
+    .output h2 {
+      margin-bottom: 15px;
+      text-shadow: 0 0 10px #39ff14;
+    }
+    .content {
+      font-size: 1.2em;
+      background: #000;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px #39ff14;
+      color: #39ff14;
+      margin-bottom: 20px;
+    }
+  </style>
+  <!-- Include Brython -->
+  <script src="https://cdn.jsdelivr.net/npm/brython@3.9.5/brython.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/brython@3.9.5/brython_stdlib.js"></script>
+</head>
+<body onload="brython()">
+  <div class="container">
+    <h1>3×3 Matrix Eigen Calculator</h1>
+    <div class="matrix-input">
+      <input id="a11" type="number" step="any" placeholder="a11">
+      <input id="a12" type="number" step="any" placeholder="a12">
+      <input id="a13" type="number" step="any" placeholder="a13">
+      <input id="a21" type="number" step="any" placeholder="a21">
+      <input id="a22" type="number" step="any" placeholder="a22">
+      <input id="a23" type="number" step="any" placeholder="a23">
+      <input id="a31" type="number" step="any" placeholder="a31">
+      <input id="a32" type="number" step="any" placeholder="a32">
+      <input id="a33" type="number" step="any" placeholder="a33">
+    </div>
+    <button id="calc-btn" class="btn">Calculate Eigenvalues and Eigenvectors</button>
+    
+    <div class="output">
+      <h2>Matrix:</h2>
+      <div id="matrix-display" class="content"></div>
+    </div>
+    <div class="output">
+      <h2>Characteristic Equation:</h2>
+      <div id="equation-display" class="content"></div>
+    </div>
+    <div class="output">
+      <h2>Eigenvalues:</h2>
+      <div id="eigen-display" class="content"></div>
+    </div>
+    <div class="output">
+      <h2>Eigenvectors:</h2>
+      <div id="eigenvector-display" class="content"></div>
+    </div>
+  </div>
+  
+  <script type="text/python">
+    import cmath, math
+    from browser import document, alert, window
+
+    # Helper to compute the principal cube root
+    def cbrt(z):
+        return cmath.exp(cmath.log(z)/3)
+
+    # Format complex numbers for LaTeX (show as real if imag part is negligible)
+    def format_complex(z):
+        if abs(z.imag) < 1e-8:
+            return f"{z.real:.4f}"
+        else:
+            sign = " + " if z.imag >= 0 else " - "
+            return f"({z.real:.4f}{sign}{abs(z.imag):.4f}i)"
+
+    # Solve the cubic x^3 + b*x^2 + c*x + d = 0 using Cardano's method.
+    def cubic_roots(b, c, d):
+        shift = b/3
+        p = c - b**2/3
+        q = (2*b**3)/27 - (b*c)/3 + d
+        Delta = (q/2)**2 + (p/3)**3
+        u = cbrt(-q/2 + cmath.sqrt(Delta))
+        v = cbrt(-q/2 - cmath.sqrt(Delta))
+        y1 = u + v
+        x1 = y1 - shift
+        omega = complex(-0.5, cmath.sqrt(3)/2)
+        y2 = u * omega + v * (omega**2)
+        y3 = u * (omega**2) + v * omega
+        x2 = y2 - shift
+        x3 = y3 - shift
+        return [x1, x2, x3]
+
+    # --- Eigenvector Computation Functions ---
+    # Compute cross product of two 3-vectors (works with complex numbers)
+    def cross_product(u, v):
+        return [u[1]*v[2] - u[2]*v[1],
+                u[2]*v[0] - u[0]*v[2],
+                u[0]*v[1] - u[1]*v[0]]
+
+    # Euclidean norm of a 3-vector
+    def vector_norm(v):
+        return math.sqrt(abs(v[0])**2 + abs(v[1])**2 + abs(v[2])**2)
+
+    # For a given eigenvalue, compute a nontrivial solution of (A - eig*I)x = 0.
+    # We try to use the cross product of two (nonzero) rows.
+    def compute_eigenvector(A, eig):
+        # Build B = A - eig*I
+        B = [[A[i][j] - (eig if i==j else 0) for j in range(3)] for i in range(3)]
+        pairs = [(0,1), (0,2), (1,2)]
+        for i, j in pairs:
+            cp = cross_product(B[i], B[j])
+            if vector_norm(cp) > 1e-6:
+                return cp
+        # Fallback (if all rows are nearly zero, choose a default vector)
+        return [1, 0, 0]
+
+    # Main computation: read the matrix, compute the characteristic polynomial,
+    # eigenvalues and eigenvectors, and display everything using LaTeX.
+    def compute_eigen(event):
+        try:
+            a11 = float(document["a11"].value) if document["a11"].value.strip() != "" else 0.0
+            a12 = float(document["a12"].value) if document["a12"].value.strip() != "" else 0.0
+            a13 = float(document["a13"].value) if document["a13"].value.strip() != "" else 0.0
+            a21 = float(document["a21"].value) if document["a21"].value.strip() != "" else 0.0
+            a22 = float(document["a22"].value) if document["a22"].value.strip() != "" else 0.0
+            a23 = float(document["a23"].value) if document["a23"].value.strip() != "" else 0.0
+            a31 = float(document["a31"].value) if document["a31"].value.strip() != "" else 0.0
+            a32 = float(document["a32"].value) if document["a32"].value.strip() != "" else 0.0
+            a33 = float(document["a33"].value) if document["a33"].value.strip() != "" else 0.0
+        except Exception:
+            alert("Please enter valid numbers!")
+            return
+
+        # Build the matrix A.
+        A = [
+            [a11, a12, a13],
+            [a21, a22, a23],
+            [a31, a32, a33]
+        ]
+        
+        # Compute the trace, sum of the three principal 2×2 minors, and determinant.
+        trace = a11 + a22 + a33
+        minor1 = a22*a33 - a23*a32   # Remove row1, col1
+        minor2 = a11*a33 - a13*a31   # Remove row2, col2
+        minor3 = a11*a22 - a12*a21   # Remove row3, col3
+        sum_minors = minor1 + minor2 + minor3
+        detA = a11*(a22*a33 - a23*a32) - a12*(a21*a33 - a23*a31) + a13*(a21*a32 - a22*a31)
+        
+        # Characteristic equation: λ³ - (trace)λ² + (sum_minors)λ - (detA) = 0.
+        # Write in standard form: x³ + b*x² + c*x + d = 0.
+        b_coef = -trace
+        c_coef = sum_minors
+        d_coef = -detA
+        
+        # Solve for eigenvalues.
+        roots = cubic_roots(b_coef, c_coef, d_coef)
+        
+        # Compute an eigenvector for each eigenvalue.
+        eigenvectors = []
+        for eig in roots:
+            ev = compute_eigenvector(A, eig)
+            eigenvectors.append(ev)
+        
+        # Build LaTeX strings.
+        matrix_latex = r"$$A = \begin{pmatrix}" + \
+                        f"{a11:.4f} & {a12:.4f} & {a13:.4f} \\\\ " + \
+                        f"{a21:.4f} & {a22:.4f} & {a23:.4f} \\\\ " + \
+                        f"{a31:.4f} & {a32:.4f} & {a33:.4f}" + \
+                        r"\end{pmatrix}$$"
+                        
+        poly = r"$$\lambda^3"
+        coef = -trace
+        if abs(coef) > 1e-8:
+            sign = " - " if coef > 0 else " + "
+            coef_abs = abs(coef)
+            term = f"{coef_abs:.4f}" if abs(coef_abs - 1) > 1e-8 else ""
+            poly += sign + term + r"\lambda^2"
+        coef = sum_minors
+        if abs(coef) > 1e-8:
+            sign = " + " if coef > 0 else " - "
+            coef_abs = abs(coef)
+            term = f"{coef_abs:.4f}" if abs(coef_abs - 1) > 1e-8 else ""
+            poly += sign + term + r"\lambda"
+        coef = -detA
+        if abs(coef) > 1e-8:
+            sign = " + " if coef > 0 else " - "
+            poly += sign + f"{abs(coef):.4f}"
+        poly += r" = 0$$"
+        
+        eigen_latex = r"$$"
+        for i, r_val in enumerate(roots, start=1):
+            eigen_latex += r"\lambda_{" + f"{i}" + r"} = " + format_complex(r_val)
+            if i < len(roots):
+                eigen_latex += r",\quad "
+        eigen_latex += r"$$"
+        
+        eigenvec_latex = r"$$"
+        for i, (eig, ev) in enumerate(zip(roots, eigenvectors), start=1):
+            eigenvec_latex += r"\text{For } \lambda_{" + f"{i}" + r"} = " + format_complex(eig) \
+                              + r",\quad \mathbf{v} = \begin{pmatrix}" \
+                              + f"{format_complex(ev[0])} \\\\ {format_complex(ev[1])} \\\\ {format_complex(ev[2])}" \
+                              + r"\end{pmatrix}\\[10pt]"
+        eigenvec_latex += r"$$"
+        
+        # Update the page with our LaTeX content.
+        document["matrix-display"].html = matrix_latex
+        document["equation-display"].html = poly
+        document["eigen-display"].html = eigen_latex
+        document["eigenvector-display"].html = eigenvec_latex
+        
+        # Re-typeset the math.
+        window.MathJax.typeset()
+
+    # Bind the button to our compute function.
+    document["calc-btn"].bind("click", compute_eigen)
+  </script>
+</body>
+</html>
