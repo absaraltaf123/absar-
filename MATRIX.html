@@ -14,14 +14,6 @@
   <script src="https://cdn.jsdelivr.net/npm/brython@3.9.5/brython_stdlib.js"></script>
 
   <style>
-    /* 
-      Overall design inspired by the provided image:
-      1) Dark/purple gradient background with a glow at the top.
-      2) A large "glass" container (with backdrop blur, translucent background, subtle stroke).
-      3) Inside that container, a sub-panel for results, also with a translucent background + stroke.
-      4) Eigenvector panel auto-adjusts to text length (no fixed height).
-    */
-
     /* Global reset/box-sizing */
     * {
       box-sizing: border-box;
@@ -29,7 +21,7 @@
       padding: 0;
     }
 
-   body {
+    body {
   min-height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   color: #ffffff;
@@ -59,56 +51,115 @@ background: url("images/pexels-jplenio-1103970.jpg");
   padding: 40px;
 }
 
-
     h1 {
       text-align: center;
       margin-bottom: 30px;
       font-size: 2.2em;
-      /* Subtle shadow behind text */
       text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
     }
 
-    /* 
-      Glass container that holds everything 
-      (like the big panel in your reference image).
-    */
+    /* Toggle switch container */
+    .mode-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    /* Toggle switch styling */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+      margin-right: 10px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    .switch input:checked + .slider {
+      background-color: #2196F3;
+    }
+    .switch input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    #mode-label {
+      font-size: 1.1em;
+    }
+
+    /* Glass container styling */
     .glass-container {
       max-width: 1200px;
       margin: 0 auto;
       padding: 60px;
-      background: rgba(255, 255, 255, 0.07); /* translucent white */
-      backdrop-filter: blur(4px);
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(3px);
       -webkit-backdrop-filter: blur(15px);
-      border: 4px solid rgba(255, 255, 255, 0.15); /* subtle stroke */
+      border: 10px solid rgba(255, 255, 255, 0.27);
       border-radius: 15px;
-      box-shadow: 0 0 40px rgba(111, 66, 193, 0.4); /* soft neon glow */
+      box-shadow: 0 0 40px rgba(111, 66, 193, 0.4);
     }
 
-    /* 
-      We create a two-column layout inside the glass container:
-      Left: matrix inputs
-      Right: sub-panel with results
-    */
+    /* Two-column layout inside the glass container */
     .panel-layout {
       display: flex;
-      flex-wrap: wrap; /* in case the screen is narrow */
+      flex-wrap: wrap;
       gap: 20px;
+      transition: all 0.5s ease;
     }
-
+    /* Desktop mode: left panel fixed width */
     .input-panel {
-      flex: 0 0  350px; /* left panel width */
-      min-width: 340px; /* ensures it doesn't shrink too small */
+      flex: 0 0 350px;
+      min-width: 340px;
+      transition: all 0.5s ease;
     }
-
-    /* The sub-panel that displays the results, also glassy/stroked */
+    /* Results panel styling */
     .results-panel {
-      flex: 1; /* expand to fill remaining space */
-      background: rgba(, 255, 255, 0.05);
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
       border: 4px solid rgba(255, 255, 255, 0.1);
       border-radius: 12px;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
       padding: 20px;
       overflow: hidden;
+      transition: all 0.5s ease;
+    }
+
+    /* Mobile mode overrides: stack panels vertically */
+    .panel-layout.mobile-mode {
+      flex-direction: column;
+      align-items: center;
+    }
+    .panel-layout.mobile-mode .input-panel,
+    .panel-layout.mobile-mode .results-panel {
+      width: 100%;
+    }
+    .panel-layout.mobile-mode .input-panel {
+      max-width: none;
+      margin-bottom: 20px;
     }
 
     /* Matrix input grid */
@@ -146,7 +197,6 @@ background: url("images/pexels-jplenio-1103970.jpg");
       cursor: pointer;
       border: none;
       border-radius: 8px;
-      /* Copilot green gradient */
       background: linear-gradient(90deg, #238636, #2ea043);
       color: #ffffff;
       transition: filter 0.3s;
@@ -155,15 +205,15 @@ background: url("images/pexels-jplenio-1103970.jpg");
       filter: brightness(1.1);
     }
 
-  .output {
-    margin-top: 20px;
-    padding: 20px;
-    background: #0d1117;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-    overflow: auto;
-    word-wrap: break-word;
-  }
+    .output {
+      margin-top: 20px;
+      padding: 20px;
+      background: #0d1117;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+      overflow: auto;
+      word-wrap: break-word;
+    }
     .output h2 {
       text-align: center;
       margin-bottom: 15px;
@@ -175,7 +225,6 @@ background: url("images/pexels-jplenio-1103970.jpg");
       color: #c9d1d9;
       text-align: center;
       padding: 10px;
-      /* Let the panel auto-expand for eigenvector text */
       display: block; 
       white-space: pre-wrap;
     }
@@ -184,10 +233,18 @@ background: url("images/pexels-jplenio-1103970.jpg");
 <body onload="brython()">
 
   <h1>3×3 Matrix Eigen Calculator</h1>
+  
+  <!-- Mode Toggle Switch -->
+  <div class="mode-toggle">
+    <label class="switch">
+      <input type="checkbox" id="mode-switch">
+      <span class="slider"></span>
+    </label>
+    <span id="mode-label">Desktop Mode</span>
+  </div>
 
   <div class="glass-container">
     <div class="panel-layout">
-
       <!-- LEFT: Matrix inputs -->
       <div class="input-panel">
         <div class="matrix-input">
@@ -223,7 +280,6 @@ background: url("images/pexels-jplenio-1103970.jpg");
           <div class="content" id="eigenvector-display"></div>
         </div>
       </div>
-
     </div>
   </div>
 
@@ -282,7 +338,6 @@ background: url("images/pexels-jplenio-1103970.jpg");
         return [1, 0, 0]  # fallback if no nontrivial solution found
 
     def compute_eigen(event):
-        # Grab user inputs
         try:
             a11 = float(document["a11"].value or 0)
             a12 = float(document["a12"].value or 0)
@@ -297,14 +352,12 @@ background: url("images/pexels-jplenio-1103970.jpg");
             alert("Please enter valid numbers!")
             return
 
-        # Build matrix A
         A = [
             [a11, a12, a13],
             [a21, a22, a23],
             [a31, a32, a33]
         ]
 
-        # Compute trace, minors, and determinant
         trace = a11 + a22 + a33
         minor1 = a22*a33 - a23*a32
         minor2 = a11*a33 - a13*a31
@@ -319,16 +372,13 @@ background: url("images/pexels-jplenio-1103970.jpg");
         c_coef = sum_minors
         d_coef = -detA
 
-        # Solve for eigenvalues
         roots = cubic_roots(b_coef, c_coef, d_coef)
 
-        # Compute eigenvectors
         eigenvectors = []
         for eig in roots:
             ev = compute_eigenvector(A, eig)
             eigenvectors.append(ev)
 
-        # Build LaTeX for matrix
         matrix_latex = (
             r"$$A = \begin{pmatrix}"
             + f"{A[0][0]:.4f} & {A[0][1]:.4f} & {A[0][2]:.4f} \\\\ "
@@ -337,7 +387,6 @@ background: url("images/pexels-jplenio-1103970.jpg");
             + r"\end{pmatrix}$$"
         )
 
-        # Characteristic polynomial in LaTeX
         poly = r"$$\lambda^3"
         coef = -trace
         if abs(coef) > 1e-8:
@@ -357,7 +406,6 @@ background: url("images/pexels-jplenio-1103970.jpg");
             poly += sign + f"{abs(coef):.4f}"
         poly += r" = 0$$"
 
-        # Eigenvalues
         eigen_latex = r"$$"
         for i, r_val in enumerate(roots, start=1):
             eigen_latex += r"\lambda_{" + f"{i}" + r"} = " + format_complex(r_val)
@@ -365,7 +413,6 @@ background: url("images/pexels-jplenio-1103970.jpg");
                 eigen_latex += r",\quad "
         eigen_latex += r"$$"
 
-        # Eigenvectors
         eigenvec_latex = r"$$"
         for i, (eig, ev) in enumerate(zip(roots, eigenvectors), start=1):
             eigenvec_latex += (
@@ -379,16 +426,35 @@ background: url("images/pexels-jplenio-1103970.jpg");
             )
         eigenvec_latex += r"$$"
 
-        # Update HTML
         document["matrix-display"].html = matrix_latex
         document["equation-display"].html = poly
         document["eigen-display"].html = eigen_latex
         document["eigenvector-display"].html = eigenvec_latex
 
-        # Re-typeset MathJax
         window.MathJax.typeset()
 
     document["calc-btn"].bind("click", compute_eigen)
+  </script>
+
+  <!-- Small JavaScript to handle mode toggle -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      var modeSwitch = document.getElementById('mode-switch');
+      var modeLabel = document.getElementById('mode-label');
+      var panelLayout = document.querySelector('.panel-layout');
+
+      modeSwitch.addEventListener('change', function(){
+        if(this.checked) {
+          // Switch to mobile mode: stack panels vertically.
+          panelLayout.classList.add('mobile-mode');
+          modeLabel.textContent = "Mobile Mode";
+        } else {
+          // Switch back to desktop mode: side-by-side.
+          panelLayout.classList.remove('mobile-mode');
+          modeLabel.textContent = "Desktop Mode";
+        }
+      });
+    });
   </script>
 </body>
 </html>
