@@ -29,15 +29,27 @@
       padding: 0;
     }
 
-    body {
-      min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif,
-                   "Apple Color Emoji", "Segoe UI Emoji";
-      color: #ffffff;
-      /* Purple/dark navy radial gradient background */
-      background: radial-gradient(circle at 70% 30%, #6f42c1 0%, #0a0c37 70%);
-      padding: 40px;
-    }
+    .background-container {
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  color: #ffffff;
+
+  /* Multiple backgrounds:
+     1) Radial gradient overlay
+     2) Background image
+  */
+  background: radial-gradient(circle at 70% 30%, #6f42c1 0%, #0a0c37 70%),
+              url("https://github.com/absaraltaf123/absar-/blob/main/Solid-Black-Website-Background.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  
+  /* Blend the gradient and the image */
+  background-blend-mode: overlay;
+  
+  /* Spacing/padding for inner content */
+  padding: 40px;
+}
 
     h1 {
       text-align: center;
@@ -158,27 +170,7 @@
       display: block; 
       white-space: pre-wrap;
     }
-.background-container {
-  min-height: 100vh;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-  color: #ffffff;
 
-  /* Multiple backgrounds:
-     1) Radial gradient overlay
-     2) Background image
-  */
-  background: radial-gradient(circle at 70% 30%, #6f42c1 0%, #0a0c37 70%),
-              url("https://github.com/absaraltaf123/absar-/blob/main/Solid-Black-Website-Background.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  
-  /* Blend the gradient and the image */
-  background-blend-mode: overlay;
-  
-  /* Spacing/padding for inner content */
-  padding: 40px;
-}
 
   </style>
 </head>
