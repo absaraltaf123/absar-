@@ -1,3 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>3×3 Matrix Eigen Calculator</title>
+  
+  <!-- MathJax for LaTeX rendering -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <!-- Brython -->
+  <script src="https://cdn.jsdelivr.net/npm/brython@3.9.5/brython.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/brython@3.9.5/brython_stdlib.js"></script>
+
+  <style>
+    /* 
+      Overall design inspired by the provided image:
+      1) Dark/purple gradient background with a glow at the top.
+      2) A large "glass" container (with backdrop blur, translucent background, subtle stroke).
+      3) Inside that container, a sub-panel for results, also with a translucent background + stroke.
+      4) Eigenvector panel auto-adjusts to text length (no fixed height).
+    */
+
+    /* Global reset/box-sizing */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif,
+                   "Apple Color Emoji", "Segoe UI Emoji";
+      color: #ffffff;
+      /* Purple/dark navy radial gradient background */
+      background: radial-gradient(circle at 70% 30%, #6f42c1 0%, #0a0c37 70%);
+      padding: 40px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2.2em;
+      /* Subtle shadow behind text */
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+    }
+
+    /* 
+      Glass container that holds everything 
+      (like the big panel in your reference image).
+    */
+    .glass-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.07); /* translucent white */
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 4px solid rgba(255, 255, 255, 0.15); /* subtle stroke */
+      border-radius: 15px;
+      box-shadow: 0 0 40px rgba(111, 66, 193, 0.4); /* soft neon glow */
+    }
+
+    /* 
+      We create a two-column layout inside the glass container:
+      Left: matrix inputs
+      Right: sub-panel with results
+    */
+    .panel-layout {
+      display: flex;
+      flex-wrap: wrap; /* in case the screen is narrow */
+      gap: 20px;
+    }
+
+    .input-panel {
+      flex: 0 0  350px; /* left panel width */
+      min-width: 340px; /* ensures it doesn't shrink too small */
+    }
+
+    /* The sub-panel that displays the results, also glassy/stroked */
+    .results-panel {
+      flex: 1; /* expand to fill remaining space */
+      background: rgba(4, 255, 255, 0.03);
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    /* Matrix input grid */
+    .matrix-input {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .matrix-input input {
+      width: 100%;
+      padding: 10px;
+      font-size: 1em;
+      text-align: center;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      color: #c9d1d9;
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+    .matrix-input input:focus {
+      outline: none;
+      border-color: #8b949e;
+      box-shadow: 0 0 5px rgba(139, 148, 158, 0.5);
+    }
+
+    /* Calculate button */
+    .btn {
+      display: inline-block;
+      width: 100%;
+      padding: 15px;
+      font-size: 1.2em;
+      font-weight: 500;
+      text-align: center;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      /* Copilot green gradient */
+      background: linear-gradient(90deg, #238636, #2ea043);
+      color: #ffffff;
+      transition: filter 0.3s;
+    }
+    .btn:hover {
+      filter: brightness(1.1);
+    }
+
+  .output {
+    margin-top: 20px;
+    padding: 20px;
+    background: #0d1117;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    overflow: auto;
+    word-wrap: break-word;
+  }
+    .output h2 {
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: 1.3em;
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+    }
+    .content {
+      font-size: 1.1em;
+      color: #c9d1d9;
+      text-align: center;
+      padding: 10px;
+      /* Let the panel auto-expand for eigenvector text */
+      display: block; 
+      white-space: pre-wrap;
+    }
 .background-container {
   min-height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
@@ -8,7 +168,7 @@
      2) Background image
   */
   background: radial-gradient(circle at 70% 30%, #6f42c1 0%, #0a0c37 70%),
-              url("https://github.com/absaraltaf123/absar-/blob/main/Solid-Black-Website-Background.jpg");
+              url("");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -19,3 +179,217 @@
   /* Spacing/padding for inner content */
   padding: 40px;
 }
+
+  </style>
+</head>
+<body onload="brython()">
+
+  <h1>3×3 Matrix Eigen Calculator</h1>
+
+  <div class="glass-container">
+    <div class="panel-layout">
+
+      <!-- LEFT: Matrix inputs -->
+      <div class="input-panel">
+        <div class="matrix-input">
+          <input id="a11" type="number" step="any" placeholder="a11">
+          <input id="a12" type="number" step="any" placeholder="a12">
+          <input id="a13" type="number" step="any" placeholder="a13">
+          <input id="a21" type="number" step="any" placeholder="a21">
+          <input id="a22" type="number" step="any" placeholder="a22">
+          <input id="a23" type="number" step="any" placeholder="a23">
+          <input id="a31" type="number" step="any" placeholder="a31">
+          <input id="a32" type="number" step="any" placeholder="a32">
+          <input id="a33" type="number" step="any" placeholder="a33">
+        </div>
+        <button id="calc-btn" class="btn">Calculate Eigenvalues &amp; Eigenvectors</button>
+      </div>
+
+      <!-- RIGHT: Results sub-panel -->
+      <div class="results-panel">
+        <div class="output" id="matrix-output">
+          <h2>Matrix</h2>
+          <div class="content" id="matrix-display"></div>
+        </div>
+        <div class="output" id="equation-output">
+          <h2>Characteristic Equation</h2>
+          <div class="content" id="equation-display"></div>
+        </div>
+        <div class="output" id="eigen-output">
+          <h2>Eigenvalues</h2>
+          <div class="content" id="eigen-display"></div>
+        </div>
+        <div class="output" id="eigenvector-output">
+          <h2>Eigenvectors</h2>
+          <div class="content" id="eigenvector-display"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Brython/Python logic for computing eigenvalues/eigenvectors -->
+  <script type="text/python">
+    import cmath, math
+    from browser import document, alert, window
+
+    # Returns the principal cube root (handles complex numbers)
+    def cbrt(z):
+        return cmath.exp(cmath.log(z)/3)
+
+    # Format complex numbers for LaTeX (if imaginary part is negligible, show as real)
+    def format_complex(z):
+        if abs(z.imag) < 1e-8:
+            return f"{z.real:.4f}"
+        else:
+            sign = " + " if z.imag >= 0 else " - "
+            return f"({z.real:.4f}{sign}{abs(z.imag):.4f}i)"
+
+    # Solve cubic: x³ + b*x² + c*x + d = 0 using Cardano's method
+    def cubic_roots(b, c, d):
+        shift = b/3
+        p = c - b**2/3
+        q = (2*b**3)/27 - (b*c)/3 + d
+        Delta = (q/2)**2 + (p/3)**3
+        u = cbrt(-q/2 + cmath.sqrt(Delta))
+        v = cbrt(-q/2 - cmath.sqrt(Delta))
+        y1 = u + v
+        x1 = y1 - shift
+        omega = complex(-0.5, cmath.sqrt(3)/2)
+        y2 = u * omega + v * (omega**2)
+        y3 = u * (omega**2) + v * omega
+        x2 = y2 - shift
+        x3 = y3 - shift
+        return [x1, x2, x3]
+
+    # Cross product for 3-vectors (supports complex entries)
+    def cross_product(u, v):
+        return [u[1]*v[2] - u[2]*v[1],
+                u[2]*v[0] - u[0]*v[2],
+                u[0]*v[1] - u[1]*v[0]]
+
+    # Euclidean norm of a 3-vector
+    def vector_norm(v):
+        return math.sqrt(abs(v[0])**2 + abs(v[1])**2 + abs(v[2])**2)
+
+    # For eigenvalue "eig", find a nontrivial solution of (A - eig*I)x = 0.
+    def compute_eigenvector(A, eig):
+        B = [[A[i][j] - (eig if i==j else 0) for j in range(3)] for i in range(3)]
+        pairs = [(0,1), (0,2), (1,2)]
+        for i, j in pairs:
+            cp = cross_product(B[i], B[j])
+            if vector_norm(cp) > 1e-6:
+                return cp
+        return [1, 0, 0]  # fallback if no nontrivial solution found
+
+    def compute_eigen(event):
+        # Grab user inputs
+        try:
+            a11 = float(document["a11"].value or 0)
+            a12 = float(document["a12"].value or 0)
+            a13 = float(document["a13"].value or 0)
+            a21 = float(document["a21"].value or 0)
+            a22 = float(document["a22"].value or 0)
+            a23 = float(document["a23"].value or 0)
+            a31 = float(document["a31"].value or 0)
+            a32 = float(document["a32"].value or 0)
+            a33 = float(document["a33"].value or 0)
+        except Exception:
+            alert("Please enter valid numbers!")
+            return
+
+        # Build matrix A
+        A = [
+            [a11, a12, a13],
+            [a21, a22, a23],
+            [a31, a32, a33]
+        ]
+
+        # Compute trace, minors, and determinant
+        trace = a11 + a22 + a33
+        minor1 = a22*a33 - a23*a32
+        minor2 = a11*a33 - a13*a31
+        minor3 = a11*a22 - a12*a21
+        sum_minors = minor1 + minor2 + minor3
+        detA = (a11*(a22*a33 - a23*a32)
+               - a12*(a21*a33 - a23*a31)
+               + a13*(a21*a32 - a22*a31))
+
+        # Characteristic polynomial: λ³ - (trace)λ² + (sum_minors)λ - detA = 0
+        b_coef = -trace
+        c_coef = sum_minors
+        d_coef = -detA
+
+        # Solve for eigenvalues
+        roots = cubic_roots(b_coef, c_coef, d_coef)
+
+        # Compute eigenvectors
+        eigenvectors = []
+        for eig in roots:
+            ev = compute_eigenvector(A, eig)
+            eigenvectors.append(ev)
+
+        # Build LaTeX for matrix
+        matrix_latex = (
+            r"$$A = \begin{pmatrix}"
+            + f"{A[0][0]:.4f} & {A[0][1]:.4f} & {A[0][2]:.4f} \\\\ "
+            + f"{A[1][0]:.4f} & {A[1][1]:.4f} & {A[1][2]:.4f} \\\\ "
+            + f"{A[2][0]:.4f} & {A[2][1]:.4f} & {A[2][2]:.4f}"
+            + r"\end{pmatrix}$$"
+        )
+
+        # Characteristic polynomial in LaTeX
+        poly = r"$$\lambda^3"
+        coef = -trace
+        if abs(coef) > 1e-8:
+            sign = " - " if coef > 0 else " + "
+            coef_abs = abs(coef)
+            term = f"{coef_abs:.4f}" if abs(coef_abs - 1) > 1e-8 else ""
+            poly += sign + term + r"\lambda^2"
+        coef = sum_minors
+        if abs(coef) > 1e-8:
+            sign = " + " if coef > 0 else " - "
+            coef_abs = abs(coef)
+            term = f"{coef_abs:.4f}" if abs(coef_abs - 1) > 1e-8 else ""
+            poly += sign + term + r"\lambda"
+        coef = -detA
+        if abs(coef) > 1e-8:
+            sign = " + " if coef > 0 else " - "
+            poly += sign + f"{abs(coef):.4f}"
+        poly += r" = 0$$"
+
+        # Eigenvalues
+        eigen_latex = r"$$"
+        for i, r_val in enumerate(roots, start=1):
+            eigen_latex += r"\lambda_{" + f"{i}" + r"} = " + format_complex(r_val)
+            if i < len(roots):
+                eigen_latex += r",\quad "
+        eigen_latex += r"$$"
+
+        # Eigenvectors
+        eigenvec_latex = r"$$"
+        for i, (eig, ev) in enumerate(zip(roots, eigenvectors), start=1):
+            eigenvec_latex += (
+                r"\text{For } \lambda_{" + f"{i}" + r"} = " 
+                + format_complex(eig) 
+                + r",\quad \mathbf{v} = \begin{pmatrix}"
+                + f"{format_complex(ev[0])} \\\\ "
+                + f"{format_complex(ev[1])} \\\\ "
+                + f"{format_complex(ev[2])}"
+                + r"\end{pmatrix}\\[10pt]"
+            )
+        eigenvec_latex += r"$$"
+
+        # Update HTML
+        document["matrix-display"].html = matrix_latex
+        document["equation-display"].html = poly
+        document["eigen-display"].html = eigen_latex
+        document["eigenvector-display"].html = eigenvec_latex
+
+        # Re-typeset MathJax
+        window.MathJax.typeset()
+
+    document["calc-btn"].bind("click", compute_eigen)
+  </script>
+</body>
+</html>
