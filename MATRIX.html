@@ -29,15 +29,36 @@
       padding: 0;
     }
 
-    body {
-      min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif,
-                   "Apple Color Emoji", "Segoe UI Emoji";
-      color: #ffffff;
-      /* Purple/dark navy radial gradient background */
-      background: radial-gradient(circle at 70% 30%, #6f42c1 0%, #0a0c37 70%);
-      padding: 40px;
-    }
+   body {
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  color: #ffffff;
+
+  /* Multiple backgrounds: 
+     1) Your radial gradient 
+     2) Your image 
+  */
+ background: radial-gradient(circle at 70% 30%, #6f42c1 0%, #0a0c37 70%), 
+            url("file:///C:/Users/Absar%20Altaf/Downloads/CH9%20(1)/pexels-jplenio-1103970.jpg");
+
+
+
+
+
+  /* Make the image fill the screen */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  /* Optional blend mode if you want the gradient to overlay the image. 
+     Try: overlay, multiply, screen, etc. 
+     Remove this if you prefer no blending. */
+  background-blend-mode: overlay;
+
+  /* Additional spacing/padding as needed */
+  padding: 40px;
+}
+
 
     h1 {
       text-align: center;
@@ -54,9 +75,9 @@
     .glass-container {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 40px;
+      padding: 60px;
       background: rgba(255, 255, 255, 0.07); /* translucent white */
-      backdrop-filter: blur(15px);
+      backdrop-filter: blur(4px);
       -webkit-backdrop-filter: blur(15px);
       border: 4px solid rgba(255, 255, 255, 0.15); /* subtle stroke */
       border-radius: 15px;
@@ -82,7 +103,7 @@
     /* The sub-panel that displays the results, also glassy/stroked */
     .results-panel {
       flex: 1; /* expand to fill remaining space */
-      background: rgba(4, 255, 255, 0.03);
+      background: rgba(, 255, 255, 0.05);
       border: 4px solid rgba(255, 255, 255, 0.1);
       border-radius: 12px;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
@@ -158,28 +179,6 @@
       display: block; 
       white-space: pre-wrap;
     }
-.background-container {
-  min-height: 100vh;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-  color: #ffffff;
-
-  /* Multiple backgrounds:
-     1) Radial gradient overlay
-     2) Background image
-  */
-  background: radial-gradient(circle at 70% 30%, #6f42c1 0%, #0a0c37 70%),
-              url("");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  
-  /* Blend the gradient and the image */
-  background-blend-mode: overlay;
-  
-  /* Spacing/padding for inner content */
-  padding: 40px;
-}
-
   </style>
 </head>
 <body onload="brython()">
