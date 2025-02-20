@@ -519,7 +519,148 @@
   #fullscreenOverlay.fadeOut {
     animation: fadeOut 0.5s ease-out;
   }
-  </style>
+
+.practice-deck-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(13, 27, 42, 0.9); /* #0d1b2a with opacity */
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 4000;
+      backdrop-filter: blur(10px);
+    }
+    .practice-deck-wrapper.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+   .practice-deck {
+  position: relative;
+  height: 450px;
+  width: 110%;
+  max-width: 700px;
+  perspective: 2000px;
+  overflow: visible;
+  transform: scale(0.98);
+  transition: transform 0.5s ease;
+}
+    
+    /* ==========================================================================
+       Flashcard Styles
+    ========================================================================== */
+    .practice-card {
+      position: absolute;
+      width: 320px;
+      height: 450px;
+      transform-style: preserve-3d;
+      transition: transform 0.6s ease, box-shadow 0.6s ease;
+      border-radius: 20px;
+      background: linear-gradient(145deg, #1b263b, #415a77);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+      outline: none;
+    }
+    
+    .practice-card.active {
+      z-index: 10;
+      transform: translateZ(50px) scale(1.05);
+    }
+    
+    .practice-card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      text-align: center;
+    }
+    
+    .practice-card-front {
+      background: linear-gradient(145deg, #778da9, #e0e1dd);
+      color: #0d1b2a;
+      font-size: 1.5rem;
+      font-family: 'Roboto Slab', serif;
+    }
+    
+    .practice-card-back {
+      background: linear-gradient(145deg, #415a77, #1b263b);
+      color: #e0e1dd;
+      transform: rotateY(180deg);
+      font-size: 1.3rem;
+      font-family: 'Roboto Slab', serif;
+    }
+    
+    /* ==========================================================================
+       Controls & Close Button
+    ========================================================================== */
+    .practice-controls {
+      position: absolute;
+      bottom: 20px;
+      display: flex;
+      gap: 20px;
+    }
+.practice-controls .control-btn {
+  padding: 12px 25px;
+  font-size: 1rem;
+  font-family: 'Open Sans', sans-serif;
+  background: #778da9;
+  color: #0d1b2a;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+    
+    .practice-controls .control-btn:hover {
+      background: #e0e1dd;
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .practice-controls .control-btn:focus {
+      outline: 2px solid #e0e1dd;
+      outline-offset: 2px;
+    }
+    
+ .practice-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 12px 25px;
+  font-size: 1rem;
+  font-family: 'Open Sans', sans-serif;
+  background: #ff4757;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+    
+  .practice-close-btn:hover {
+  background: #ff6b81;
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+}
+    
+    /* ==========================================================================
+       Responsive Adjustments
+    ========================================================================== */
+    @media (max-width: 600px) {
+      .practice-card {
+        width: 280px;
+        height: 380px;
+      }
+    } 
+ </style>
 </head>
 <body>
   <header>
@@ -536,6 +677,7 @@
     <button onclick="addNewCard()">Add Card</button>
     <button onclick="addNewNote()">Add Note</button>
     <button onclick="shuffleCards()">Shuffle Cards</button>
+<button onclick="startPracticeMode()">Let's Practise</button>
     <!-- Dropdown to filter cards by category -->
     <select id="filterCategory" onchange="renderCards()">
       <option value="all">Show All Categories</option>
@@ -561,584 +703,584 @@
       <button id="inkToLatexBtn">Ink to LaTeX</button>
     </div>
   </div>
-  
+  <div class="practice-deck-wrapper" id="practiceDeck">
+  <button class="practice-close-btn" onclick="exitPracticeMode()">Close</button>
+  <div class="practice-deck" id="practiceDeckContainer"></div>
+  <div class="practice-controls">
+    <button class="control-btn" onclick="showPrevCard()">Previous</button>
+    <button class="control-btn" onclick="showNextCard()">Next</button>
+  </div>
+</div>
   <script>
-    /***********************
-     * Default Cards Data  *
-     ***********************/
-    const cardsData = [
-      {
-        category: "Quantum Mechanics",
-        question: "Time-independent Schrödinger Equation",
-        answer: "$$ -\\frac{\\hbar^2}{2m}\\nabla^2\\psi(\\mathbf{r}) + V(\\mathbf{r})\\psi(\\mathbf{r}) = E\\psi(\\mathbf{r}) $$",
-        type: "card"
-      },
-      {
-        category: "Quantum Mechanics",
-        question: "Time-dependent Schrödinger Equation",
-        answer: "$$ i\\hbar\\,\\frac{\\partial}{\\partial t}\\psi(\\mathbf{r},t) = -\\frac{\\hbar^2}{2m}\\nabla^2\\psi(\\mathbf{r},t) + V(\\mathbf{r})\\psi(\\mathbf{r},t) $$",
-        type: "card"
-      },
-      {
-        category: "Quantum Mechanics",
-        question: "Momentum Operator",
-        answer: "$$ \\hat{p} = -i\\hbar\\,\\frac{\\partial}{\\partial x} $$",
-        type: "card"
-      },
-      {
-        category: "Quantum Mechanics",
-        question: "Position Operator",
-        answer: "$$ \\hat{x} = x $$",
-        type: "card"
-      },
-      {
-        category: "Quantum Mechanics",
-        question: "Probability Density",
-        answer: "$$ \\rho(\\mathbf{r},t) = |\\psi(\\mathbf{r},t)|^2 $$",
-        type: "card"
-      },
-      {
-        category: "Quantum Mechanics",
-        question: "Current Density",
-        answer: "$$ \\mathbf{j}(\\mathbf{r},t) = \\frac{\\hbar}{2mi}\\left(\\psi^*\\nabla\\psi - \\psi\\nabla\\psi^*\\right) $$",
-        type: "card"
-      }
-    ];
-    
-    let currentCards = [];
-    
-    /******************************
-     * Rendering & Storage Logic  *
-     ******************************/
-    function renderCards() {
-      const container = document.getElementById('cardContainer');
-      container.innerHTML = '';
-      const filterValue = document.getElementById('filterCategory').value;
-      const filteredCards = filterValue === 'all'
-        ? currentCards
-        : currentCards.filter(card => card.category === filterValue);
-      filteredCards.forEach(card => {
-        container.appendChild(createCard(card));
-      });
-      updateCategoryLists();
-    }
-    
-    function updateCategoryLists() {
-      const categorySet = new Set();
-      currentCards.forEach(card => {
-        if (card.category) categorySet.add(card.category);
-      });
-      const dataList = document.getElementById('categoryList');
-      dataList.innerHTML = '';
-      categorySet.forEach(cat => {
-        const option = document.createElement('option');
-        option.value = cat;
-        dataList.appendChild(option);
-      });
-      const filterSelect = document.getElementById('filterCategory');
-      const currentSelection = filterSelect.value;
-      filterSelect.innerHTML = '<option value="all">Show All Categories</option>';
-      categorySet.forEach(cat => {
-        const option = document.createElement('option');
-        option.value = cat;
-        option.textContent = cat;
-        filterSelect.appendChild(option);
-      });
-      filterSelect.value = currentSelection;
-    }
-    
-    function loadCards() {
-      const saved = localStorage.getItem('flashcards');
-      if (saved) {
-        currentCards = JSON.parse(saved);
-      } else {
-        currentCards = cardsData.map(card => ({
-          ...card,
-          id: `card-${Date.now()}-${Math.random()}`
-        }));
-      }
-      renderCards();
-    }
-    
-    function saveCards() {
-      localStorage.setItem('flashcards', JSON.stringify(currentCards));
-    }
-    
-    /******************************
-     * Modal Functions for Subcards *
-     ******************************/
-    function openSubcardsModal(parentCard) {
-      const modal = document.getElementById('subcardsModal');
-      modal.innerHTML = ''; // Clear previous modal content
-      
-      const modalContent = document.createElement('div');
-      modalContent.className = 'modal-content';
-      
-      const closeBtn = document.createElement('button');
-      closeBtn.className = 'close-modal';
-      closeBtn.textContent = '×';
-      closeBtn.onclick = closeSubcardsModal;
-      modalContent.appendChild(closeBtn);
-      
-      const modalTitle = document.createElement('h2');
-      modalTitle.textContent = 'Subcards';
-      modalTitle.style.textAlign = 'center';
-      modalContent.appendChild(modalTitle);
-      
-      const modalSubcardsContainer = document.createElement('div');
-      modalSubcardsContainer.className = 'modal-subcards-container';
-      if (parentCard.subcards && parentCard.subcards.length > 0) {
-        parentCard.subcards.forEach(subcard => {
-          modalSubcardsContainer.appendChild(createSubcardForModal(subcard));
-        });
-      } else {
-        const noSubcardsMsg = document.createElement('p');
-        noSubcardsMsg.textContent = 'No subcards available.';
-        modalSubcardsContainer.appendChild(noSubcardsMsg);
-      }
-      modalContent.appendChild(modalSubcardsContainer);
-      modal.appendChild(modalContent);
-      modal.style.display = 'flex';
-    }
-    
-    function closeSubcardsModal() {
-      const modal = document.getElementById('subcardsModal');
-      modal.style.display = 'none';
-    }
-    
-    /******************************
-     * Modal Functions for Expanded Note *
-     ******************************/
-    function openNoteModal(noteCard) {
-      const noteModal = document.getElementById('noteModal');
-      noteModal.innerHTML = ''; // Clear previous content
-      
-      const modalContent = document.createElement('div');
-      modalContent.className = 'modal-content';
-      
-      const closeBtn = document.createElement('button');
-      closeBtn.className = 'close-modal';
-      closeBtn.textContent = '×';
-      closeBtn.onclick = closeNoteModal;
-      modalContent.appendChild(closeBtn);
-      
-      const modalTitle = document.createElement('h2');
-      modalTitle.textContent = noteCard.question;
-      modalTitle.style.textAlign = 'center';
-      modalContent.appendChild(modalTitle);
-      
-      const contentDiv = document.createElement('div');
-      contentDiv.innerHTML = noteCard.answer;
-      contentDiv.style.marginTop = '20px';
-      modalContent.appendChild(contentDiv);
-      
-      noteModal.appendChild(modalContent);
-      noteModal.style.display = 'flex';
-      
-      // Re-render MathJax if needed
+  /***********************
+ * Default Cards Data  *
+ ***********************/
+const cardsData = [
+  {
+    category: "Quantum Mechanics",
+    question: "Time-independent Schrödinger Equation",
+    answer: "$$ -\\frac{\\hbar^2}{2m}\\nabla^2\\psi(\\mathbf{r}) + V(\\mathbf{r})\\psi(\\mathbf{r}) = E\\psi(\\mathbf{r}) $$",
+    type: "card"
+  },
+  {
+    category: "Quantum Mechanics",
+    question: "Time-dependent Schrödinger Equation",
+    answer: "$$ i\\hbar\\,\\frac{\\partial}{\\partial t}\\psi(\\mathbf{r},t) = -\\frac{\\hbar^2}{2m}\\nabla^2\\psi(\\mathbf{r},t) + V(\\mathbf{r})\\psi(\\mathbf{r},t) $$",
+    type: "card"
+  },
+  {
+    category: "Quantum Mechanics",
+    question: "Momentum Operator",
+    answer: "$$ \\hat{p} = -i\\hbar\\,\\frac{\\partial}{\\partial x} $$",
+    type: "card"
+  },
+  {
+    category: "Quantum Mechanics",
+    question: "Position Operator",
+    answer: "$$ \\hat{x} = x $$",
+    type: "card"
+  },
+  {
+    category: "Quantum Mechanics",
+    question: "Probability Density",
+    answer: "$$ \\rho(\\mathbf{r},t) = |\\psi(\\mathbf{r},t)|^2 $$",
+    type: "card"
+  },
+  {
+    category: "Quantum Mechanics",
+    question: "Current Density",
+    answer: "$$ \\mathbf{j}(\\mathbf{r},t) = \\frac{\\hbar}{2mi}\\left(\\psi^*\\nabla\\psi - \\psi\\nabla\\psi^*\\right) $$",
+    type: "card"
+  }
+];
+
+let currentCards = [];
+
+/******************************
+ * Rendering & Storage Logic  *
+ ******************************/
+function renderCards() {
+  const container = document.getElementById('cardContainer');
+  container.innerHTML = '';
+  const filterValue = document.getElementById('filterCategory').value;
+  const filteredCards = filterValue === 'all'
+    ? currentCards
+    : currentCards.filter(card => card.category === filterValue);
+  filteredCards.forEach(card => {
+    container.appendChild(createCard(card));
+  });
+  updateCategoryLists();
+}
+
+function updateCategoryLists() {
+  const categorySet = new Set();
+  currentCards.forEach(card => {
+    if (card.category) categorySet.add(card.category);
+  });
+  const dataList = document.getElementById('categoryList');
+  dataList.innerHTML = '';
+  categorySet.forEach(cat => {
+    const option = document.createElement('option');
+    option.value = cat;
+    dataList.appendChild(option);
+  });
+  const filterSelect = document.getElementById('filterCategory');
+  const currentSelection = filterSelect.value;
+  filterSelect.innerHTML = '<option value="all">Show All Categories</option>';
+  categorySet.forEach(cat => {
+    const option = document.createElement('option');
+    option.value = cat;
+    option.textContent = cat;
+    filterSelect.appendChild(option);
+  });
+  filterSelect.value = currentSelection;
+}
+
+function loadCards() {
+  const saved = localStorage.getItem('flashcards');
+  if (saved) {
+    currentCards = JSON.parse(saved);
+  } else {
+    currentCards = cardsData.map(card => ({
+      ...card,
+      id: `card-${Date.now()}-${Math.random()}`
+    }));
+  }
+  renderCards();
+}
+
+function saveCards() {
+  localStorage.setItem('flashcards', JSON.stringify(currentCards));
+}
+
+/******************************
+ * Modal Functions for Subcards *
+ ******************************/
+function openSubcardsModal(parentCard) {
+  const modal = document.getElementById('subcardsModal');
+  modal.innerHTML = ''; // Clear previous modal content
+  
+  const modalContent = document.createElement('div');
+  modalContent.className = 'modal-content';
+  
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'close-modal';
+  closeBtn.textContent = '×';
+  closeBtn.onclick = closeSubcardsModal;
+  modalContent.appendChild(closeBtn);
+  
+  const modalTitle = document.createElement('h2');
+  modalTitle.textContent = 'Subcards';
+  modalTitle.style.textAlign = 'center';
+  modalContent.appendChild(modalTitle);
+  
+  const modalSubcardsContainer = document.createElement('div');
+  modalSubcardsContainer.className = 'modal-subcards-container';
+  if (parentCard.subcards && parentCard.subcards.length > 0) {
+    parentCard.subcards.forEach(subcard => {
+      modalSubcardsContainer.appendChild(createSubcardForModal(subcard));
+    });
+  } else {
+    const noSubcardsMsg = document.createElement('p');
+    noSubcardsMsg.textContent = 'No subcards available.';
+    modalSubcardsContainer.appendChild(noSubcardsMsg);
+  }
+  modalContent.appendChild(modalSubcardsContainer);
+  modal.appendChild(modalContent);
+  modal.style.display = 'flex';
+}
+
+function closeSubcardsModal() {
+  const modal = document.getElementById('subcardsModal');
+  modal.style.display = 'none';
+}
+
+/******************************
+ * Modal Functions for Expanded Note *
+ ******************************/
+function openNoteModal(noteCard) {
+  const noteModal = document.getElementById('noteModal');
+  noteModal.innerHTML = ''; // Clear previous content
+  
+  const modalContent = document.createElement('div');
+  modalContent.className = 'modal-content';
+  
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'close-modal';
+  closeBtn.textContent = '×';
+  closeBtn.onclick = closeNoteModal;
+  modalContent.appendChild(closeBtn);
+  
+  const modalTitle = document.createElement('h2');
+  modalTitle.textContent = noteCard.question;
+  modalTitle.style.textAlign = 'center';
+  modalContent.appendChild(modalTitle);
+  
+  const contentDiv = document.createElement('div');
+  contentDiv.innerHTML = noteCard.answer;
+  contentDiv.style.marginTop = '20px';
+  modalContent.appendChild(contentDiv);
+  
+  noteModal.appendChild(modalContent);
+  noteModal.style.display = 'flex';
+  
+  // Re-render MathJax if needed
+  if (window.MathJax) {
+    MathJax.typesetPromise([contentDiv])
+      .catch(err => console.log(err.message));
+  }
+}
+
+function closeNoteModal() {
+  document.getElementById('noteModal').style.display = 'none';
+}
+
+/******************************
+ * Subcard Creation Functions *
+ ******************************/
+// Create a subcard for the main card view (includes edit & delete)
+function createSubcard(subcard, parentCard) {
+  const subcardElement = document.createElement('div');
+  subcardElement.className = 'flashcard subcard';
+  subcardElement.dataset.subcardId = subcard.id;
+  
+  const deleteBtn = document.createElement('button');
+  deleteBtn.className = 'delete-btn';
+  deleteBtn.textContent = '×';
+  deleteBtn.onclick = (e) => {
+    e.stopPropagation();
+    parentCard.subcards = parentCard.subcards.filter(sc => sc.id !== subcard.id);
+    saveCards();
+    renderCards();
+  };
+  
+  const editBtn = document.createElement('button');
+  editBtn.className = 'edit-btn';
+  editBtn.textContent = '✎';
+  editBtn.onclick = (e) => {
+    e.stopPropagation();
+    enableSubcardEditMode(subcardElement, subcard, parentCard);
+  };
+  
+  const subcardInner = document.createElement('div');
+  subcardInner.className = 'flashcard-inner';
+  subcardInner.innerHTML = `
+    <div class="flashcard-front">
+      <div>${subcard.question}</div>
+    </div>
+    <div class="flashcard-back">${subcard.answer}</div>
+  `;
+  
+  // On click, open the modal to show all subcards for this parent card.
+  subcardElement.onclick = (e) => {
+    e.stopPropagation();
+    if (subcardElement.classList.contains('editing')) return;
+    openSubcardsModal(parentCard);
+  };
+  
+  subcardElement.appendChild(deleteBtn);
+  subcardElement.appendChild(editBtn);
+  subcardElement.appendChild(subcardInner);
+  return subcardElement;
+}
+
+// Create a subcard for modal view (read-only with flip toggle)
+function createSubcardForModal(subcard) {
+  const subcardElement = document.createElement('div');
+  subcardElement.className = 'flashcard subcard';
+  subcardElement.dataset.subcardId = subcard.id;
+  
+  const subcardInner = document.createElement('div');
+  subcardInner.className = 'flashcard-inner';
+  subcardInner.innerHTML = `
+    <div class="flashcard-front">
+      <div>${subcard.question}</div>
+    </div>
+    <div class="flashcard-back">${subcard.answer}</div>
+  `;
+  
+  subcardElement.onclick = () => {
+    subcardElement.classList.toggle('flipped');
+    setTimeout(() => {
       if (window.MathJax) {
-        MathJax.typesetPromise([contentDiv])
+        MathJax.typesetPromise([subcardElement.querySelector('.flashcard-back')])
           .catch(err => console.log(err.message));
       }
-    }
-    
-    function closeNoteModal() {
-      document.getElementById('noteModal').style.display = 'none';
-    }
-    
-    /******************************
-     * Subcard Creation Functions *
-     ******************************/
-    // Create a subcard for the main card view (includes edit & delete)
-    function createSubcard(subcard, parentCard) {
-      const subcardElement = document.createElement('div');
-      subcardElement.className = 'flashcard subcard';
-      subcardElement.dataset.subcardId = subcard.id;
-      
-      const deleteBtn = document.createElement('button');
-      deleteBtn.className = 'delete-btn';
-      deleteBtn.textContent = '×';
-      deleteBtn.onclick = (e) => {
-        e.stopPropagation();
-        parentCard.subcards = parentCard.subcards.filter(sc => sc.id !== subcard.id);
-        saveCards();
-        renderCards();
-      };
-      
-      const editBtn = document.createElement('button');
-      editBtn.className = 'edit-btn';
-      editBtn.textContent = '✎';
-      editBtn.onclick = (e) => {
-        e.stopPropagation();
-        enableSubcardEditMode(subcardElement, subcard, parentCard);
-      };
-      
-      const subcardInner = document.createElement('div');
-      subcardInner.className = 'flashcard-inner';
-      subcardInner.innerHTML = `
-        <div class="flashcard-front">
-          <div>${subcard.question}</div>
-        </div>
-        <div class="flashcard-back">${subcard.answer}</div>
-      `;
-      
-      // On click, open the modal to show all subcards for this parent card.
-      subcardElement.onclick = (e) => {
-        e.stopPropagation();
-        if (subcardElement.classList.contains('editing')) return;
-        openSubcardsModal(parentCard);
-      };
-      
-      subcardElement.appendChild(deleteBtn);
-      subcardElement.appendChild(editBtn);
-      subcardElement.appendChild(subcardInner);
-      return subcardElement;
-    }
-    
-    // Create a subcard for modal view (read-only with flip toggle)
-    function createSubcardForModal(subcard) {
-      const subcardElement = document.createElement('div');
-      subcardElement.className = 'flashcard subcard';
-      subcardElement.dataset.subcardId = subcard.id;
-      
-      const subcardInner = document.createElement('div');
-      subcardInner.className = 'flashcard-inner';
-      subcardInner.innerHTML = `
-        <div class="flashcard-front">
-          <div>${subcard.question}</div>
-        </div>
-        <div class="flashcard-back">${subcard.answer}</div>
-      `;
-      
-      subcardElement.onclick = () => {
-        subcardElement.classList.toggle('flipped');
-        setTimeout(() => {
-          if (window.MathJax) {
-            MathJax.typesetPromise([subcardElement.querySelector('.flashcard-back')])
-              .catch(err => console.log(err.message));
-          }
-        }, 500);
-      };
-      
-      subcardElement.appendChild(subcardInner);
-      return subcardElement;
-    }
-    
-    /******************************
-     * Card Creation Functions    *
-     ******************************/
-    function createCard(card) {
-      const cardElement = document.createElement('div');
-      cardElement.className = 'flashcard';
-      if (card.type === "note") cardElement.classList.add("note");
-      cardElement.dataset.cardId = card.id;
-      
-      const deleteBtn = document.createElement('button');
-      deleteBtn.className = 'delete-btn';
-      deleteBtn.textContent = '×';
-      deleteBtn.onclick = (e) => {
-        e.stopPropagation();
-        currentCards = currentCards.filter(c => c.id !== card.id);
-        saveCards();
-        renderCards();
-      };
-      
-      const editBtn = document.createElement('button');
-      editBtn.className = 'edit-btn';
-      editBtn.textContent = '✎';
-      editBtn.onclick = (e) => {
-        e.stopPropagation();
-        enableEditMode(cardElement, card);
-      };
-      
-      const cardInner = document.createElement('div');
-      cardInner.className = 'flashcard-inner';
-      cardInner.innerHTML = `
-        <div class="flashcard-front">
-          ${card.category ? `<div style="font-weight:bold; margin-bottom:8px;">${card.category}</div>` : ''}
-          <div>${card.question}</div>
-        </div>
-        <div class="flashcard-back">${card.answer}</div>
-      `;
-      
-      cardElement.onclick = () => {
-        if (!cardElement.classList.contains('editing')) {
-          cardElement.classList.toggle('flipped');
-          setTimeout(() => {
-            if (window.MathJax) {
-              MathJax.typesetPromise([cardInner.querySelector('.flashcard-back')])
-                .catch(err => console.log(err.message));
-            }
-          }, 500);
+    }, 500);
+  };
+  
+  subcardElement.appendChild(subcardInner);
+  return subcardElement;
+}
+
+/******************************
+ * Card Creation Functions    *
+ ******************************/
+function createCard(card) {
+  const cardElement = document.createElement('div');
+  cardElement.className = 'flashcard';
+  if (card.type === "note") cardElement.classList.add("note");
+  cardElement.dataset.cardId = card.id;
+  
+  const deleteBtn = document.createElement('button');
+  deleteBtn.className = 'delete-btn';
+  deleteBtn.textContent = '×';
+  deleteBtn.onclick = (e) => {
+    e.stopPropagation();
+    currentCards = currentCards.filter(c => c.id !== card.id);
+    saveCards();
+    renderCards();
+  };
+  
+  const editBtn = document.createElement('button');
+  editBtn.className = 'edit-btn';
+  editBtn.textContent = '✎';
+  editBtn.onclick = (e) => {
+    e.stopPropagation();
+    enableEditMode(cardElement, card);
+  };
+  
+  const cardInner = document.createElement('div');
+  cardInner.className = 'flashcard-inner';
+  cardInner.innerHTML = `
+    <div class="flashcard-front">
+      ${card.category ? `<div style="font-weight:bold; margin-bottom:8px;">${card.category}</div>` : ''}
+      <div>${card.question}</div>
+    </div>
+    <div class="flashcard-back">${card.answer}</div>
+  `;
+  
+  cardElement.onclick = () => {
+    if (!cardElement.classList.contains('editing')) {
+      cardElement.classList.toggle('flipped');
+      setTimeout(() => {
+        if (window.MathJax) {
+          MathJax.typesetPromise([cardInner.querySelector('.flashcard-back')])
+            .catch(err => console.log(err.message));
         }
-      };
-      
-      cardElement.appendChild(deleteBtn);
-      cardElement.appendChild(editBtn);
-      cardElement.appendChild(cardInner);
-      
-      // If the card has subcards, add a button to open the subcards modal.
-      if (card.subcards && card.subcards.length > 0) {
-        const toggleSubcardsBtn = document.createElement('button');
-        toggleSubcardsBtn.textContent = 'Show Subcards';
-        toggleSubcardsBtn.style.marginTop = '10px';
-        toggleSubcardsBtn.style.padding = '6px 12px';
-        toggleSubcardsBtn.style.background = '#667eea';
-        toggleSubcardsBtn.style.color = '#fff';
-        toggleSubcardsBtn.style.border = 'none';
-        toggleSubcardsBtn.style.borderRadius = '5px';
-        toggleSubcardsBtn.style.cursor = 'pointer';
-        toggleSubcardsBtn.onclick = (e) => {
-          e.stopPropagation();
-          openSubcardsModal(card);
-        };
-        cardElement.appendChild(toggleSubcardsBtn);
-      }
-      
-      // If the card is a note, add an Expand button
-      if (card.type === "note") {
-        const expandBtn = document.createElement('button');
-        expandBtn.textContent = 'Expand';
-        expandBtn.style.marginTop = '10px';
-        expandBtn.style.padding = '6px 12px';
-        expandBtn.style.background = '#28a745';
-        expandBtn.style.color = '#fff';
-        expandBtn.style.border = 'none';
-        expandBtn.style.borderRadius = '5px';
-        expandBtn.style.cursor = 'pointer';
-        expandBtn.onclick = (e) => {
-          e.stopPropagation();
-          openNoteModal(card);
-        };
-        cardElement.appendChild(expandBtn);
-      }
-      
-      return cardElement;
+      }, 500);
     }
-    
-    /******************************
-     * Edit Mode Functions        *
-     ******************************/
-    function enableSubcardEditMode(subcardElement, subcard, parentCard) {
-      subcardElement.classList.add('editing');
-      const subcardInner = subcardElement.querySelector('.flashcard-inner');
-      const originalContent = subcardInner.innerHTML;
-      subcardInner.innerHTML = '';
-      
-      const editContainer = document.createElement('div');
-      editContainer.className = 'edit-mode';
-      
-      const questionInput = document.createElement('input');
-      questionInput.type = 'text';
-      questionInput.value = subcard.question;
-      questionInput.placeholder = 'Subcard Question';
-      
-      const answerInput = document.createElement('textarea');
-      answerInput.rows = 4;
-      answerInput.value = subcard.answer;
-      answerInput.placeholder = 'Subcard Answer (LaTeX supported)';
-      
-      const saveBtn = document.createElement('button');
-      saveBtn.className = 'save-btn';
-      saveBtn.textContent = 'Save';
-      saveBtn.onclick = (e) => {
-        e.stopPropagation();
-        subcard.question = questionInput.value.trim();
-        subcard.answer = answerInput.value.trim();
-        saveCards();
-        renderCards();
-      };
-      
-      const cancelBtn = document.createElement('button');
-      cancelBtn.className = 'cancel-btn';
-      cancelBtn.textContent = 'Cancel';
-      cancelBtn.onclick = (e) => {
-        e.stopPropagation();
-        subcardInner.innerHTML = originalContent;
-        subcardElement.classList.remove('editing');
-      };
-      
-      editContainer.appendChild(questionInput);
-      editContainer.appendChild(answerInput);
-      editContainer.appendChild(saveBtn);
-      editContainer.appendChild(cancelBtn);
-      subcardInner.appendChild(editContainer);
-    }
-    
-    function enableEditMode(cardElement, card) {
-      cardElement.classList.add('editing');
-      const cardInner = cardElement.querySelector('.flashcard-inner');
-      const originalContent = cardInner.innerHTML;
-      cardInner.innerHTML = '';
-      
-      const editContainer = document.createElement('div');
-      editContainer.className = 'edit-mode';
-      
-      const categoryInput = document.createElement('input');
-      categoryInput.type = 'text';
-      categoryInput.value = card.category || '';
-      categoryInput.placeholder = 'Category';
-      categoryInput.setAttribute('list', 'categoryList');
-      
-      const questionInput = document.createElement('input');
-      questionInput.type = 'text';
-      questionInput.value = card.question;
-      questionInput.placeholder = 'Question / Title';
-      
-      const answerInput = document.createElement('textarea');
-      answerInput.rows = card.type === "note" ? 6 : 4;
-      answerInput.value = card.answer;
-      answerInput.placeholder = 'Answer or note content (LaTeX supported)';
-      
-      const saveBtn = document.createElement('button');
-      saveBtn.className = 'save-btn';
-      saveBtn.textContent = 'Save';
-      saveBtn.onclick = (e) => {
-        e.stopPropagation();
-        card.category = categoryInput.value.trim();
-        card.question = questionInput.value.trim();
-        card.answer = answerInput.value.trim();
-        saveCards();
-        renderCards();
-      };
-      
-      const cancelBtn = document.createElement('button');
-      cancelBtn.className = 'cancel-btn';
-      cancelBtn.textContent = 'Cancel';
-      cancelBtn.onclick = (e) => {
-        e.stopPropagation();
-        cardInner.innerHTML = originalContent;
-        cardElement.classList.remove('editing');
-      };
-      
-      editContainer.appendChild(categoryInput);
-      editContainer.appendChild(questionInput);
-      editContainer.appendChild(answerInput);
-      editContainer.appendChild(saveBtn);
-      editContainer.appendChild(cancelBtn);
-      
-      // Subcards editing section
-      const subcardsLabel = document.createElement('div');
-      subcardsLabel.textContent = 'Subcards:';
-      subcardsLabel.style.fontWeight = 'bold';
-      subcardsLabel.style.marginTop = '15px';
-      editContainer.appendChild(subcardsLabel);
-      
-      const subcardsSection = document.createElement('div');
-      subcardsSection.className = 'subcards-container';
-      if (!card.subcards) card.subcards = [];
-      card.subcards.forEach(subcard => {
-        subcardsSection.appendChild(createSubcard(subcard, card));
-      });
-      editContainer.appendChild(subcardsSection);
-      
-      const addSubcardBtn = document.createElement('button');
-      addSubcardBtn.textContent = 'Add Subcard';
-      addSubcardBtn.style.marginTop = '10px';
-      addSubcardBtn.style.padding = '6px 12px';
-      addSubcardBtn.style.background = '#667eea';
-      addSubcardBtn.style.color = '#fff';
-      addSubcardBtn.style.border = 'none';
-      addSubcardBtn.style.borderRadius = '5px';
-      addSubcardBtn.style.cursor = 'pointer';
-      addSubcardBtn.onclick = (e) => {
-        e.stopPropagation();
-        const newSubcard = {
-          id: `card-${Date.now()}-${Math.random()}`,
-          question: 'New Subcard',
-          answer: 'Subcard answer',
-          type: 'subcard'
-        };
-        card.subcards.push(newSubcard);
-        saveCards();
-        renderCards();
-      };
-      editContainer.appendChild(addSubcardBtn);
-      
-      cardInner.appendChild(editContainer);
-    }
-    
-    /******************************
-     * Adding New Cards / Notes   *
-     ******************************/
-    function addNewCard() {
-      const categoryInput = document.getElementById('category');
-      const questionInput = document.getElementById('question');
-      const answerInput = document.getElementById('answer');
-      const category = categoryInput.value.trim();
-      const question = questionInput.value.trim();
-      const answer = answerInput.value.trim();
-      if (question && answer) {
-        currentCards.push({
-          id: `card-${Date.now()}-${Math.random()}`,
-          category,
-          question,
-          answer,
-          type: "card"
-        });
-        saveCards();
-        renderCards();
-        categoryInput.value = '';
-        questionInput.value = '';
-        answerInput.value = '';
-      }
-    }
-    
-    function addNewNote() {
-      const categoryInput = document.getElementById('category');
-      const questionInput = document.getElementById('question');
-      const answerInput = document.getElementById('answer');
-      const category = categoryInput.value.trim();
-      const question = questionInput.value.trim();
-      const answer = answerInput.value.trim();
-      if (question && answer) {
-        currentCards.push({
-          id: `card-${Date.now()}-${Math.random()}`,
-          category,
-          question,
-          answer,
-          type: "note"
-        });
-        saveCards();
-        renderCards();
-        categoryInput.value = '';
-        questionInput.value = '';
-        answerInput.value = '';
-      }
-    }
-    
-    function shuffleCards() {
-      for (let i = currentCards.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [currentCards[i], currentCards[j]] = [currentCards[j], currentCards[i]];
-      }
-      saveCards();
-      renderCards();
-    }
-    
-    window.onload = loadCards;
-    
-    /* ===== New JS for Side Panel Functionality ===== */
-    document.getElementById('sidePanelToggle').onclick = function() {
-      document.getElementById('sidePanel').classList.add('open');
+  };
+  
+  cardElement.appendChild(deleteBtn);
+  cardElement.appendChild(editBtn);
+  cardElement.appendChild(cardInner);
+  
+  // If the card has subcards, add a button to open the subcards modal.
+  if (card.subcards && card.subcards.length > 0) {
+    const toggleSubcardsBtn = document.createElement('button');
+    toggleSubcardsBtn.textContent = 'Show Subcards';
+    toggleSubcardsBtn.style.marginTop = '10px';
+    toggleSubcardsBtn.style.padding = '6px 12px';
+    toggleSubcardsBtn.style.background = '#667eea';
+    toggleSubcardsBtn.style.color = '#fff';
+    toggleSubcardsBtn.style.border = 'none';
+    toggleSubcardsBtn.style.borderRadius = '5px';
+    toggleSubcardsBtn.style.cursor = 'pointer';
+    toggleSubcardsBtn.onclick = (e) => {
+      e.stopPropagation();
+      openSubcardsModal(card);
     };
-    
-    document.getElementById('closeSidePanel').onclick = function() {
-      document.getElementById('sidePanel').classList.remove('open');
-      // Optionally, you can reset the panel content back to the options
-      document.querySelector('.side-panel-content').innerHTML = '<button id="inkToLatexBtn">Ink to LaTeX</button>';
-      // Reattach the event listener for Ink to LaTeX
-      attachInkToLatexListener();
+    cardElement.appendChild(toggleSubcardsBtn);
+  }
+  
+  // If the card is a note, add an Expand button
+  if (card.type === "note") {
+    const expandBtn = document.createElement('button');
+    expandBtn.textContent = 'Expand';
+    expandBtn.style.marginTop = '10px';
+    expandBtn.style.padding = '6px 12px';
+    expandBtn.style.background = '#28a745';
+    expandBtn.style.color = '#fff';
+    expandBtn.style.border = 'none';
+    expandBtn.style.borderRadius = '5px';
+    expandBtn.style.cursor = 'pointer';
+    expandBtn.onclick = (e) => {
+      e.stopPropagation();
+      openNoteModal(card);
     };
-    
-    function attachInkToLatexListener() {
-      document.getElementById('inkToLatexBtn').onclick = function() {
-        // For example, load the ink-to-latex HTML program in an iframe
-        document.querySelector('.side-panel-content').innerHTML = '<iframe src="ink-to-latex.html" style="width:100%; height:calc(100% - 40px); border:none;"></iframe>';
-      };
-    }
-    
-   function attachInkToLatexListener() {
+    cardElement.appendChild(expandBtn);
+  }
+  
+  return cardElement;
+}
+
+/******************************
+ * Edit Mode Functions        *
+ ******************************/
+function enableSubcardEditMode(subcardElement, subcard, parentCard) {
+  subcardElement.classList.add('editing');
+  const subcardInner = subcardElement.querySelector('.flashcard-inner');
+  const originalContent = subcardInner.innerHTML;
+  subcardInner.innerHTML = '';
+  
+  const editContainer = document.createElement('div');
+  editContainer.className = 'edit-mode';
+  
+  const questionInput = document.createElement('input');
+  questionInput.type = 'text';
+  questionInput.value = subcard.question;
+  questionInput.placeholder = 'Subcard Question';
+  
+  const answerInput = document.createElement('textarea');
+  answerInput.rows = 4;
+  answerInput.value = subcard.answer;
+  answerInput.placeholder = 'Subcard Answer (LaTeX supported)';
+  
+  const saveBtn = document.createElement('button');
+  saveBtn.className = 'save-btn';
+  saveBtn.textContent = 'Save';
+  saveBtn.onclick = (e) => {
+    e.stopPropagation();
+    subcard.question = questionInput.value.trim();
+    subcard.answer = answerInput.value.trim();
+    saveCards();
+    renderCards();
+  };
+  
+  const cancelBtn = document.createElement('button');
+  cancelBtn.className = 'cancel-btn';
+  cancelBtn.textContent = 'Cancel';
+  cancelBtn.onclick = (e) => {
+    e.stopPropagation();
+    subcardInner.innerHTML = originalContent;
+    subcardElement.classList.remove('editing');
+  };
+  
+  editContainer.appendChild(questionInput);
+  editContainer.appendChild(answerInput);
+  editContainer.appendChild(saveBtn);
+  editContainer.appendChild(cancelBtn);
+  subcardInner.appendChild(editContainer);
+}
+
+function enableEditMode(cardElement, card) {
+  cardElement.classList.add('editing');
+  const cardInner = cardElement.querySelector('.flashcard-inner');
+  const originalContent = cardInner.innerHTML;
+  cardInner.innerHTML = '';
+  
+  const editContainer = document.createElement('div');
+  editContainer.className = 'edit-mode';
+  
+  const categoryInput = document.createElement('input');
+  categoryInput.type = 'text';
+  categoryInput.value = card.category || '';
+  categoryInput.placeholder = 'Category';
+  categoryInput.setAttribute('list', 'categoryList');
+  
+  const questionInput = document.createElement('input');
+  questionInput.type = 'text';
+  questionInput.value = card.question;
+  questionInput.placeholder = 'Question / Title';
+  
+  const answerInput = document.createElement('textarea');
+  answerInput.rows = card.type === "note" ? 6 : 4;
+  answerInput.value = card.answer;
+  answerInput.placeholder = 'Answer or note content (LaTeX supported)';
+  
+  const saveBtn = document.createElement('button');
+  saveBtn.className = 'save-btn';
+  saveBtn.textContent = 'Save';
+  saveBtn.onclick = (e) => {
+    e.stopPropagation();
+    card.category = categoryInput.value.trim();
+    card.question = questionInput.value.trim();
+    card.answer = answerInput.value.trim();
+    saveCards();
+    renderCards();
+  };
+  
+  const cancelBtn = document.createElement('button');
+  cancelBtn.className = 'cancel-btn';
+  cancelBtn.textContent = 'Cancel';
+  cancelBtn.onclick = (e) => {
+    e.stopPropagation();
+    cardInner.innerHTML = originalContent;
+    cardElement.classList.remove('editing');
+  };
+  
+  editContainer.appendChild(categoryInput);
+  editContainer.appendChild(questionInput);
+  editContainer.appendChild(answerInput);
+  editContainer.appendChild(saveBtn);
+  editContainer.appendChild(cancelBtn);
+  
+  // Subcards editing section
+  const subcardsLabel = document.createElement('div');
+  subcardsLabel.textContent = 'Subcards:';
+  subcardsLabel.style.fontWeight = 'bold';
+  subcardsLabel.style.marginTop = '15px';
+  editContainer.appendChild(subcardsLabel);
+  
+  const subcardsSection = document.createElement('div');
+  subcardsSection.className = 'subcards-container';
+  if (!card.subcards) card.subcards = [];
+  card.subcards.forEach(subcard => {
+    subcardsSection.appendChild(createSubcard(subcard, card));
+  });
+  editContainer.appendChild(subcardsSection);
+  
+  const addSubcardBtn = document.createElement('button');
+  addSubcardBtn.textContent = 'Add Subcard';
+  addSubcardBtn.style.marginTop = '10px';
+  addSubcardBtn.style.padding = '6px 12px';
+  addSubcardBtn.style.background = '#667eea';
+  addSubcardBtn.style.color = '#fff';
+  addSubcardBtn.style.border = 'none';
+  addSubcardBtn.style.borderRadius = '5px';
+  addSubcardBtn.style.cursor = 'pointer';
+  addSubcardBtn.onclick = (e) => {
+    e.stopPropagation();
+    const newSubcard = {
+      id: `card-${Date.now()}-${Math.random()}`,
+      question: 'New Subcard',
+      answer: 'Subcard answer',
+      type: 'subcard'
+    };
+    card.subcards.push(newSubcard);
+    saveCards();
+    renderCards();
+  };
+  editContainer.appendChild(addSubcardBtn);
+  
+  cardInner.appendChild(editContainer);
+}
+
+/******************************
+ * Adding New Cards / Notes   *
+ ******************************/
+function addNewCard() {
+  const categoryInput = document.getElementById('category');
+  const questionInput = document.getElementById('question');
+  const answerInput = document.getElementById('answer');
+  const category = categoryInput.value.trim();
+  const question = questionInput.value.trim();
+  const answer = answerInput.value.trim();
+  if (question && answer) {
+    currentCards.push({
+      id: `card-${Date.now()}-${Math.random()}`,
+      category,
+      question,
+      answer,
+      type: "card"
+    });
+    saveCards();
+    renderCards();
+    categoryInput.value = '';
+    questionInput.value = '';
+    answerInput.value = '';
+  }
+}
+
+function addNewNote() {
+  const categoryInput = document.getElementById('category');
+  const questionInput = document.getElementById('question');
+  const answerInput = document.getElementById('answer');
+  const category = categoryInput.value.trim();
+  const question = questionInput.value.trim();
+  const answer = answerInput.value.trim();
+  if (question && answer) {
+    currentCards.push({
+      id: `card-${Date.now()}-${Math.random()}`,
+      category,
+      question,
+      answer,
+      type: "note"
+    });
+    saveCards();
+    renderCards();
+    categoryInput.value = '';
+    questionInput.value = '';
+    answerInput.value = '';
+  }
+}
+
+function shuffleCards() {
+  for (let i = currentCards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [currentCards[i], currentCards[j]] = [currentCards[j], currentCards[i]];
+  }
+  saveCards();
+  renderCards();
+}
+
+window.onload = loadCards;
+
+/* ===== New JS for Side Panel Functionality ===== */
+document.getElementById('sidePanelToggle').onclick = function() {
+  document.getElementById('sidePanel').classList.add('open');
+};
+
+document.getElementById('closeSidePanel').onclick = function() {
+  document.getElementById('sidePanel').classList.remove('open');
+  // Optionally, you can reset the panel content back to the options
+  document.querySelector('.side-panel-content').innerHTML = '<button id="inkToLatexBtn">Ink to LaTeX</button>';
+  // Reattach the event listener for Ink to LaTeX
+  attachInkToLatexListener();
+};
+
+function attachInkToLatexListener() {
   document.getElementById('inkToLatexBtn').onclick = function() {
     // Create a full-screen overlay if it doesn't exist
     let fullscreenOverlay = document.getElementById('fullscreenOverlay');
@@ -1206,6 +1348,98 @@
 // Attach the listener on initial load
 attachInkToLatexListener();
 
+// Add these new JavaScript functions for practice mode
+let practiceCards = [];
+let currentCardIndex = 0;
+
+function startPracticeMode() {
+  // Filter out flashcards only (exclude notes)
+  const flashcards = currentCards.filter(card => card.type === "card");
+  if (flashcards.length === 0) return alert('No flashcards to practice!');
+  document.getElementById('practiceDeck').style.display = 'flex';
+  document.querySelector('.flashcard-container').style.display = 'none';
+  document.querySelector('.controls').style.display = 'none';
+  initializePracticeDeck(flashcards);
+}
+
+function exitPracticeMode() {
+  document.getElementById('practiceDeck').style.display = 'none';
+  document.querySelector('.flashcard-container').style.display = 'flex';
+  document.querySelector('.controls').style.display = 'flex';
+}
+
+function initializePracticeDeck(flashcards) {
+  const container = document.getElementById('practiceDeckContainer');
+  container.innerHTML = '';
+  practiceCards = [];
+  
+  flashcards.forEach((card, index) => {
+    const cardElement = document.createElement('div');
+    cardElement.className = 'practice-card';
+    cardElement.innerHTML = `
+      <div class="practice-card-face practice-card-front">
+        <h2>${card.category || 'General'}</h2>
+        <p>${card.question}</p>
+      </div>
+      <div class="practice-card-face practice-card-back">
+        ${card.answer}
+      </div>
+    `;
+    
+    cardElement.addEventListener('click', () => {
+      cardElement.classList.toggle('flipped');
+      updatePracticeDeck(); // Update the transform to include rotation when flipped
+      // Re-render MathJax after flip
+      setTimeout(() => MathJax.typesetPromise(), 500);
+    });
+    
+    practiceCards.push(cardElement);
+    container.appendChild(cardElement);
+  });
+
+  currentCardIndex = 0;
+  updatePracticeDeck();
+  MathJax.typesetPromise(); // Render initial LaTeX
+}
+
+function updatePracticeDeck() {
+  practiceCards.forEach((card, index) => {
+    const offset = (index - currentCardIndex) * 50;
+    const scale = 1 - Math.abs(index - currentCardIndex) * 0.08;
+    // Build the transform string, appending rotation if the card is flipped
+    let transformStr = `translateX(${offset}px) scale(${scale})`;
+    if (card.classList.contains('flipped')) {
+      transformStr += ' rotateY(180deg)';
+    }
+    card.style.transform = transformStr;
+    card.style.zIndex = practiceCards.length - Math.abs(index - currentCardIndex);
+    card.classList.toggle('active', index === currentCardIndex);
+  });
+}
+
+function showNextCard() {
+  currentCardIndex = (currentCardIndex + 1) % practiceCards.length;
+  updatePracticeDeck();
+}
+
+function showPrevCard() {
+  currentCardIndex = (currentCardIndex - 1 + practiceCards.length) % practiceCards.length;
+  updatePracticeDeck();
+}
+
+// Add touch support for practice deck
+let touchStartX = 0;
+document.getElementById('practiceDeckContainer').addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+});
+document.getElementById('practiceDeckContainer').addEventListener('touchend', e => {
+  const touchEndX = e.changedTouches[0].clientX;
+  const diff = touchStartX - touchEndX;
+  if (Math.abs(diff) > 50) {
+    if (diff > 0) showNextCard();
+    else showPrevCard();
+  }
+});
 
   </script>
   
