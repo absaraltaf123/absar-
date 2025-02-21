@@ -545,7 +545,7 @@
   margin: auto;      /* Centers horizontally */
   perspective: 2000px;
   overflow: visible;
-  transform: translateY(-100px) scale(0.98);
+  transform: translateY(-100px)   translatex(50px)scale(0.98);
   transition: transform 0.5s ease;
 }
 
@@ -1480,9 +1480,9 @@ attachInkToLatexListener();
       if (card.classList.contains('flipped')) {
         // Apply a left or right flip based on the assigned class
         if (card.classList.contains('flip-left')) {
-          transformStr += ' rotateY(-180deg)';
+          transformStr += ' rotateY(-180deg) rotateX(-3deg) ';
         } else {
-          transformStr += ' rotateY(180deg)';
+          transformStr += ' rotateY(180deg) rotateX(3deg)';
         }
       }
       card.style.transform = transformStr;
@@ -1493,9 +1493,10 @@ attachInkToLatexListener();
       if (isMobileMode) {
         card.style.width = '90%';
         card.style.margin = '10px auto';
-        card.style.fontSize = '1.2em';
+        card.style.fontSize = '1.5em';
       } else {
-        card.style.width = '';
+        card.style.width = '50%';
+	card.style.hight = '90%'
         card.style.margin = '';
         card.style.fontSize = '';
       }
