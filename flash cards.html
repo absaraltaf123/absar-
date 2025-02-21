@@ -521,92 +521,113 @@
   }
 
 .practice-deck-wrapper {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(13, 27, 42, 0.9); /* #0d1b2a with opacity */
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 4000;
-      backdrop-filter: blur(10px);
-    }
-    .practice-deck-wrapper.active {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(13, 27, 42, 0.9); /* #0d1b2a with opacity */
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 4000;
+  backdrop-filter: blur(10px);
+}
+.practice-deck-wrapper.active {
   opacity: 1;
   pointer-events: auto;
 }
-   .practice-deck {
+.practice-deck {
   position: relative;
   height: 450px;
-  width: 110%;
+  width: 100%;       /* Full width of the wrapper */
   max-width: 700px;
+  margin: auto;      /* Centers horizontally */
   perspective: 2000px;
   overflow: visible;
-  transform: scale(0.98);
+  transform: translateY(-100px) scale(0.98);
   transition: transform 0.5s ease;
 }
-    
-    /* ==========================================================================
-       Flashcard Styles
-    ========================================================================== */
-    .practice-card {
-      position: absolute;
-      width: 320px;
-      height: 450px;
-      transform-style: preserve-3d;
-      transition: transform 0.6s ease, box-shadow 0.6s ease;
-      border-radius: 20px;
-      background: linear-gradient(145deg, #1b263b, #415a77);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-      cursor: pointer;
-      outline: none;
-    }
-    
-    .practice-card.active {
-      z-index: 10;
-      transform: translateZ(50px) scale(1.05);
-    }
-    
-    .practice-card-face {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      border-radius: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 30px;
-      text-align: center;
-    }
-    
-    .practice-card-front {
-      background: linear-gradient(145deg, #778da9, #e0e1dd);
-      color: #0d1b2a;
-      font-size: 1.5rem;
-      font-family: 'Roboto Slab', serif;
-    }
-    
-    .practice-card-back {
-      background: linear-gradient(145deg, #415a77, #1b263b);
-      color: #e0e1dd;
-      transform: rotateY(180deg);
-      font-size: 1.3rem;
-      font-family: 'Roboto Slab', serif;
-    }
-    
-    /* ==========================================================================
-       Controls & Close Button
-    ========================================================================== */
-    .practice-controls {
-      position: absolute;
-      bottom: 20px;
-      display: flex;
-      gap: 20px;
-    }
+
+/* Toggle Button - modified to be fixed at top right */
+#modeSwitchBtn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 5000;
+  margin-bottom: 20px;
+  padding: 10px 15px;
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+#modeSwitchBtn:hover {
+  background-color: #218838;
+} 
+
+/* ==========================================================================
+   Flashcard Styles
+========================================================================== */
+.practice-card {
+  position: absolute;
+  width: 320px;
+  height: 610px;
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease, box-shadow 0.6s ease;
+  border-radius: 20px;
+  background: linear-gradient(145deg, #1b263b, #415a77);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  outline: none;
+}
+
+.practice-card.active {
+  z-index: 10;
+  transform: translateZ(50px) scale(1.05);
+}
+
+.practice-card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  text-align: center;
+}
+
+.practice-card-front {
+  background: linear-gradient(145deg, #778da9, #e0e1dd);
+  color: #0d1b2a;
+  font-size: 1.5rem;
+  font-family: 'Roboto Slab', serif;
+}
+
+.practice-card-back {
+  background: linear-gradient(145deg, #415a77, #1b263b);
+  color: #e0e1dd;
+  transform: rotateY(180deg);
+  font-size: 1.3rem;
+  font-family: 'Roboto Slab', serif;
+}
+
+/* ==========================================================================
+   Controls & Close Button
+========================================================================== */
+.practice-controls {
+  position: absolute;
+  bottom: 20px;
+  display: flex;
+  gap: 20px;
+}
 .practice-controls .control-btn {
   padding: 12px 25px;
   font-size: 1rem;
@@ -618,19 +639,19 @@
   cursor: pointer;
   transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
 }
-    
-    .practice-controls .control-btn:hover {
-      background: #e0e1dd;
-      transform: translateY(-5px);
-      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-    }
-    
-    .practice-controls .control-btn:focus {
-      outline: 2px solid #e0e1dd;
-      outline-offset: 2px;
-    }
-    
- .practice-close-btn {
+
+.practice-controls .control-btn:hover {
+  background: #e0e1dd;
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+}
+
+.practice-controls .control-btn:focus {
+  outline: 2px solid #e0e1dd;
+  outline-offset: 2px;
+}
+
+.practice-close-btn {
   position: absolute;
   top: 20px;
   right: 20px;
@@ -644,22 +665,23 @@
   cursor: pointer;
   transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
 }
-    
-  .practice-close-btn:hover {
+
+.practice-close-btn:hover {
   background: #ff6b81;
   transform: translateY(-5px);
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
 }
-    
-    /* ==========================================================================
-       Responsive Adjustments
-    ========================================================================== */
-    @media (max-width: 600px) {
-      .practice-card {
-        width: 280px;
-        height: 380px;
-      }
-    } 
+
+/* ==========================================================================
+   Responsive Adjustments
+========================================================================== */
+@media (max-width: 200px) {
+  .practice-card {
+    width: 90%;
+    height: 100; /* Makes the card fill the entire viewport height */
+  }
+}
+
  </style>
 </head>
 <body>
@@ -1348,100 +1370,162 @@ function attachInkToLatexListener() {
 // Attach the listener on initial load
 attachInkToLatexListener();
 
-// Add these new JavaScript functions for practice mode
-let practiceCards = [];
-let currentCardIndex = 0;
+ // Global variables for practice mode
+  let practiceCards = [];
+  let currentCardIndex = 0;
+  let isMobileMode = false;
 
-function startPracticeMode() {
-  // Filter out flashcards only (exclude notes)
-  const flashcards = currentCards.filter(card => card.type === "card");
-  if (flashcards.length === 0) return alert('No flashcards to practice!');
-  document.getElementById('practiceDeck').style.display = 'flex';
-  document.querySelector('.flashcard-container').style.display = 'none';
-  document.querySelector('.controls').style.display = 'none';
-  initializePracticeDeck(flashcards);
-}
-
-function exitPracticeMode() {
-  document.getElementById('practiceDeck').style.display = 'none';
-  document.querySelector('.flashcard-container').style.display = 'flex';
-  document.querySelector('.controls').style.display = 'flex';
-}
-
-function initializePracticeDeck(flashcards) {
-  const container = document.getElementById('practiceDeckContainer');
-  container.innerHTML = '';
-  practiceCards = [];
-  
-  flashcards.forEach((card, index) => {
-    const cardElement = document.createElement('div');
-    cardElement.className = 'practice-card';
-    cardElement.innerHTML = `
-      <div class="practice-card-face practice-card-front">
-        <h2>${card.category || 'General'}</h2>
-        <p>${card.question}</p>
-      </div>
-      <div class="practice-card-face practice-card-back">
-        ${card.answer}
-      </div>
-    `;
-    
-    cardElement.addEventListener('click', () => {
-      cardElement.classList.toggle('flipped');
-      updatePracticeDeck(); // Update the transform to include rotation when flipped
-      // Re-render MathJax after flip
-      setTimeout(() => MathJax.typesetPromise(), 500);
-    });
-    
-    practiceCards.push(cardElement);
-    container.appendChild(cardElement);
-  });
-
-  currentCardIndex = 0;
-  updatePracticeDeck();
-  MathJax.typesetPromise(); // Render initial LaTeX
-}
-
-function updatePracticeDeck() {
-  practiceCards.forEach((card, index) => {
-    const offset = (index - currentCardIndex) * 50;
-    const scale = 1 - Math.abs(index - currentCardIndex) * 0.08;
-    // Build the transform string, appending rotation if the card is flipped
-    let transformStr = `translateX(${offset}px) scale(${scale})`;
-    if (card.classList.contains('flipped')) {
-      transformStr += ' rotateY(180deg)';
+  // Toggle mobile mode function
+  function toggleMobileMode() {
+    isMobileMode = !isMobileMode;
+    const switchBtn = document.getElementById('modeSwitchBtn');
+    if (switchBtn) {
+      switchBtn.textContent = isMobileMode ? 'Switch to Desktop Mode' : 'Switch to Mobile Mode';
     }
-    card.style.transform = transformStr;
-    card.style.zIndex = practiceCards.length - Math.abs(index - currentCardIndex);
-    card.classList.toggle('active', index === currentCardIndex);
-  });
-}
-
-function showNextCard() {
-  currentCardIndex = (currentCardIndex + 1) % practiceCards.length;
-  updatePracticeDeck();
-}
-
-function showPrevCard() {
-  currentCardIndex = (currentCardIndex - 1 + practiceCards.length) % practiceCards.length;
-  updatePracticeDeck();
-}
-
-// Add touch support for practice deck
-let touchStartX = 0;
-document.getElementById('practiceDeckContainer').addEventListener('touchstart', e => {
-  touchStartX = e.touches[0].clientX;
-});
-document.getElementById('practiceDeckContainer').addEventListener('touchend', e => {
-  const touchEndX = e.changedTouches[0].clientX;
-  const diff = touchStartX - touchEndX;
-  if (Math.abs(diff) > 50) {
-    if (diff > 0) showNextCard();
-    else showPrevCard();
+    updatePracticeDeck();
   }
-});
 
-  </script>
+  // Start practice mode function
+  function startPracticeMode() {
+    // Filter out only flashcards (exclude notes)
+    const flashcards = currentCards.filter(card => card.type === "card");
+    if (flashcards.length === 0) return alert('No flashcards to practice!');
+
+    // Show practice deck and hide other elements
+    document.getElementById('practiceDeck').style.display = 'flex';
+    document.querySelector('.flashcard-container').style.display = 'none';
+    document.querySelector('.controls').style.display = 'none';
+
+    // Create mode switch button if not already created
+    if (!document.getElementById('modeSwitchBtn')) {
+      const modeSwitchBtn = document.createElement('button');
+      modeSwitchBtn.id = 'modeSwitchBtn';
+      modeSwitchBtn.style.marginBottom = '20px';
+      modeSwitchBtn.style.padding = '10px 15px';
+      modeSwitchBtn.style.background = '#28a745';
+      modeSwitchBtn.style.color = '#fff';
+      modeSwitchBtn.style.border = 'none';
+      modeSwitchBtn.style.borderRadius = '5px';
+      modeSwitchBtn.style.cursor = 'pointer';
+      modeSwitchBtn.textContent = 'Switch to Mobile Mode';
+      modeSwitchBtn.onclick = toggleMobileMode;
+      document.getElementById('practiceDeck').appendChild(modeSwitchBtn);
+    }
+    
+    initializePracticeDeck(flashcards);
+  }
+
+  // Exit practice mode function
+  function exitPracticeMode() {
+    document.getElementById('practiceDeck').style.display = 'none';
+    document.querySelector('.flashcard-container').style.display = 'flex';
+    document.querySelector('.controls').style.display = 'flex';
+  }
+
+  // Initialize the practice deck with flashcards
+  function initializePracticeDeck(flashcards) {
+    const container = document.getElementById('practiceDeckContainer');
+    container.innerHTML = '';
+    practiceCards = [];
+
+    flashcards.forEach((card, index) => {
+      const cardElement = document.createElement('div');
+      cardElement.className = 'practice-card';
+      cardElement.innerHTML = `
+        <div class="practice-card-face practice-card-front">
+          <h2>${card.category || 'General'}</h2>
+          <p>${card.question}</p>
+        </div>
+        <div class="practice-card-face practice-card-back">
+          ${card.answer}
+        </div>
+      `;
+
+      // Add event listener to determine flip direction based on click position
+      cardElement.addEventListener('click', (e) => {
+        const rect = cardElement.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const halfWidth = rect.width / 2;
+        // Remove any previous flip-direction classes
+        cardElement.classList.remove('flip-left', 'flip-right');
+        // If clicked on the left half, mark for left flip; otherwise right flip
+        if (clickX < halfWidth) {
+          cardElement.classList.add('flip-left');
+        } else {
+          cardElement.classList.add('flip-right');
+        }
+        cardElement.classList.toggle('flipped');
+        updatePracticeDeck();
+        setTimeout(() => {
+          if (window.MathJax) MathJax.typesetPromise();
+        }, 500);
+      });
+
+      practiceCards.push(cardElement);
+      container.appendChild(cardElement);
+    });
+
+    currentCardIndex = 0;
+    updatePracticeDeck();
+    if (window.MathJax) MathJax.typesetPromise();
+  }
+
+  // Update the deck's display and transform properties
+  function updatePracticeDeck() {
+    practiceCards.forEach((card, index) => {
+      const diffIndex = index - currentCardIndex;
+      const offset = isMobileMode ? diffIndex * 30 : diffIndex * 50;
+      const scale = isMobileMode ? 1 - Math.abs(diffIndex) * 0.05 : 1 - Math.abs(diffIndex) * 0.08;
+      let transformStr = `translateX(${offset}px) scale(${scale})`;
+      if (card.classList.contains('flipped')) {
+        // Apply a left or right flip based on the assigned class
+        if (card.classList.contains('flip-left')) {
+          transformStr += ' rotateY(-180deg)';
+        } else {
+          transformStr += ' rotateY(180deg)';
+        }
+      }
+      card.style.transform = transformStr;
+      card.style.zIndex = practiceCards.length - Math.abs(diffIndex);
+      card.classList.toggle('active', index === currentCardIndex);
+
+      // Adjust card styling for mobile mode if needed
+      if (isMobileMode) {
+        card.style.width = '90%';
+        card.style.margin = '10px auto';
+        card.style.fontSize = '1.2em';
+      } else {
+        card.style.width = '';
+        card.style.margin = '';
+        card.style.fontSize = '';
+      }
+    });
+  }
+
+  // Navigation functions for next and previous cards
+  function showNextCard() {
+    currentCardIndex = (currentCardIndex + 1) % practiceCards.length;
+    updatePracticeDeck();
+  }
+
+  function showPrevCard() {
+    currentCardIndex = (currentCardIndex - 1 + practiceCards.length) % practiceCards.length;
+    updatePracticeDeck();
+  }
+
+  // Touch support for swipe navigation in practice deck
+  let touchStartX = 0;
+  document.getElementById('practiceDeckContainer').addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+  });
+  document.getElementById('practiceDeckContainer').addEventListener('touchend', e => {
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) showNextCard();
+      else showPrevCard();
+    }
+  });  </script>
   
   <footer>
     &copy; 2025 <span>Absar altaf UNDER indian copyright act 1974</span>
