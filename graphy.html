@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enhanced Graph Creator with Categorized Options</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Chart.js and plugins -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1.2.1/dist/chartjs-plugin-zoom.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.1.0/dist/chartjs-plugin-annotation.min.js"></script>
+    <!-- Brython -->
+    <script src="https://cdn.jsdelivr.net/npm/brython@3.10.5/brython.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/brython@3.10.5/brython_stdlib.js"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: linear-gradient(160deg, #4c2c8c, #2c1f3a 60%);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue",
+          Arial, sans-serif;
+        color: #fff;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .container {
+        display: flex;
+        width: 90%;
+        height: 90%;
+        max-width: 1200px;
+        border-radius: 20px;
+        overflow: hidden;
+        padding: 5px;
+        background: linear-gradient(160deg, #9e86ff, #4c2c8c);
+        outline: 0.1px solid rgba(255, 255, 255, 1);
+        outline-offset: 1px;
+      }
+      .content-wrapper {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        background: #181818;
+        border-radius: 18px;
+        overflow: hidden;
+      }
+      .graph-panel {
+        flex: 2.3;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        background: #181818;
+      }
+      .graph-header {
+        padding: 17px;
+        font-weight: bold;
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.08);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        border-top-left-radius: 17px;
+      }
+      .graph-content {
+        flex: 1;
+        padding: 16px;
+        overflow-y: auto;
+      }
+      .input-panel {
+        flex: 1;
+        background: #1e1e1e;
+        padding: 18px;
+        overflow-y: auto;
+        font-family: "Fira Code", monospace;
+        font-size: 14px;
+        line-height: 1.5;
+        position: relative;
+      }
+      .input-header {
+        margin-bottom: 13px;
+        color: #9e86ff;
+        font-weight: bold;
+      }
+      .toggle-switch {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+      .toggle-switch input {
+        display: none;
+      }
+      .toggle-switch label {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 30px;
+        background: #ccc;
+        border-radius: 30px;
+        cursor: pointer;
+        margin-right: 1rem;
+        transition: background 0.3s;
+      }
+      .toggle-switch label::after {
+        content: "";
+        position: absolute;
+        width: 26px;
+        height: 26px;
+        top: 2px;
+        left: 2px;
+        background: #fff;
+        border-radius: 50%;
+        transition: transform 0.3s;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+      .toggle-switch input:checked + label {
+        background: #4caf50;
+      }
+      .toggle-switch input:checked + label::after {
+        transform: translateX(30px);
+      }
+      .toggle-switch span {
+        font-weight: bold;
+        font-size: 16px;
+        color: #fff;
+      }
+      .panel {
+        display: none;
+        flex-direction: column;
+      }
+      .panel.active {
+        display: flex;
+      }
+      .form-label {
+        margin-bottom: 0.5rem;
+        display: block;
+        color: #fff;
+      }
+      .form-control {
+        width: 100%;
+        padding: 10px;
+        border-radius: 4px;
+        background-color: #2a2a2a;
+        border: 1px solid #444;
+        color: #fff;
+        outline: none;
+        margin-bottom: 1rem;
+      }
+      .btn {
+        border: none;
+        padding: 12px 20px;
+        font-size: 16px;
+        border-radius: 8px;
+        color: #fff;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        align-self: center;
+        margin-top: 1rem;
+      }
+      .btn-primary {
+        background: linear-gradient(90deg, #4caf50, #81c784);
+      }
+      .btn-primary:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 20px rgba(76, 175, 80, 0.6);
+      }
+      .btn-secondary {
+        background: linear-gradient(90deg, #ff8a80, #ff5252);
+      }
+      .btn-secondary:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 20px rgba(255, 82, 82, 0.6);
+      }
+      canvas {
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 11px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+      /* Accordion styles for higher contrast on dark backgrounds */
+      .accordion-button {
+        background-color: #343a40;
+        color: #fff;
+      }
+      .accordion-button:not(.collapsed) {
+        background-color: #495057;
+        color: #fff;
+      }
+      .accordion-body {
+        background-color: #495057;
+        color: #fff;
+      }
+      /* Position the More Options at the bottom of the input panel */
+      #moreOptionsContainer {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body onload="brython()">
+    <div class="container">
+      <div class="content-wrapper">
+        <!-- Graph Display Panel -->
+        <div class="graph-panel">
+          <div class="graph-header">Graph Display</div>
+          <div class="graph-content">
+            <canvas id="myChart"></canvas>
+          </div>
+        </div>
+        <!-- Input Panel -->
+        <div class="input-panel">
+          <div class="input-header">Graph Creator</div>
+          <!-- Toggle Switch for Data/Equation -->
+          <div class="toggle-switch">
+            <input type="checkbox" id="modeToggle" />
+            <label for="modeToggle"></label>
+            <span id="modeLabel">Data</span>
+          </div>
+          <!-- Data Entry Panel (visible by default) -->
+          <div id="dataPanel" class="panel active">
+            <h2>Enter Data</h2>
+            <div class="mb-3">
+              <label for="xValues" class="form-label">X-axis values:</label>
+              <input type="text" id="xValues" class="form-control" placeholder="e.g. 1, 2, 3, 4 or A, B, C, D" />
+            </div>
+            <div class="mb-3">
+              <label for="yValues" class="form-label">Y-axis values:</label>
+              <input type="text" id="yValues" class="form-control" placeholder="e.g. 10, 20, 30, 40 or W, X, Y, Z" />
+            </div>
+            <button id="createBtn" class="btn btn-primary">Create Graph</button>
+            <button id="clearDataBtn" class="btn btn-secondary">Clear Graph</button>
+          </div>
+          <!-- Equation Entry Panel (hidden by default) -->
+          <div id="equationPanel" class="panel">
+            <h2>Enter Equation</h2>
+            <div class="mb-3">
+              <label for="equation" class="form-label">Equation (in terms of x):</label>
+              <input type="text" id="equation" class="form-control" placeholder="e.g. x**2 + 2*x + 1" />
+            </div>
+            <div class="mb-3">
+              <label for="startX" class="form-label">Start x:</label>
+              <input type="text" id="startX" class="form-control" placeholder="e.g. -10" />
+            </div>
+            <div class="mb-3">
+              <label for="endX" class="form-label">End x:</label>
+              <input type="text" id="endX" class="form-control" placeholder="e.g. 10" />
+            </div>
+            <button id="createEquationBtn" class="btn btn-primary">Create Graph</button>
+            <button id="clearEquationBtn" class="btn btn-secondary">Clear Graph</button>
+          </div>
+          <!-- More Options Container (only visible in Data mode) -->
+          <div id="moreOptionsContainer">
+            <div class="accordion" id="moreOptionsAccordion">
+              <!-- Customization Category -->
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="headingCustomization">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCustomization" aria-expanded="false" aria-controls="collapseCustomization">
+                    Customization
+                  </button>
+                </h2>
+                <div id="collapseCustomization" class="accordion-collapse collapse" aria-labelledby="headingCustomization" data-bs-parent="#moreOptionsAccordion">
+                  <div class="accordion-body">
+                    <!-- New dropdowns for axis data type selection -->
+                    <div class="mb-3">
+                      <label for="xAxisType" class="form-label">X Axis Data Type:</label>
+                      <select id="xAxisType" class="form-control">
+                        <option value="Numeric" selected>Numeric</option>
+                        <option value="Alphabetic">Alphabetic</option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="yAxisType" class="form-label">Y Axis Data Type:</label>
+                      <select id="yAxisType" class="form-control">
+                        <option value="Numeric" selected>Numeric</option>
+                        <option value="Alphabetic">Alphabetic</option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="chartType" class="form-label">Chart Type:</label>
+                      <select id="chartType" class="form-control">
+                        <option value="line" selected>Line</option>
+                        <option value="bar">Bar</option>
+                        <option value="scatter">Scatter</option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="chartTitle" class="form-label">Chart Title:</label>
+                      <input type="text" id="chartTitle" class="form-control" placeholder="Enter Chart Title" />
+                    </div>
+                    <div class="mb-3">
+                      <label for="xAxisLabel" class="form-label">X Axis Label:</label>
+                      <input type="text" id="xAxisLabel" class="form-control" placeholder="Enter X Axis Label" />
+                    </div>
+                    <div class="mb-3">
+                      <label for="yAxisLabel" class="form-label">Y Axis Label:</label>
+                      <input type="text" id="yAxisLabel" class="form-control" placeholder="Enter Y Axis Label" />
+                    </div>
+                    <div class="mb-3">
+                      <label for="datasetColor" class="form-label">Dataset Color:</label>
+                      <input type="color" id="datasetColor" class="form-control" value="#4caf50" />
+                    </div>
+                    <div class="mb-3">
+                      <label for="borderColor" class="form-label">Border Color:</label>
+                      <input type="color" id="borderColor" class="form-control" value="#4caf50" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- File Operations Category -->
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="headingFileOps">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFileOps" aria-expanded="false" aria-controls="collapseFileOps">
+                    File Operations
+                  </button>
+                </h2>
+                <div id="collapseFileOps" class="accordion-collapse collapse" aria-labelledby="headingFileOps" data-bs-parent="#moreOptionsAccordion">
+                  <div class="accordion-body">
+                    <div class="mb-3">
+                      <label for="dataFileInput" class="form-label">Import Data File (CSV/JSON):</label>
+                      <input type="file" id="dataFileInput" class="form-control" accept=".csv, .json" />
+                    </div>
+                    <div class="mb-3">
+                      <button id="exportBtn" class="btn btn-primary">Export Graph</button>
+                      <button id="resetZoomBtn" class="btn btn-secondary">Reset Zoom</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Analysis Tools Category -->
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="headingAnalysis">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAnalysis" aria-expanded="false" aria-controls="collapseAnalysis">
+                    Analysis Tools
+                  </button>
+                </h2>
+                <div id="collapseAnalysis" class="accordion-collapse collapse" aria-labelledby="headingAnalysis" data-bs-parent="#moreOptionsAccordion">
+                  <div class="accordion-body">
+                    <div class="mb-3">
+                      <button id="analyzeDataBtn" class="btn btn-primary">Analyze Data</button>
+                      <button id="addRegressionBtn" class="btn btn-secondary">Add Regression Line</button>
+                    </div>
+                    <div id="analysisResults" class="mb-3" style="background: #2a2a2a; padding: 10px; border-radius: 5px;"></div>
+                  </div>
+                </div>
+              </div>
+              <!-- Annotations Category -->
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="headingAnnotations">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAnnotations" aria-expanded="false" aria-controls="collapseAnnotations">
+                    Annotations
+                  </button>
+                </h2>
+                <div id="collapseAnnotations" class="accordion-collapse collapse" aria-labelledby="headingAnnotations" data-bs-parent="#moreOptionsAccordion">
+                  <div class="accordion-body">
+                    <div class="mb-3">
+                      <label for="annotationX" class="form-label">Annotation X:</label>
+                      <input type="text" id="annotationX" class="form-control" placeholder="Enter X value for annotation" />
+                    </div>
+                    <div class="mb-3">
+                      <label for="annotationLabel" class="form-label">Annotation Label:</label>
+                      <input type="text" id="annotationLabel" class="form-control" placeholder="Enter annotation label" />
+                    </div>
+                    <div class="mb-3">
+                      <button id="addAnnotationBtn" class="btn btn-primary">Add Annotation</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> <!-- End accordion -->
+          </div> <!-- End moreOptionsContainer -->
+        </div> <!-- End input-panel -->
+      </div> <!-- End content-wrapper -->
+    </div> <!-- End container -->
+
+    <!-- Brython Python Script -->
+    <script type="text/python">
+      from browser import document, alert, window
+      import math
+
+      # Utility function: destroy existing chart
+      def clear_chart():
+          try:
+              window.chart.destroy()
+          except Exception:
+              pass
+
+      # Build chart configuration using customization values
+      def build_chart_config(data_points, dataset_label):
+          chart_type = document["chartType"].value
+          chart_title = document["chartTitle"].value.strip()
+          x_axis_label = document["xAxisLabel"].value.strip()
+          y_axis_label = document["yAxisLabel"].value.strip()
+          dataset_color = document["datasetColor"].value
+          border_color = document["borderColor"].value
+          x_axis_type = document["xAxisType"].value
+          y_axis_type = document["yAxisType"].value
+
+          x_scale_type = "linear" if x_axis_type == "Numeric" else "category"
+          y_scale_type = "linear" if y_axis_type == "Numeric" else "category"
+
+          config = {
+              "type": chart_type,
+              "data": {
+                  "datasets": [{
+                      "label": dataset_label,
+                      "data": data_points,
+                      "backgroundColor": dataset_color,
+                      "borderColor": border_color,
+                      "borderWidth": 2,
+                      "pointRadius": 4 if dataset_label == "Data Points" else 0,
+                      "fill": False,
+                      "tension": 0.3
+                  }]
+              },
+              "options": {
+                  "scales": {
+                      "x": {
+                          "type": x_scale_type,
+                          "position": "bottom",
+                          "title": {
+                              "display": True if x_axis_label else False,
+                              "text": x_axis_label
+                          }
+                      },
+                      "y": {
+                          "type": y_scale_type,
+                          "title": {
+                              "display": True if y_axis_label else False,
+                              "text": y_axis_label
+                          }
+                      }
+                  },
+                  "plugins": {
+                      "legend": {"display": True},
+                      "title": {
+                          "display": True if chart_title else False,
+                          "text": chart_title
+                      },
+                      "zoom": {
+                          "zoom": {"enabled": True, "mode": "xy"},
+                          "pan": {"enabled": True, "mode": "xy"}
+                      },
+                      "annotation": {"annotations": {}}
+                  }
+              }
+          }
+          # If Y axis is alphabetic and X axis is numeric, use a horizontal layout
+          if y_axis_type == "Alphabetic" and x_axis_type == "Numeric":
+              config["options"]["indexAxis"] = "y"
+          return config
+
+      # Create graph from manual data input
+      def create_graph_data(event):
+          x_input = document["xValues"].value
+          y_input = document["yValues"].value
+          x_axis_type = document["xAxisType"].value
+          y_axis_type = document["yAxisType"].value
+
+          if x_axis_type == "Numeric":
+              try:
+                  x_values = [float(x.strip()) for x in x_input.split(',') if x.strip() != '']
+              except Exception:
+                  alert("Invalid input for X-axis. Please enter valid comma-separated numbers.")
+                  return
+          else:
+              x_values = [x.strip() for x in x_input.split(',') if x.strip() != '']
+
+          if y_axis_type == "Numeric":
+              try:
+                  y_values = [float(y.strip()) for y in y_input.split(',') if y.strip() != '']
+              except Exception:
+                  alert("Invalid input for Y-axis. Please enter valid comma-separated numbers.")
+                  return
+          else:
+              y_values = [y.strip() for y in y_input.split(',') if y.strip() != '']
+
+          if len(x_values) != len(y_values):
+              alert("The number of X and Y values must be the same.")
+              return
+
+          # Ensure at least one axis is numeric for proper plotting
+          if x_axis_type != "Numeric" and y_axis_type != "Numeric":
+              alert("At least one axis must be numeric for plotting.")
+              return
+
+          data_points = [{"x": x_values[i], "y": y_values[i]} for i in range(len(x_values))]
+          clear_chart()
+          ctx = document["myChart"].getContext("2d")
+          config = build_chart_config(data_points, "Data Points")
+          window.chart = window.Chart.new(ctx, config)
+          window.dataPoints = data_points
+
+      # Create graph from equation input
+      def create_graph_equation(event):
+          eq = document["equation"].value.strip()
+          start_str = document["startX"].value.strip()
+          end_str = document["endX"].value.strip()
+          if not eq or not start_str or not end_str:
+              alert("Please fill in the equation and domain values.")
+              return
+          try:
+              start_x = float(start_str)
+              end_x = float(end_str)
+          except Exception:
+              alert("Invalid start or end x value.")
+              return
+          if start_x >= end_x:
+              alert("Start x must be less than end x.")
+              return
+
+          try:
+              def f(x):
+                  return eval(eq, {"__builtins__": None, "math": math, "x": x})
+              x_values = [start_x + i * (end_x - start_x) / 100 for i in range(101)]
+              data_points = []
+              for x in x_values:
+                  try:
+                      y = f(x)
+                  except Exception:
+                      y = None
+                  if y is not None:
+                      data_points.append({"x": x, "y": y})
+          except Exception as e:
+              alert("Error in evaluating equation: " + str(e))
+              return
+
+          clear_chart()
+          ctx = document["myChart"].getContext("2d")
+          config = build_chart_config(data_points, "y = " + eq)
+          window.chart = window.Chart.new(ctx, config)
+          window.dataPoints = data_points
+
+      # Toggle between Data and Equation panels and show/hide More Options accordingly
+      def toggle_mode(ev):
+          mode_toggle = document["modeToggle"]
+          mode_label = document["modeLabel"]
+          data_panel = document["dataPanel"]
+          equation_panel = document["equationPanel"]
+          more_options = document["moreOptionsContainer"]
+          clear_chart()
+          if mode_toggle.checked:
+              mode_label.text = "Equation"
+              data_panel.classList.remove("active")
+              equation_panel.classList.add("active")
+              more_options.style.display = "none"
+          else:
+              mode_label.text = "Data"
+              equation_panel.classList.remove("active")
+              data_panel.classList.add("active")
+              more_options.style.display = "block"
+
+      # Export the current graph as an image file
+      def export_graph(event):
+          try:
+              canvas = document["myChart"]
+              image_data = canvas.toDataURL("image/png")
+              a = document.createElement("a")
+              a.href = image_data
+              a.download = "graph.png"
+              document.body.appendChild(a)
+              a.click()
+              document.body.removeChild(a)
+          except Exception as e:
+              alert("Error exporting graph: " + str(e))
+
+      # Reset zoom using Chart.js zoom plugin
+      def reset_zoom(event):
+          try:
+              window.chart.resetZoom()
+          except Exception as e:
+              alert("Zoom reset not available: " + str(e))
+
+      # Import data from CSV or JSON file and automatically create graph
+      def import_data(event):
+          file_input = document["dataFileInput"]
+          files = file_input.files
+          if len(files) == 0:
+              return
+          file = files[0]
+          reader = window.FileReader.new()
+          def onload(ev):
+              content = reader.result
+              filename = file.name.lower()
+              if filename.endswith(".csv"):
+                  lines = content.strip().split("\n")
+                  x_values = []
+                  y_values = []
+                  for line in lines:
+                      parts = line.split(",")
+                      if len(parts) >= 2:
+                          try:
+                              x_values.append(parts[0].strip())
+                              y_values.append(parts[1].strip())
+                          except:
+                              pass
+                  document["xValues"].value = ", ".join(x_values)
+                  document["yValues"].value = ", ".join(y_values)
+                  create_graph_data(None)
+              elif filename.endswith(".json"):
+                  try:
+                      data = window.JSON.parse(content)
+                      x_values = []
+                      y_values = []
+                      for item in data:
+                          try:
+                              x_values.append(str(item["x"]))
+                              y_values.append(str(item["y"]))
+                          except:
+                              pass
+                      document["xValues"].value = ", ".join(x_values)
+                      document["yValues"].value = ", ".join(y_values)
+                      create_graph_data(None)
+                  except Exception as e:
+                      alert("Error parsing JSON: " + str(e))
+              else:
+                  alert("Unsupported file type.")
+          reader.bind("load", onload)
+          reader.readAsText(file)
+
+      # Analyze data: compute mean, median, and standard deviation (only works for numeric data)
+      def analyze_data(event):
+          try:
+              data_points = window.dataPoints
+          except Exception:
+              alert("No data available for analysis.")
+              return
+          if not data_points:
+              alert("No data available for analysis.")
+              return
+          # Attempt analysis only if Y values are numeric
+          try:
+              y_vals = [float(pt["y"]) for pt in data_points]
+          except Exception:
+              alert("Data analysis is available only for numeric Y values.")
+              return
+          n = len(y_vals)
+          mean_val = sum(y_vals) / n
+          sorted_y = sorted(y_vals)
+          median_val = sorted_y[n//2] if n % 2 == 1 else (sorted_y[n//2 - 1] + sorted_y[n//2]) / 2
+          variance = sum((y - mean_val)**2 for y in y_vals) / n
+          std_dev = math.sqrt(variance)
+          result_text = f"Data Analysis:\nMean: {mean_val:.2f}\nMedian: {median_val:.2f}\nStd Dev: {std_dev:.2f}"
+          document["analysisResults"].text = result_text
+
+      # Add a regression line to the current graph
+      def add_regression_line(event):
+          try:
+              data_points = window.dataPoints
+          except Exception:
+              alert("No data available for regression analysis.")
+              return
+          if not data_points:
+              alert("No data available for regression analysis.")
+              return
+          # Ensure that data is numeric for regression analysis
+          try:
+              x_vals = [float(pt["x"]) for pt in data_points]
+              y_vals = [float(pt["y"]) for pt in data_points]
+          except Exception:
+              alert("Regression analysis is available only for numeric data.")
+              return
+          n = len(x_vals)
+          sum_x = sum(x_vals)
+          sum_y = sum(y_vals)
+          sum_xy = sum(x*y for x, y in zip(x_vals, y_vals))
+          sum_x2 = sum(x*x for x in x_vals)
+          denominator = n*sum_x2 - sum_x**2
+          if denominator == 0:
+              alert("Cannot compute regression line.")
+              return
+          slope = (n*sum_xy - sum_x*sum_y) / denominator
+          intercept = (sum_y - slope*sum_x) / n
+          min_x = min(x_vals)
+          max_x = max(x_vals)
+          reg_points = [{"x": min_x, "y": slope*min_x + intercept},
+                        {"x": max_x, "y": slope*max_x + intercept}]
+          chart = window.chart
+          chart.data.datasets.append({
+              "label": "Regression Line",
+              "data": reg_points,
+              "backgroundColor": "rgba(255, 99, 132, 0.5)",
+              "borderColor": "rgba(255, 99, 132, 1)",
+              "borderWidth": 2,
+              "pointRadius": 0,
+              "fill": False,
+              "tension": 0
+          })
+          chart.update()
+
+      # Add an annotation using Chart.js annotation plugin
+      def add_annotation(event):
+          annotation_x_str = document["annotationX"].value.strip()
+          annotation_label = document["annotationLabel"].value.strip()
+          try:
+              annotation_x = float(annotation_x_str)
+          except Exception:
+              alert("Invalid annotation x value.")
+              return
+          chart = window.chart
+          if "annotation" not in chart.options.plugins:
+              chart.options.plugins.annotation = {"annotations": {}}
+          annotations = chart.options.plugins.annotation.annotations
+          if not hasattr(window, "annotationCounter"):
+              window.annotationCounter = 1
+          else:
+              window.annotationCounter += 1
+          key = "annotation" + str(window.annotationCounter)
+          annotations[key] = {
+              "type": "line",
+              "scaleID": "x",
+              "value": annotation_x,
+              "borderColor": "red",
+              "borderWidth": 2,
+              "label": {
+                  "content": annotation_label,
+                  "enabled": True,
+                  "position": "start"
+              }
+          }
+          chart.update()
+
+      # Bind events to UI elements
+      document["modeToggle"].bind("change", toggle_mode)
+      document["createBtn"].bind("click", create_graph_data)
+      document["createEquationBtn"].bind("click", create_graph_equation)
+      document["clearDataBtn"].bind("click", lambda ev: clear_chart())
+      document["clearEquationBtn"].bind("click", lambda ev: clear_chart())
+      document["exportBtn"].bind("click", export_graph)
+      document["resetZoomBtn"].bind("click", reset_zoom)
+      document["dataFileInput"].bind("change", import_data)
+      document["analyzeDataBtn"].bind("click", analyze_data)
+      document["addRegressionBtn"].bind("click", add_regression_line)
+      document["addAnnotationBtn"].bind("click", add_annotation)
+    </script>
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
