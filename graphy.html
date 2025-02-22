@@ -89,47 +89,59 @@
         color: #9e86ff;
         font-weight: bold;
       }
-      .toggle-switch {
-        display: flex;
+      /* Container styles */
+      .nav-toggle {
+        display: inline-flex;
         align-items: center;
-        margin-bottom: 1.5rem;
-      }
-      .toggle-switch input {
-        display: none;
-      }
-      .toggle-switch label {
         position: relative;
-        display: inline-block;
-        width: 60px;
-        height: 30px;
-        background: #ccc;
-        border-radius: 30px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 9999px;
+        padding: 4px;
+        gap: 8px;
+  outline: 0.1px solid rgba(255, 255, 255, 1);
+
+      }
+      /* Individual navigation item styles */
+      .nav-item {
+        position: relative;
+        padding: 8px 16px;
+        color: rgba(255, 255, 255, 0.6);
+        font-weight: 500;
+        font-size: 14px;
         cursor: pointer;
-        margin-right: 1rem;
-        transition: background 0.3s;
+        border-radius: 9999px;
+        transition:  0.3s ease;
+        text-decoration: none;
+
       }
-      .toggle-switch label::after {
-        content: "";
+      /* Active state for nav items */
+      .nav-item.active {
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.1);
+outline: 0.1px solid rgba(255, 255, 255, 1);
+      }
+
+      /* Hover state for nav items */
+      .nav-item:hover:not(.active) {
+        color: rgba(255, 255, 255, 0.8);
+        background: rgba(255, 255, 255, 0.07);
+      }
+      /* Hide radio inputs while keeping them accessible */
+      .nav-toggle input[type="radio"] {
         position: absolute;
-        width: 26px;
-        height: 26px;
-        top: 2px;
-        left: 2px;
-        background: #fff;
-        border-radius: 50%;
-        transition: transform 0.3s;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        opacity: 0;
+        width: 0;
+        height: 0;
       }
-      .toggle-switch input:checked + label {
-        background: #4caf50;
+      /* Focus styles for accessibility */
+      .nav-item:focus-visible {
+        outline: 2px solid rgba(255, 255, 255, 0.4);
+        outline-offset: 2px;
       }
-      .toggle-switch input:checked + label::after {
-        transform: translateX(30px);
-      }
-      .toggle-switch span {
-        font-weight: bold;
-        font-size: 16px;
-        color: #fff;
+      /* Optional: Add subtle transition for background */
+      .nav-toggle {
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
       }
       .panel {
         display: none;
@@ -228,11 +240,14 @@
         <div class="input-panel">
           <div class="input-header">Graph Creator</div>
           <!-- Toggle Switch for Data/Equation -->
-          <div class="toggle-switch">
-            <input type="checkbox" id="modeToggle" />
-            <label for="modeToggle"></label>
-            <span id="modeLabel">Data</span>
-          </div>
+          <!-- NEW pill-style toggle -->
+          <nav class="nav-toggle">
+            <input type="radio" name="nav" id="nav-code" checked>
+            <label for="nav-code" class="nav-item active">Code</label>
+            
+            <input type="radio" name="nav" id="nav-equation">
+            <label for="nav-equation" class="nav-item">equation</label>
+          </nav>
           <!-- Data Entry Panel (visible by default) -->
           <div id="dataPanel" class="panel active">
             <h2>Enter Data</h2>
@@ -508,6 +523,32 @@
       </div> <!-- End content-wrapper -->
     </div> <!-- End container -->
 
+ <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const navCodeRadio = document.getElementById('nav-code');
+        const navEquationRadio = document.getElementById('nav-equation');
+        const dataPanel = document.getElementById('dataPanel');
+        const equationPanel = document.getElementById('equationPanel');
+
+        navCodeRadio.addEventListener('change', function() {
+          if (navCodeRadio.checked) {
+            dataPanel.classList.add('active');
+            equationPanel.classList.remove('active');
+            document.querySelector('label[for="nav-code"]').classList.add('active');
+            document.querySelector('label[for="nav-equation"]').classList.remove('active');
+          }
+        });
+
+        navEquationRadio.addEventListener('change', function() {
+          if (navEquationRadio.checked) {
+            equationPanel.classList.add('active');
+            dataPanel.classList.remove('active');
+            document.querySelector('label[for="nav-equation"]').classList.add('active');
+            document.querySelector('label[for="nav-code"]').classList.remove('active');
+          }
+        });
+      });
+    </script>
     <!-- Brython Python Script -->
  <script type="text/python">
       from browser import document, alert, window
