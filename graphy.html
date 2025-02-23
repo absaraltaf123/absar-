@@ -98,8 +98,6 @@
         border-radius: 9999px;
         padding: 4px;
         gap: 8px;
-  outline: 0.1px solid rgba(255, 255, 255, 1);
-
       }
       /* Individual navigation item styles */
       .nav-item {
@@ -110,17 +108,14 @@
         font-size: 14px;
         cursor: pointer;
         border-radius: 9999px;
-        transition:  0.3s ease;
+        transition: all 0.2s ease;
         text-decoration: none;
-
       }
       /* Active state for nav items */
       .nav-item.active {
         color: #ffffff;
         background: rgba(255, 255, 255, 0.1);
-outline: 0.1px solid rgba(255, 255, 255, 1);
       }
-
       /* Hover state for nav items */
       .nav-item:hover:not(.active) {
         color: rgba(255, 255, 255, 0.8);
@@ -143,12 +138,17 @@ outline: 0.1px solid rgba(255, 255, 255, 1);
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
       }
+      /* Modified panel styles for sliding effect */
       .panel {
-        display: none;
         flex-direction: column;
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+        transition: max-height 0.5s ease, opacity 0.5s ease;
       }
       .panel.active {
-        display: flex;
+        max-height: 1000px; /* Adjust to ensure full content is visible */
+        opacity: 1;
       }
       .form-label {
         margin-bottom: 0.5rem;
@@ -524,7 +524,7 @@ outline: 0.1px solid rgba(255, 255, 255, 1);
     </div> <!-- End container -->
 
  <script>
-      document.addEventListener('DOMContentLoaded', function() {
+       document.addEventListener('DOMContentLoaded', function() {
         const navCodeRadio = document.getElementById('nav-code');
         const navEquationRadio = document.getElementById('nav-equation');
         const dataPanel = document.getElementById('dataPanel');
