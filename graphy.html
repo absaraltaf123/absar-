@@ -3,12 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Enhanced Graph Creator with Responsive & Data Tools</title>
+    <title>Enhanced Graph Creator with Trig Functions & More Charts</title>
     <!-- Bootstrap CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <!-- Chart.js and plugins -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1.2.1/dist/chartjs-plugin-zoom.min.js"></script>
@@ -17,7 +14,6 @@
     <script src="https://cdn.jsdelivr.net/npm/brython@3.10.5/brython.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/brython@3.10.5/brython_stdlib.js"></script>
     <style>
-      /* CSS provided – do not change the rest */
       * {
         box-sizing: border-box;
         margin: 0;
@@ -25,9 +21,7 @@
       }
       body {
         background: linear-gradient(160deg, #4c2c8c, #2c1f3a 60%);
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue",
-          Arial, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
         color: #fff;
         height: 100vh;
         display: flex;
@@ -77,12 +71,11 @@
       .input-panel {
         flex: 1;
         background: #1e1e1e;
-        padding: 19px;
+        padding: 18px;
         overflow-y: auto;
         font-family: "Fira Code", monospace;
         font-size: 14px;
         line-height: 1.5;
-        position: relative;
       }
       .input-header {
         margin-bottom: 13px;
@@ -103,7 +96,7 @@
       }
       .form-control {
         width: 100%;
-        padding: 11px;
+        padding: 10px;
         border-radius: 4px;
         background-color: #2a2a2a;
         border: 1px solid #444;
@@ -142,7 +135,6 @@
         border-radius: 11px;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
       }
-      /* Accordion styles for higher contrast on dark backgrounds */
       .accordion-button {
         background-color: #343a40;
         color: #fff;
@@ -155,20 +147,43 @@
         background-color: #495057;
         color: #fff;
       }
-      /* Position the More Options at the bottom of the input panel */
       #moreOptionsContainer {
         margin-top: 20px;
       }
-      /* Responsive design for mobile devices */
       @media (max-width: 768px) {
         .content-wrapper {
           flex-direction: column;
         }
-        .graph-panel,
-        .input-panel {
+        .graph-panel, .input-panel {
           flex: 1;
           height: 50%;
         }
+      }
+      .custom-nav {
+        display: flex;
+        justify-content: space-around;
+        background: #1a1a2e;
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+      }
+      .custom-nav button {
+        background: #1a1a2e;
+        color: #ffffff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: bold;
+        font-family: "Fira Code", monospace;
+        transition: background 0.3s, color 0.3s;
+      }
+      .custom-nav button.active {
+        background: #e0e0e0;
+        color: #000000;
+      }
+      .custom-nav button:hover {
+        background: #4c2c8c;
       }
     </style>
   </head>
@@ -185,17 +200,12 @@
         <!-- Input Panel -->
         <div class="input-panel">
           <div class="input-header">Graph Creator</div>
-          <!-- Nav Tabs for Data/Equation -->
-          <ul class="nav nav-tabs" id="modeTabs">
-            <li class="nav-item">
-              <a class="nav-link active" id="data-tab" data-bs-toggle="tab" href="#dataPanel" role="tab" aria-controls="dataPanel" aria-selected="true">Data</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="equation-tab" data-bs-toggle="tab" href="#equationPanel" role="tab" aria-controls="equationPanel" aria-selected="false">Equation</a>
-            </li>
-          </ul>
-          <!-- Data Entry Panel (visible by default) -->
-          <div id="dataPanel" class="panel tab-pane active">
+          <div class="custom-nav" id="modeTabs">
+            <button class="active" id="data-tab" data-target="#dataPanel">Data</button>
+            <button id="equation-tab" data-target="#equationPanel">Equation</button>
+          </div>
+          <!-- Data Entry Panel -->
+          <div id="dataPanel" class="panel active">
             <h2>Enter Data</h2>
             <div class="mb-3">
               <label for="xValues" class="form-label">X-axis values:</label>
@@ -208,12 +218,26 @@
             <button id="createBtn" class="btn btn-primary">Create Graph</button>
             <button id="clearDataBtn" class="btn btn-secondary">Clear Graph</button>
           </div>
-          <!-- Equation Entry Panel (hidden by default) -->
-          <div id="equationPanel" class="panel tab-pane">
+          <!-- Equation Entry Panel -->
+          <div id="equationPanel" class="panel">
             <h2>Enter Equation</h2>
             <div class="mb-3">
               <label for="equation" class="form-label">Equation (in terms of x):</label>
               <input type="text" id="equation" class="form-control" placeholder="e.g. x**2 + 2*x + 1" />
+            </div>
+            <div class="mb-3">
+              <label for="trigFunction" class="form-label">Or select a function:</label>
+              <select id="trigFunction" class="form-control">
+                <option value="">-- Select Function --</option>
+                <option value="math.sin(x)">sin(x)</option>
+                <option value="math.cos(x)">cos(x)</option>
+                <option value="math.tan(x)">tan(x)</option>
+                <option value="math.log(x)">log(x)</option>
+                <option value="math.exp(x)">exp(x)</option>
+                <option value="math.sqrt(x)">sqrt(x)</option>
+                <option value="abs(x)">abs(x)</option>
+                <option value="math.pow(x, 2)">x^2</option>
+              </select>
             </div>
             <div class="mb-3">
               <label for="startX" class="form-label">Start x:</label>
@@ -225,7 +249,6 @@
             </div>
             <button id="createEquationBtn" class="btn btn-primary">Create Graph</button>
             <button id="clearEquationBtn" class="btn btn-secondary">Clear Graph</button>
-            <!-- Additional Equation Features Accordion -->
             <div class="accordion mt-3" id="equationAdditionalAccordion">
               <div class="accordion-item">
                 <h2 class="accordion-header" id="headingAdditional">
@@ -235,26 +258,24 @@
                 </h2>
                 <div id="collapseAdditional" class="accordion-collapse collapse" aria-labelledby="headingAdditional" data-bs-parent="#equationAdditionalAccordion">
                   <div class="accordion-body">
-                    <!-- Feature 1: Interactive Parameter Sliders -->
                     <h5>Interactive Parameter Sliders</h5>
                     <div class="mb-3">
                       <label for="paramA" class="form-label">Coefficient a:</label>
-                      <input type="range" id="paramA" class="form-range" min="-10" max="10" step="0.1" value="1">
+                      <input type="range" id="paramA" class="form-range" min="-10" max="10" step="0.1" value="1" />
                       <span id="paramAValue">1</span>
                     </div>
                     <div class="mb-3">
                       <label for="paramB" class="form-label">Coefficient b:</label>
-                      <input type="range" id="paramB" class="form-range" min="-10" max="10" step="0.1" value="0">
+                      <input type="range" id="paramB" class="form-range" min="-10" max="10" step="0.1" value="0" />
                       <span id="paramBValue">0</span>
                     </div>
                     <div class="mb-3">
                       <label for="paramC" class="form-label">Coefficient c:</label>
-                      <input type="range" id="paramC" class="form-range" min="-10" max="10" step="0.1" value="0">
+                      <input type="range" id="paramC" class="form-range" min="-10" max="10" step="0.1" value="0" />
                       <span id="paramCValue">0</span>
                     </div>
                     <button id="updateEquationWithParams" class="btn btn-primary">Update Equation</button>
-                    <hr/>
-                    <!-- Feature 5: Support for Implicit and Parametric Equations -->
+                    <hr />
                     <h5>Implicit and Parametric Equations</h5>
                     <div class="mb-3">
                       <label class="form-label">Equation Type:</label>
@@ -267,66 +288,62 @@
                     <div id="parametricInputs" style="display: none;">
                       <div class="mb-3">
                         <label for="parametricX" class="form-label">x(t):</label>
-                        <input type="text" id="parametricX" class="form-control" placeholder="e.g. cos(t)">
+                        <input type="text" id="parametricX" class="form-control" placeholder="e.g. cos(t)" />
                       </div>
                       <div class="mb-3">
                         <label for="parametricY" class="form-label">y(t):</label>
-                        <input type="text" id="parametricY" class="form-control" placeholder="e.g. sin(t)">
+                        <input type="text" id="parametricY" class="form-control" placeholder="e.g. sin(t)" />
                       </div>
                       <div class="mb-3">
                         <label for="startT" class="form-label">Start t:</label>
-                        <input type="text" id="startT" class="form-control" placeholder="e.g. 0">
+                        <input type="text" id="startT" class="form-control" placeholder="e.g. 0" />
                       </div>
                       <div class="mb-3">
                         <label for="endT" class="form-label">End t:</label>
-                        <input type="text" id="endT" class="form-control" placeholder="e.g. 6.28">
+                        <input type="text" id="endT" class="form-control" placeholder="e.g. 6.28" />
                       </div>
                     </div>
                     <div id="implicitInput" style="display: none;">
                       <div class="mb-3">
                         <label for="implicitEquation" class="form-label">Implicit Equation (F(x,y)=0):</label>
-                        <input type="text" id="implicitEquation" class="form-control" placeholder="e.g. x**2 + y**2 - 1">
+                        <input type="text" id="implicitEquation" class="form-control" placeholder="e.g. x**2 + y**2 - 1" />
                       </div>
                       <div class="mb-3">
                         <label for="startXImplicit" class="form-label">Start x:</label>
-                        <input type="text" id="startXImplicit" class="form-control" placeholder="e.g. -10">
+                        <input type="text" id="startXImplicit" class="form-control" placeholder="e.g. -10" />
                       </div>
                       <div class="mb-3">
                         <label for="endXImplicit" class="form-label">End x:</label>
-                        <input type="text" id="endXImplicit" class="form-control" placeholder="e.g. 10">
+                        <input type="text" id="endXImplicit" class="form-control" placeholder="e.g. 10" />
                       </div>
                       <div class="mb-3">
                         <label for="startY" class="form-label">Start y:</label>
-                        <input type="text" id="startY" class="form-control" placeholder="e.g. -1.5">
+                        <input type="text" id="startY" class="form-control" placeholder="e.g. -1.5" />
                       </div>
                       <div class="mb-3">
                         <label for="endY" class="form-label">End y:</label>
-                        <input type="text" id="endY" class="form-control" placeholder="e.g. 1.5">
+                        <input type="text" id="endY" class="form-control" placeholder="e.g. 1.5" />
                       </div>
                     </div>
-                    <hr/>
-                    <!-- Feature 6: Animation and Transformations -->
+                    <hr />
                     <h5>Animation and Transformations</h5>
                     <div class="mb-3">
                       <label for="enableAnimation" class="form-label">Enable Animated Transitions:</label>
-                      <input type="checkbox" id="enableAnimation" class="form-check-input">
+                      <input type="checkbox" id="enableAnimation" class="form-check-input" />
                     </div>
                     <div class="mb-3">
                       <label for="enableTransform" class="form-label">Show Transformations:</label>
-                      <input type="checkbox" id="enableTransform" class="form-check-input">
+                      <input type="checkbox" id="enableTransform" class="form-check-input" />
                     </div>
                     <button id="plotAdditionalBtn" class="btn btn-primary">Plot Equation</button>
                   </div>
                 </div>
               </div>
             </div>
-            <!-- End Additional Equation Features Accordion -->
           </div>
-          <!-- End Equation Panel -->
-          <!-- More Options Container (for Data mode only) -->
+          <!-- More Options Container (Data Mode) -->
           <div id="moreOptionsContainer">
             <div class="accordion" id="moreOptionsAccordion">
-              <!-- Customization Category -->
               <div class="accordion-item">
                 <h2 class="accordion-header" id="headingCustomization">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCustomization" aria-expanded="false" aria-controls="collapseCustomization">
@@ -355,6 +372,8 @@
                         <option value="line" selected>Line</option>
                         <option value="bar">Bar</option>
                         <option value="scatter">Scatter</option>
+                        <option value="area">Area</option>
+                        <option value="horizontalBar">Horizontal Bar</option>
                       </select>
                     </div>
                     <div class="mb-3">
@@ -380,7 +399,6 @@
                   </div>
                 </div>
               </div>
-              <!-- File Operations Category -->
               <div class="accordion-item">
                 <h2 class="accordion-header" id="headingFileOps">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFileOps" aria-expanded="false" aria-controls="collapseFileOps">
@@ -400,7 +418,6 @@
                   </div>
                 </div>
               </div>
-              <!-- Analysis Tools Category -->
               <div class="accordion-item">
                 <h2 class="accordion-header" id="headingAnalysis">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAnalysis" aria-expanded="false" aria-controls="collapseAnalysis">
@@ -417,7 +434,6 @@
                   </div>
                 </div>
               </div>
-              <!-- Annotations Category -->
               <div class="accordion-item">
                 <h2 class="accordion-header" id="headingAnnotations">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAnnotations" aria-expanded="false" aria-controls="collapseAnnotations">
@@ -440,7 +456,6 @@
                   </div>
                 </div>
               </div>
-              <!-- Data Tools Category -->
               <div class="accordion-item">
                 <h2 class="accordion-header" id="headingDataTools">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDataTools" aria-expanded="false" aria-controls="collapseDataTools">
@@ -463,25 +478,25 @@
                   </div>
                 </div>
               </div>
-            </div> <!-- End accordion -->
-          </div> <!-- End More Options Container -->
-        </div> <!-- End input-panel -->
-      </div> <!-- End content-wrapper -->
-    </div> <!-- End container -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <!-- Brython Python Script -->
+    <!-- Brython Script -->
     <script type="text/python">
       from browser import document, alert, window
       import math, json
 
-      # Utility function: destroy existing chart
+      # Clear existing chart
       def clear_chart():
           try:
               window.chart.destroy()
           except Exception:
               pass
 
-      # Build chart configuration using customization values
+      # Build chart configuration
       def build_chart_config(data_points, dataset_label):
           chart_type = document["chartType"].value
           chart_title = document["chartTitle"].value.strip()
@@ -511,47 +526,39 @@
               },
               "options": {
                   "scales": {
-                      "x": {
-                          "type": x_scale_type,
-                          "position": "bottom",
-                          "title": {
-                              "display": True if x_axis_label else False,
-                              "text": x_axis_label
-                          }
-                      },
-                      "y": {
-                          "type": y_scale_type,
-                          "title": {
-                              "display": True if y_axis_label else False,
-                              "text": y_axis_label
-                          }
-                      }
+                      "x": {"type": x_scale_type, "position": "bottom", "title": {"display": bool(x_axis_label), "text": x_axis_label}},
+                      "y": {"type": y_scale_type, "title": {"display": bool(y_axis_label), "text": y_axis_label}}
                   },
                   "plugins": {
                       "legend": {"display": True},
-                      "title": {
-                          "display": True if chart_title else False,
-                          "text": chart_title
-                      },
-                      "zoom": {
-                          "zoom": {"enabled": True, "mode": "xy"},
-                          "pan": {"enabled": True, "mode": "xy"}
-                      },
+                      "title": {"display": bool(chart_title), "text": chart_title},
+                      "zoom": {"zoom": {"enabled": True, "mode": "xy"}, "pan": {"enabled": True, "mode": "xy"}},
                       "annotation": {"annotations": {}}
                   }
               }
           }
-          # Add animation duration based on checkbox
+
+          # Handle new chart types
+          if chart_type == "area":
+              config["type"] = "line"
+              config["data"]["datasets"][0]["fill"] = True
+          elif chart_type == "horizontalBar":
+              config["type"] = "bar"
+              config["options"]["indexAxis"] = "y"
+          else:
+              config["type"] = chart_type
+
           if "enableAnimation" in document and document["enableAnimation"].checked:
               config["options"]["animation"] = {"duration": 1000}
           else:
               config["options"]["animation"] = {"duration": 0}
-          # If Y axis is alphabetic and X axis is numeric, use a horizontal layout
-          if y_axis_type == "Alphabetic" and x_axis_type == "Numeric":
+
+          if y_axis_type == "Alphabetic" and x_axis_type == "Numeric" and chart_type not in ["horizontalBar"]:
               config["options"]["indexAxis"] = "y"
+
           return config
 
-      # Apply transformation animation if enabled
+      # Apply transformation animation
       def apply_transform_animation():
           try:
               canvas = document["myChart"]
@@ -562,38 +569,42 @@
           except Exception:
               pass
 
-      # Create graph from manual data input
+      # Create graph from data input
       def create_graph_data(event):
           x_input = document["xValues"].value
           y_input = document["yValues"].value
           x_axis_type = document["xAxisType"].value
           y_axis_type = document["yAxisType"].value
+          chart_type = document["chartType"].value
+
+          if chart_type == "horizontalBar" and (y_axis_type != "Alphabetic" or x_axis_type != "Numeric"):
+              alert("For Horizontal Bar chart, set Y-axis to Alphabetic and X-axis to Numeric.")
+              return
 
           if x_axis_type == "Numeric":
               try:
-                  x_values = [float(x.strip()) for x in x_input.split(',') if x.strip() != '']
+                  x_values = [float(x.strip()) for x in x_input.split(',') if x.strip()]
               except Exception:
-                  alert("Invalid input for X-axis. Please enter valid comma-separated numbers.")
+                  alert("Invalid X-axis input. Enter comma-separated numbers.")
                   return
           else:
-              x_values = [x.strip() for x in x_input.split(',') if x.strip() != '']
+              x_values = [x.strip() for x in x_input.split(',') if x.strip()]
 
           if y_axis_type == "Numeric":
               try:
-                  y_values = [float(y.strip()) for y in y_input.split(',') if y.strip() != '']
+                  y_values = [float(y.strip()) for y in y_input.split(',') if y.strip()]
               except Exception:
-                  alert("Invalid input for Y-axis. Please enter valid comma-separated numbers.")
+                  alert("Invalid Y-axis input. Enter comma-separated numbers.")
                   return
           else:
-              y_values = [y.strip() for y in y_input.split(',') if y.strip() != '']
+              y_values = [y.strip() for y in y_input.split(',') if y.strip()]
 
           if len(x_values) != len(y_values):
-              alert("The number of X and Y values must be the same.")
+              alert("X and Y value counts must match.")
               return
 
-          # Ensure at least one axis is numeric for proper plotting
           if x_axis_type != "Numeric" and y_axis_type != "Numeric":
-              alert("At least one axis must be numeric for plotting.")
+              alert("At least one axis must be numeric.")
               return
 
           data_points = [{"x": x_values[i], "y": y_values[i]} for i in range(len(x_values))]
@@ -604,17 +615,16 @@
           window.dataPoints = data_points
           apply_transform_animation()
 
-      # Create graph from equation input (Explicit)
+      # Create graph from equation
       def create_graph_equation(event):
           eq = document["equation"].value.strip()
           start_str = document["startX"].value.strip()
           end_str = document["endX"].value.strip()
           if not eq or not start_str or not end_str:
-              alert("Please fill in the equation and domain values.")
+              alert("Fill in equation and domain values.")
               return
           try:
-              start_x = float(start_str)
-              end_x = float(end_str)
+              start_x, end_x = float(start_str), float(end_str)
           except Exception:
               alert("Invalid start or end x value.")
               return
@@ -630,441 +640,270 @@
               for x in x_values:
                   try:
                       y = f(x)
+                      if y is not None:
+                          data_points.append({"x": x, "y": y})
                   except Exception:
-                      y = None
-                  if y is not None:
-                      data_points.append({"x": x, "y": y})
+                      pass
           except Exception as e:
-              alert("Error in evaluating equation: " + str(e))
+              alert(f"Error evaluating equation: {str(e)}")
               return
 
           clear_chart()
           ctx = document["myChart"].getContext("2d")
-          config = build_chart_config(data_points, "y = " + eq)
+          config = build_chart_config(data_points, f"y = {eq}")
           window.chart = window.Chart.new(ctx, config)
           window.dataPoints = data_points
           apply_transform_animation()
 
-      # Export the current graph as an image file
+      # Insert trigonometric function into equation input
+      def insert_trig_function(event):
+          func = document["trigFunction"].value
+          if func:
+              document["equation"].value = func
+              document["trigFunction"].value = ""  # Reset dropdown
+
+      # Export graph as PNG
       def export_graph(event):
           try:
               canvas = document["myChart"]
-              image_data = canvas.toDataURL("image/png")
               a = document.createElement("a")
-              a.href = image_data
+              a.href = canvas.toDataURL("image/png")
               a.download = "graph.png"
               document.body.appendChild(a)
               a.click()
               document.body.removeChild(a)
           except Exception as e:
-              alert("Error exporting graph: " + str(e))
+              alert(f"Error exporting graph: {str(e)}")
 
-      # Reset zoom using Chart.js zoom plugin
+      # Reset zoom
       def reset_zoom(event):
           try:
               window.chart.resetZoom()
-          except Exception as e:
-              alert("Zoom reset not available: " + str(e))
+          except Exception:
+              alert("Zoom reset not available.")
 
-      # Import data from CSV or JSON file and automatically create graph
+      # Import data from file
       def import_data(event):
           file_input = document["dataFileInput"]
-          files = file_input.files
-          if len(files) == 0:
+          if not file_input.files:
               return
-          file = files[0]
+          file = file_input.files[0]
           reader = window.FileReader.new()
           def onload(ev):
               content = reader.result
-              filename = file.name.lower()
-              if filename.endswith(".csv"):
+              if file.name.lower().endswith(".csv"):
                   lines = content.strip().split("\n")
-                  x_values = []
-                  y_values = []
+                  x_values, y_values = [], []
                   for line in lines:
                       parts = line.split(",")
                       if len(parts) >= 2:
-                          try:
-                              x_values.append(parts[0].strip())
-                              y_values.append(parts[1].strip())
-                          except:
-                              pass
+                          x_values.append(parts[0].strip())
+                          y_values.append(parts[1].strip())
                   document["xValues"].value = ", ".join(x_values)
                   document["yValues"].value = ", ".join(y_values)
                   create_graph_data(None)
-              elif filename.endswith(".json"):
+              elif file.name.lower().endswith(".json"):
                   try:
                       data = window.JSON.parse(content)
-                      x_values = []
-                      y_values = []
-                      for item in data:
-                          try:
-                              x_values.append(str(item["x"]))
-                              y_values.append(str(item["y"]))
-                          except:
-                              pass
+                      x_values = [str(item["x"]) for item in data]
+                      y_values = [str(item["y"]) for item in data]
                       document["xValues"].value = ", ".join(x_values)
                       document["yValues"].value = ", ".join(y_values)
                       create_graph_data(None)
                   except Exception as e:
-                      alert("Error parsing JSON: " + str(e))
+                      alert(f"Error parsing JSON: {str(e)}")
               else:
                   alert("Unsupported file type.")
           reader.bind("load", onload)
           reader.readAsText(file)
 
-      # Analyze data: compute mean, median, and standard deviation (only works for numeric data)
+      # Analyze data
       def analyze_data(event):
           try:
-              data_points = window.dataPoints
+              y_vals = [float(pt["y"]) for pt in window.dataPoints]
+              n = len(y_vals)
+              mean_val = sum(y_vals) / n
+              sorted_y = sorted(y_vals)
+              median_val = sorted_y[n//2] if n % 2 else (sorted_y[n//2 - 1] + sorted_y[n//2]) / 2
+              std_dev = math.sqrt(sum((y - mean_val)**2 for y in y_vals) / n)
+              document["analysisResults"].text = f"Mean: {mean_val:.2f}\nMedian: {median_val:.2f}\nStd Dev: {std_dev:.2f}"
           except Exception:
-              alert("No data available for analysis.")
-              return
-          if not data_points:
-              alert("No data available for analysis.")
-              return
-          try:
-              y_vals = [float(pt["y"]) for pt in data_points]
-          except Exception:
-              alert("Data analysis is available only for numeric Y values.")
-              return
-          n = len(y_vals)
-          mean_val = sum(y_vals) / n
-          sorted_y = sorted(y_vals)
-          median_val = sorted_y[n//2] if n % 2 == 1 else (sorted_y[n//2 - 1] + sorted_y[n//2]) / 2
-          variance = sum((y - mean_val)**2 for y in y_vals) / n
-          std_dev = math.sqrt(variance)
-          result_text = f"Data Analysis:\nMean: {mean_val:.2f}\nMedian: {median_val:.2f}\nStd Dev: {std_dev:.2f}"
-          document["analysisResults"].text = result_text
+              alert("Data analysis requires numeric Y values.")
 
-      # Add a regression line to the current graph
+      # Add regression line
       def add_regression_line(event):
           try:
-              data_points = window.dataPoints
+              x_vals = [float(pt["x"]) for pt in window.dataPoints]
+              y_vals = [float(pt["y"]) for pt in window.dataPoints]
+              n = len(x_vals)
+              sum_x, sum_y = sum(x_vals), sum(y_vals)
+              sum_xy = sum(x * y for x, y in zip(x_vals, y_vals))
+              sum_x2 = sum(x * x for x in x_vals)
+              slope = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x**2)
+              intercept = (sum_y - slope * sum_x) / n
+              reg_points = [{"x": min(x_vals), "y": slope * min(x_vals) + intercept},
+                            {"x": max(x_vals), "y": slope * max(x_vals) + intercept}]
+              window.chart.data.datasets.append({
+                  "label": "Regression Line",
+                  "data": reg_points,
+                  "borderColor": "rgba(255, 99, 132, 1)",
+                  "borderWidth": 2,
+                  "pointRadius": 0,
+                  "fill": False
+              })
+              window.chart.update()
           except Exception:
-              alert("No data available for regression analysis.")
-              return
-          if not data_points:
-              alert("No data available for regression analysis.")
-              return
-          try:
-              x_vals = [float(pt["x"]) for pt in data_points]
-              y_vals = [float(pt["y"]) for pt in data_points]
-          except Exception:
-              alert("Regression analysis is available only for numeric data.")
-              return
-          n = len(x_vals)
-          sum_x = sum(x_vals)
-          sum_y = sum(y_vals)
-          sum_xy = sum(x*y for x, y in zip(x_vals, y_vals))
-          sum_x2 = sum(x*x for x in x_vals)
-          denominator = n*sum_x2 - sum_x**2
-          if denominator == 0:
-              alert("Cannot compute regression line.")
-              return
-          slope = (n*sum_xy - sum_x*sum_y) / denominator
-          intercept = (sum_y - slope*sum_x) / n
-          min_x = min(x_vals)
-          max_x = max(x_vals)
-          reg_points = [{"x": min_x, "y": slope*min_x + intercept},
-                        {"x": max_x, "y": slope*max_x + intercept}]
-          chart = window.chart
-          chart.data.datasets.append({
-              "label": "Regression Line",
-              "data": reg_points,
-              "backgroundColor": "rgba(255, 99, 132, 0.5)",
-              "borderColor": "rgba(255, 99, 132, 1)",
-              "borderWidth": 2,
-              "pointRadius": 0,
-              "fill": False,
-              "tension": 0
-          })
-          chart.update()
+              alert("Regression requires numeric data.")
 
-      # Add an annotation using Chart.js annotation plugin
+      # Add annotation
       def add_annotation(event):
-          annotation_x_str = document["annotationX"].value.strip()
-          annotation_label = document["annotationLabel"].value.strip()
           try:
-              annotation_x = float(annotation_x_str)
-          except Exception:
-              alert("Invalid annotation x value.")
-              return
-          chart = window.chart
-          if "annotation" not in chart.options.plugins:
-              chart.options.plugins.annotation = {"annotations": {}}
-          annotations = chart.options.plugins.annotation.annotations
-          if not hasattr(window, "annotationCounter"):
-              window.annotationCounter = 1
-          else:
-              window.annotationCounter += 1
-          key = "annotation" + str(window.annotationCounter)
-          annotations[key] = {
-              "type": "line",
-              "scaleID": "x",
-              "value": annotation_x,
-              "borderColor": "red",
-              "borderWidth": 2,
-              "label": {
-                  "content": annotation_label,
-                  "enabled": True,
-                  "position": "start"
+              x_val = float(document["annotationX"].value.strip())
+              label = document["annotationLabel"].value.strip()
+              chart = window.chart
+              if "annotation" not in chart.options.plugins:
+                  chart.options.plugins.annotation = {"annotations": {}}
+              key = f"annotation{len(chart.options.plugins.annotation.annotations) + 1}"
+              chart.options.plugins.annotation.annotations[key] = {
+                  "type": "line",
+                  "scaleID": "x",
+                  "value": x_val,
+                  "borderColor": "red",
+                  "borderWidth": 2,
+                  "label": {"content": label, "enabled": True, "position": "start"}
               }
-          }
-          chart.update()
+              chart.update()
+          except Exception:
+              alert("Invalid annotation X value.")
 
-      # --- New Creative Functions ---
-
-      # View Data Table: Toggle display of current data in a table format.
+      # View data table
       def view_data_table(event):
           try:
-              data_points = window.dataPoints
+              container = document["dataTableContainer"]
+              if container.style.display == "none":
+                  html = "<table class='table table-dark'><thead><tr><th>#</th><th>X</th><th>Y</th></tr></thead><tbody>"
+                  for i, pt in enumerate(window.dataPoints):
+                      html += f"<tr><td>{i+1}</td><td>{pt['x']}</td><td>{pt['y']}</td></tr>"
+                  html += "</tbody></table>"
+                  container.innerHTML = html
+                  container.style.display = "block"
+              else:
+                  container.style.display = "none"
           except Exception:
-              alert("No data available to display.")
-              return
-          if not data_points:
-              alert("No data available to display.")
-              return
-          container = document["dataTableContainer"]
-          if container.style.display == "none":
-              html = "<table class='table table-dark table-striped'><thead><tr><th>#</th><th>X</th><th>Y</th></tr></thead><tbody>"
-              for i, pt in enumerate(data_points):
-                  html += f"<tr><td>{i+1}</td><td>{pt['x']}</td><td>{pt['y']}</td></tr>"
-              html += "</tbody></table>"
-              container.innerHTML = html
-              container.style.display = "block"
-          else:
-              container.style.display = "none"
+              alert("No data to display.")
 
-      # Download current data as a CSV file.
+      # Download CSV
       def download_csv(event):
           try:
-              data_points = window.dataPoints
+              csv_str = "x,y\n" + "\n".join(f"{pt['x']},{pt['y']}" for pt in window.dataPoints)
+              blob = window.Blob.new([csv_str], {"type": "text/csv"})
+              a = document.createElement("a")
+              a.href = window.URL.createObjectURL(blob)
+              a.download = "data.csv"
+              document.body.appendChild(a)
+              a.click()
+              document.body.removeChild(a)
           except Exception:
-              alert("No data available to download.")
-              return
-          if not data_points:
-              alert("No data available to download.")
-              return
-          csv_str = "x,y\n"
-          for pt in data_points:
-              csv_str += f"{pt['x']},{pt['y']}\n"
-          blob = window.Blob.new([csv_str], { "type": "text/csv" })
-          url = window.URL.createObjectURL(blob)
-          a = document.createElement("a")
-          a.href = url
-          a.download = "data.csv"
-          document.body.appendChild(a)
-          a.click()
-          document.body.removeChild(a)
-          window.URL.revokeObjectURL(url)
+              alert("No data to download.")
 
-      # Save chart configuration to local storage.
+      # Save chart config
       def save_config(event):
-          config = {
-              "xValues": document["xValues"].value,
-              "yValues": document["yValues"].value,
-              "chartType": document["chartType"].value,
-              "chartTitle": document["chartTitle"].value,
-              "xAxisLabel": document["xAxisLabel"].value,
-              "yAxisLabel": document["yAxisLabel"].value,
-              "datasetColor": document["datasetColor"].value,
-              "borderColor": document["borderColor"].value,
-              "xAxisType": document["xAxisType"].value,
-              "yAxisType": document["yAxisType"].value
-          }
+          config = {key: document[key].value for key in ["xValues", "yValues", "chartType", "chartTitle", "xAxisLabel", "yAxisLabel", "datasetColor", "borderColor", "xAxisType", "yAxisType"]}
           window.localStorage.setItem("chartConfig", json.dumps(config))
           alert("Chart configuration saved.")
 
-      # Load chart configuration from local storage.
+      # Load chart config
       def load_config(event):
           config_str = window.localStorage.getItem("chartConfig")
-          if not config_str:
-              alert("No saved configuration found.")
-              return
-          config = json.loads(config_str)
-          document["xValues"].value = config.get("xValues", "")
-          document["yValues"].value = config.get("yValues", "")
-          document["chartType"].value = config.get("chartType", "line")
-          document["chartTitle"].value = config.get("chartTitle", "")
-          document["xAxisLabel"].value = config.get("xAxisLabel", "")
-          document["yAxisLabel"].value = config.get("yAxisLabel", "")
-          document["datasetColor"].value = config.get("datasetColor", "#4caf50")
-          document["borderColor"].value = config.get("borderColor", "#4caf50")
-          document["xAxisType"].value = config.get("xAxisType", "Numeric")
-          document["yAxisType"].value = config.get("yAxisType", "Numeric")
-          alert("Chart configuration loaded.")
+          if config_str:
+              config = json.loads(config_str)
+              for key, value in config.items():
+                  document[key].value = value
+              alert("Chart configuration loaded.")
+          else:
+              alert("No saved configuration.")
 
-      # --- Additional Features Functions for Equation Panel ---
-
-      # Update equation based on parameter sliders (Feature 1)
+      # Update equation with sliders
       def update_equation_with_params(event):
-          a = document["paramA"].value
-          b = document["paramB"].value
-          c = document["paramC"].value
-          eq_str = f"{a}*x**2 + {b}*x + {c}"
-          document["equation"].value = eq_str
+          a, b, c = document["paramA"].value, document["paramB"].value, document["paramC"].value
+          document["equation"].value = f"{a}*x**2 + {b}*x + {c}"
           create_graph_equation(event)
-          apply_transform_animation()
 
-      # Update slider display values
+      # Update slider displays
       def update_slider_display(event):
           target = event.target
-          if target.id == "paramA":
-              document["paramAValue"].text = target.value
-          elif target.id == "paramB":
-              document["paramBValue"].text = target.value
-          elif target.id == "paramC":
-              document["paramCValue"].text = target.value
+          document[f"{target.id}Value"].text = target.value
 
-      # Toggle additional inputs based on equation type (Feature 5)
+      # Toggle equation type inputs
       def toggle_additional_inputs(event):
           eq_type = document["equationType"].value
-          if eq_type == "explicit":
-              document["parametricInputs"].style.display = "none"
-              document["implicitInput"].style.display = "none"
-          elif eq_type == "parametric":
-              document["parametricInputs"].style.display = "block"
-              document["implicitInput"].style.display = "none"
-          elif eq_type == "implicit":
-              document["parametricInputs"].style.display = "none"
-              document["implicitInput"].style.display = "block"
+          document["parametricInputs"].style.display = "block" if eq_type == "parametric" else "none"
+          document["implicitInput"].style.display = "block" if eq_type == "implicit" else "none"
 
-      # Plot additional equation based on selected type (Features 5 & 6)
+      # Plot additional equations
       def plot_additional_equation(event):
           eq_type = document["equationType"].value
           if eq_type == "explicit":
               create_graph_equation(event)
           elif eq_type == "parametric":
-              x_eq = document["parametricX"].value.strip()
-              y_eq = document["parametricY"].value.strip()
-              start_t_str = document["startT"].value.strip()
-              end_t_str = document["endT"].value.strip()
-              if not x_eq or not y_eq:
-                  alert("Please fill in the parametric functions.")
-                  return
-              # Use default t values if not provided
-              if start_t_str == "":
-                  start_t = 0.0
-              else:
-                  try:
-                      start_t = float(start_t_str)
-                  except Exception:
-                      alert("Invalid start t value.")
-                      return
-              if end_t_str == "":
-                  end_t = 10.0
-              else:
-                  try:
-                      end_t = float(end_t_str)
-                  except Exception:
-                      alert("Invalid end t value.")
-                      return
-              if start_t >= end_t:
-                  alert("Start t must be less than end t.")
-                  return
-              t_values = [start_t + i*(end_t - start_t)/100 for i in range(101)]
-              data_points = []
+              x_eq, y_eq = document["parametricX"].value.strip(), document["parametricY"].value.strip()
+              start_t, end_t = document["startT"].value.strip() or "0", document["endT"].value.strip() or "6.28"
               try:
-                  def f_x(t):
-                      return eval(x_eq, {"__builtins__": None, "math": math, "t": t})
-                  def f_y(t):
-                      return eval(y_eq, {"__builtins__": None, "math": math, "t": t})
-              except Exception as e:
-                  alert("Error in parsing parametric equations: " + str(e))
-                  return
-              for t in t_values:
-                  try:
-                      x_val = f_x(t)
-                      y_val = f_y(t)
-                      data_points.append({"x": x_val, "y": y_val})
-                  except Exception:
-                      continue
-              clear_chart()
-              ctx = document["myChart"].getContext("2d")
-              config = build_chart_config(data_points, "Parametric Equation")
-              window.chart = window.Chart.new(ctx, config)
-              window.dataPoints = data_points
-              apply_transform_animation()
+                  start_t, end_t = float(start_t), float(end_t)
+                  if start_t >= end_t:
+                      raise ValueError
+                  t_values = [start_t + i * (end_t - start_t) / 100 for i in range(101)]
+                  data_points = []
+                  for t in t_values:
+                      x = eval(x_eq, {"__builtins__": None, "math": math, "t": t})
+                      y = eval(y_eq, {"__builtins__": None, "math": math, "t": t})
+                      data_points.append({"x": x, "y": y})
+                  clear_chart()
+                  ctx = document["myChart"].getContext("2d")
+                  config = build_chart_config(data_points, "Parametric Equation")
+                  window.chart = window.Chart.new(ctx, config)
+                  window.dataPoints = data_points
+                  apply_transform_animation()
+              except Exception:
+                  alert("Invalid parametric input.")
           elif eq_type == "implicit":
-              implicit_eq = document["implicitEquation"].value.strip()
-              # Use default ranges if not provided
-              start_x_str = document["startXImplicit"].value.strip()
-              end_x_str = document["endXImplicit"].value.strip()
-              start_y_str = document["startY"].value.strip()
-              end_y_str = document["endY"].value.strip()
-              if not implicit_eq:
-                  alert("Please fill in the implicit equation field.")
-                  return
-              if start_x_str == "":
-                  start_x = -10.0
-              else:
-                  try:
-                      start_x = float(start_x_str)
-                  except Exception:
-                      alert("Invalid start x value.")
-                      return
-              if end_x_str == "":
-                  end_x = 10.0
-              else:
-                  try:
-                      end_x = float(end_x_str)
-                  except Exception:
-                      alert("Invalid end x value.")
-                      return
-              if start_y_str == "":
-                  start_y = -10.0
-              else:
-                  try:
-                      start_y = float(start_y_str)
-                  except Exception:
-                      alert("Invalid start y value.")
-                      return
-              if end_y_str == "":
-                  end_y = 10.0
-              else:
-                  try:
-                      end_y = float(end_y_str)
-                  except Exception:
-                      alert("Invalid end y value.")
-                      return
-              data_points = []
-              tolerance = 0.1
-              num_points = 50
-              x_values = [start_x + i*(end_x - start_x)/num_points for i in range(num_points+1)]
-              y_values = [start_y + i*(end_y - start_y)/num_points for i in range(num_points+1)]
-              for x in x_values:
-                  for y in y_values:
-                      try:
-                          value = eval(implicit_eq, {"__builtins__": None, "math": math, "x": x, "y": y})
-                          if abs(value) < tolerance:
+              eq = document["implicitEquation"].value.strip()
+              start_x, end_x = document["startXImplicit"].value.strip() or "-10", document["endXImplicit"].value.strip() or "10"
+              start_y, end_y = document["startY"].value.strip() or "-10", document["endY"].value.strip() or "10"
+              try:
+                  start_x, end_x, start_y, end_y = map(float, [start_x, end_x, start_y, end_y])
+                  x_vals = [start_x + i * (end_x - start_x) / 50 for i in range(51)]
+                  y_vals = [start_y + i * (end_y - start_y) / 50 for i in range(51)]
+                  data_points = []
+                  for x in x_vals:
+                      for y in y_vals:
+                          if abs(eval(eq, {"__builtins__": None, "math": math, "x": x, "y": y})) < 0.1:
                               data_points.append({"x": x, "y": y})
-                      except Exception:
-                          continue
-              if not data_points:
-                  alert("No points found for the given implicit equation. Try adjusting the range or tolerance.")
-                  return
-              clear_chart()
-              ctx = document["myChart"].getContext("2d")
-              config = build_chart_config(data_points, "Implicit Equation")
-              window.chart = window.Chart.new(ctx, config)
-              window.dataPoints = data_points
-              apply_transform_animation()
+                  clear_chart()
+                  ctx = document["myChart"].getContext("2d")
+                  config = build_chart_config(data_points, "Implicit Equation")
+                  window.chart = window.Chart.new(ctx, config)
+                  window.dataPoints = data_points
+                  apply_transform_animation()
+              except Exception:
+                  alert("Invalid implicit input.")
 
-      # Handle tab change to show/hide more options and clear chart
-      def on_tab_shown(ev):
-          more_options = document["moreOptionsContainer"]
+      # Handle tab switching
+      def on_tab_change(ev):
+          target_id = ev.target.getAttribute("data-target")
+          for panel in ["#dataPanel", "#equationPanel"]:
+              document.querySelector(panel).classList.toggle("active", panel == target_id)
+          for btn in document.querySelectorAll(".custom-nav button"):
+              btn.classList.toggle("active", btn.getAttribute("data-target") == target_id)
+          document["moreOptionsContainer"].style.display = "block" if target_id == "#dataPanel" else "none"
           clear_chart()
-          if ev.target.id == "data-tab":
-              more_options.style.display = "block"
-          elif ev.target.id == "equation-tab":
-              more_options.style.display = "none"
 
-      # Bind events to UI elements
+      # Bind events
       document["createBtn"].bind("click", create_graph_data)
       document["createEquationBtn"].bind("click", create_graph_equation)
       document["clearDataBtn"].bind("click", lambda ev: clear_chart())
       document["clearEquationBtn"].bind("click", lambda ev: clear_chart())
+      document["trigFunction"].bind("change", insert_trig_function)
       document["exportBtn"].bind("click", export_graph)
       document["resetZoomBtn"].bind("click", reset_zoom)
       document["dataFileInput"].bind("change", import_data)
@@ -1075,19 +914,17 @@
       document["downloadCSVBtn"].bind("click", download_csv)
       document["saveConfigBtn"].bind("click", save_config)
       document["loadConfigBtn"].bind("click", load_config)
-      # Bind new additional features
       document["updateEquationWithParams"].bind("click", update_equation_with_params)
       document["paramA"].bind("input", update_slider_display)
       document["paramB"].bind("input", update_slider_display)
       document["paramC"].bind("input", update_slider_display)
       document["equationType"].bind("change", toggle_additional_inputs)
       document["plotAdditionalBtn"].bind("click", plot_additional_equation)
-      # Bind tab change events
-      document["data-tab"].bind("shown.bs.tab", on_tab_shown)
-      document["equation-tab"].bind("shown.bs.tab", on_tab_shown)
+      document["data-tab"].bind("click", on_tab_change)
+      document["equation-tab"].bind("click", on_tab_change)
     </script>
 
-    <!-- Bootstrap Bundle JS -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
