@@ -30,23 +30,28 @@
       }
       .container {
         display: flex;
-        width: 90%;
-        height: 90%;
-        max-width: 1200px;
-        border-radius: 20px;
+        width: 95%;
+        height: 95%;
+        max-width: 1400px;
+        border-radius: 24px;
         overflow: hidden;
-        padding: 5px;
-        background: linear-gradient(160deg, #9e86ff, #4c2c8c);
-        outline: 0.1px solid rgba(255, 255, 255, 1);
-        outline-offset: 1px;
+        padding: 8px;
+        background: linear-gradient(135deg, #9e86ff, #4c2c8c, #2c1f3a);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+                   inset 0 2px 8px rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
       }
       .content-wrapper {
         display: flex;
         width: 100%;
         height: 100%;
-        background: #181818;
+        background: linear-gradient(to right, #181818, #1f1f1f);
         border-radius: 18px;
         overflow: hidden;
+        box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
       }
       .graph-panel {
         flex: 2.3;
@@ -162,28 +167,158 @@
       .custom-nav {
         display: flex;
         justify-content: space-around;
-        background: #1a1a2e;
-        padding: 10px;
-        border-radius: 10px;
+        background: linear-gradient(135deg, #1a1a2e, #2a2a4a);
+        padding: 12px 15px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2),
+                   inset 0 1px 2px rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .custom-nav button {
+        background: rgba(26, 26, 46, 0.6);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 12px 25px;
+        border-radius: 25px;
+        cursor: pointer;
+        font-weight: 600;
+        font-family: "Fira Code", monospace;
+        letter-spacing: 0.5px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(5px);
+        text-transform: uppercase;
+        font-size: 13px;
+      }
+
+      .custom-nav button.active {
+        background: linear-gradient(135deg, #9e86ff, #4c2c8c);
+        color: #ffffff;
+        box-shadow: 0 4px 15px rgba(158, 134, 255, 0.3);
+        transform: translateY(-1px);
+      }
+
+      .custom-nav button:hover {
+        background: linear-gradient(135deg, #4c2c8c, #2c1f3a);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(76, 44, 140, 0.4);
+      }
+            /* Add these styles to your existing CSS */
+            .function-select-wrapper {
+        background: linear-gradient(145deg, #1e1e1e, #2a2a2a);
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.05);
         margin-bottom: 20px;
       }
-      .custom-nav button {
-        background: #1a1a2e;
-        color: #ffffff;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 20px;
-        cursor: pointer;
-        font-weight: bold;
+
+      .function-select-label {
+        color: #9e86ff;
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin-bottom: 12px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+
+      .function-select {
+        background: rgba(26, 26, 46, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 12px;
+        color: #fff;
         font-family: "Fira Code", monospace;
-        transition: background 0.3s, color 0.3s;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(5px);
       }
-      .custom-nav button.active {
-        background: #e0e0e0;
-        color: #000000;
+
+      .function-select:hover {
+        border-color: rgba(158, 134, 255, 0.4);
+        box-shadow: 0 0 15px rgba(158, 134, 255, 0.1);
       }
-      .custom-nav button:hover {
-        background: #4c2c8c;
+
+      .function-select:focus {
+        border-color: #9e86ff;
+        box-shadow: 0 0 0 2px rgba(158, 134, 255, 0.2);
+        outline: none;
+      }
+
+      .function-select option {
+        background: #1a1a2e;
+        color: #fff;
+        padding: 10px;
+      }
+      .app-title {
+        text-align: center;
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-bottom: 25px;
+        background: linear-gradient(135deg, #9e86ff, #4c2c8c);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        letter-spacing: 1px;
+      }
+      .chart-type-wrapper {
+        background: linear-gradient(145deg, #1e1e1e, #2a2a2a);
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        margin-bottom: 20px;
+      }
+
+      .chart-type-label {
+        color: #9e86ff;
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin-bottom: 12px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .chart-type-label::before {
+        content: "📊";
+        font-size: 1.2rem;
+      }
+
+      .chart-type-select {
+        background: rgba(26, 26, 46, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 12px;
+        color: #fff;
+        font-family: "Fira Code", monospace;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(5px);
+        width: 100%;
+        cursor: pointer;
+      }
+
+      .chart-type-select:hover {
+        border-color: rgba(158, 134, 255, 0.4);
+        box-shadow: 0 0 15px rgba(158, 134, 255, 0.1);
+        transform: translateY(-1px);
+      }
+
+      .chart-type-select:focus {
+        border-color: #9e86ff;
+        box-shadow: 0 0 0 2px rgba(158, 134, 255, 0.2);
+        outline: none;
+      }
+
+      .chart-type-select option {
+        background: #1a1a2e;
+        color: #fff;
+        padding: 12px;
+        font-size: 14px;
       }
     </style>
   </head>
@@ -197,6 +332,9 @@
             <canvas id="myChart"></canvas>
           </div>
         </div>
+        <div class="input-panel">
+            <h1 class="app-title">ABS Graph Creator</h1>
+            <div class="input-header">Graph Creator</div>
         <!-- Input Panel -->
         <div class="input-panel">
           <div class="input-header">Graph Creator</div>
@@ -204,6 +342,7 @@
             <button class="active" id="data-tab" data-target="#dataPanel">Data</button>
             <button id="equation-tab" data-target="#equationPanel">Equation</button>
           </div>
+          
           <!-- Data Entry Panel -->
           <div id="dataPanel" class="panel active">
             <h2>Enter Data</h2>
@@ -225,20 +364,20 @@
               <label for="equation" class="form-label">Equation (in terms of x):</label>
               <input type="text" id="equation" class="form-control" placeholder="e.g. x**2 + 2*x + 1" />
             </div>
-            <div class="mb-3">
-              <label for="trigFunction" class="form-label">Or select a function:</label>
-              <select id="trigFunction" class="form-control">
-                <option value="">-- Select Function --</option>
-                <option value="math.sin(x)">sin(x)</option>
-                <option value="math.cos(x)">cos(x)</option>
-                <option value="math.tan(x)">tan(x)</option>
-                <option value="math.log(x)">log(x)</option>
-                <option value="math.exp(x)">exp(x)</option>
-                <option value="math.sqrt(x)">sqrt(x)</option>
-                <option value="abs(x)">abs(x)</option>
-                <option value="math.pow(x, 2)">x^2</option>
-              </select>
-            </div>
+            <div class="mb-3 function-select-wrapper">
+                <label for="trigFunction" class="form-label function-select-label">Select a Function</label>
+                <select id="trigFunction" class="form-control function-select">
+                  <option value="">-- Select Function --</option>
+                  <option value="math.sin(x)">sin(x)</option>
+                  <option value="math.cos(x)">cos(x)</option>
+                  <option value="math.tan(x)">tan(x)</option>
+                  <option value="math.log(x)">log(x)</option>
+                  <option value="math.exp(x)">exp(x)</option>
+                  <option value="math.sqrt(x)">sqrt(x)</option>
+                  <option value="abs(x)">abs(x)</option>
+                  <option value="math.pow(x, 2)">x²</option>
+                </select>
+              </div>
             <div class="mb-3">
               <label for="startX" class="form-label">Start x:</label>
               <input type="text" id="startX" class="form-control" placeholder="e.g. -10" />
@@ -366,16 +505,16 @@
                         <option value="Alphabetic">Alphabetic</option>
                       </select>
                     </div>
-                    <div class="mb-3">
-                      <label for="chartType" class="form-label">Chart Type:</label>
-                      <select id="chartType" class="form-control">
-                        <option value="line" selected>Line</option>
-                        <option value="bar">Bar</option>
-                        <option value="scatter">Scatter</option>
-                        <option value="area">Area</option>
-                        <option value="horizontalBar">Horizontal Bar</option>
-                      </select>
-                    </div>
+                    <div class="mb-3 chart-type-wrapper">
+                        <label for="chartType" class="form-label chart-type-label">Chart Type</label>
+                        <select id="chartType" class="form-control chart-type-select">
+                          <option value="line" selected>📈 Line Chart</option>
+                          <option value="bar">📊 Bar Chart</option>
+                          <option value="scatter">🔵 Scatter Plot</option>
+                          <option value="area">📉 Area Chart</option>
+                          <option value="horizontalBar">📊 Horizontal Bar</option>
+                        </select>
+                      </div>
                     <div class="mb-3">
                       <label for="chartTitle" class="form-label">Chart Title:</label>
                       <input type="text" id="chartTitle" class="form-control" placeholder="Enter Chart Title" />
