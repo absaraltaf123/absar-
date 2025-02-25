@@ -8,7 +8,16 @@
   <!-- MathJax for LaTeX rendering -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <style>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    // Verify D3.js is loaded
+    window.addEventListener('load', function() {
+      if (typeof d3 === 'undefined') {
+        console.error('D3.js is not loaded properly');
+      }
+    });
+  </script>
+ <style>
     /* Header Styling */
     header {
       text-align: center;
@@ -185,48 +194,102 @@
     }
 
     /* Edit Mode Styling */
-    .edit-mode {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      padding: 20px;
-    }
+    /* Add this to your existing CSS */
+.edit-mode {
+  background: linear-gradient(135deg, #ffffff, #f5f5f5);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  box-sizing: border-box;
+}
 
-    .edit-mode input, .edit-mode textarea {
-      padding: 10px;
-      border: 2px solid #ccc;
-      border-radius: 5px;
-      font-size: 14px;
-      width: 100%;
-      box-sizing: border-box;
-    }
+.edit-mode input,
+.edit-mode textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  background: #ffffff;
+}
 
-    .edit-mode button {
-      padding: 8px 16px;
-      border: none;
-      border-radius: 5px;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
+.edit-mode textarea {
+  min-height: 100px;
+  resize: vertical;
+}
 
-    .save-btn {
-      background: #28a745;
-      color: #fff;
-    }
+.edit-mode input:focus,
+.edit-mode textarea:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  outline: none;
+}
 
-    .save-btn:hover {
-      background: #218838;
-    }
+.edit-mode .button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
 
-    .cancel-btn {
-      background: #dc3545;
-      color: #fff;
-    }
+.edit-mode .save-btn,
+.edit-mode .cancel-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+}
 
-    .cancel-btn:hover {
-      background: #c82333;
-    }
+.edit-mode .save-btn {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+}
+
+.edit-mode .cancel-btn {
+  background: linear-gradient(135deg, #ff6b6b, #ff4757);
+  color: white;
+}
+
+.edit-mode .save-btn:hover,
+.edit-mode .cancel-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.edit-mode .subcards-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid #e0e0e0;
+}
+
+.edit-mode .subcards-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.edit-mode .add-subcard-btn {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #48bb78, #38a169);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.edit-mode .add-subcard-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(72, 187, 120, 0.2);
+}
 
     /* Delete & Edit Buttons */
     .delete-btn,
@@ -370,7 +433,9 @@
     #noteModal .modal-content {
       background: linear-gradient(135deg, 
         #FFFFFF, #FAFAFA, #F5F5F5, #EEEEEE, #E0E0E0, #BDBDBD
-      );
+       
+        );
+        color: #000;
       padding: 40px;
       border-radius: 10px;
       max-width: 90%;
@@ -665,56 +730,473 @@
 
     /* Controls Panel Styling */
     .input-panel {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      margin-bottom: 30px;
-      padding: 30px;
-      background: linear-gradient(135deg, #6b46c1, #805ad5);
-      border-radius: 20px;
-      box-shadow: 
-        0 10px 30px rgba(107, 70, 193, 0.2),
-        inset 0 -2px 6px rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      max-width: 600px;
-      width: 100%;
-      position: relative;
-      overflow: hidden;
-    }
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 30px;
+  padding: 30px;
+  background: linear-gradient(135deg, #6b46c1, #805ad5);
+  border-radius: 20px;
+  box-shadow: 
+    0 10px 30px rgba(107, 70, 193, 0.2),
+    inset 0 -2px 6px rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  max-width: 600px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease-in-out;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
 
-    .input-panel::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
-      animation: shimmer 10s infinite linear;
-    }
+/* Animated background effect */
+.input-panel::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+  animation: shimmer 10s infinite linear;
+}
 
-    .input-panel input {
-      padding: 15px 20px;
-      border: 2px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 15px 20px;
-      height: 50px;
-      background: rgba(255, 255, 255, 0.12);
-      color: white;
-      font-size: 16px;
-      transition: all 0.3s ease;
-      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      outline: none;
-      position: relative;
-      z-index: 1;
-    }
-    .input-panel input[id="answer"] {
-      height: 150px;
-      resize: vertical;
-      min-height: 150px;
-      max-height: 300px;
-    }
+/* Additional decorative elements */
+.input-panel::after {
+  content: '';
+  position: absolute;
+  bottom: -50px;
+  right: -50px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+  z-index: 0;
+}
+
+/* Particle effect elements */
+.input-panel .particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.4);
+  pointer-events: none;
+}
+
+.input-panel .particle:nth-child(1) {
+  top: 20%;
+  left: 10%;
+  animation: float 8s infinite ease-in-out;
+}
+
+.input-panel .particle:nth-child(2) {
+  top: 30%;
+  right: 15%;
+  width: 8px;
+  height: 8px;
+  animation: float 12s infinite ease-in-out;
+}
+
+.input-panel .particle:nth-child(3) {
+  bottom: 25%;
+  left: 20%;
+  width: 4px;
+  height: 4px;
+  animation: float 10s infinite ease-in-out;
+}
+
+.input-panel .particle:nth-child(4) {
+  bottom: 15%;
+  right: 25%;
+  animation: float 14s infinite ease-in-out;
+}
+
+.input-panel .particle:nth-child(5) {
+  top: 45%;
+  left: 35%;
+  width: 5px;
+  height: 5px;
+  animation: floatReverse 11s infinite ease-in-out;
+}
+
+/* Enhanced styling for inputs */
+.input-panel input {
+  padding: 15px 20px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.1),
+    0 0 0 transparent;
+  width: 100%;
+  outline: none;
+  position: relative;
+  z-index: 1;
+  backdrop-filter: blur(5px);
+  letter-spacing: 0.3px;
+}
+
+.input-panel input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+}
+
+.input-panel input:focus {
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.1),
+    0 0 20px rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.input-panel input:focus::placeholder {
+  opacity: 0.7;
+  transform: translateX(5px);
+}
+
+/* Textarea styling */
+.input-panel input[id="answer"] {
+  height: 150px;
+  resize: vertical;
+  min-height: 150px;
+  max-height: 300px;
+  font-family: inherit;
+  line-height: 1.5;
+  transition: height 0.3s ease, min-height 0.3s ease;
+}
+
+.input-panel input[id="answer"]:focus {
+  min-height: 180px;
+}
+
+/* Label styling */
+.input-panel label {
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 5px;
+  font-weight: 500;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: block;
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Form group styling */
+.input-panel .form-group {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.input-panel .form-group:hover label {
+  color: white;
+  transform: translateX(3px);
+}
+
+/* Add floating decorative elements */
+.input-panel .decoration {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.5;
+  z-index: 0;
+}
+
+.input-panel .decoration-1 {
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  transform: rotate(45deg);
+  animation: rotate 20s infinite linear;
+}
+
+.input-panel .decoration-2 {
+  bottom: 30px;
+  left: 25px;
+  width: 25px;
+  height: 25px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  animation: pulse 15s infinite ease-in-out;
+}
+
+.input-panel .decoration-3 {
+  top: 50%;
+  right: 10%;
+  width: 15px;
+  height: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  transform: rotate(30deg);
+  animation: float 18s infinite ease-in-out;
+}
+
+/* Hover state for panel */
+.input-panel:hover {
+  background: linear-gradient(135deg, #7c4ddb, #9168e0);
+  box-shadow: 
+    0 15px 40px rgba(107, 70, 193, 0.3),
+    inset 0 -2px 10px rgba(255, 255, 255, 0.2);
+  transform: translateY(-5px);
+}
+
+/* Focus state for the whole panel */
+.input-panel:focus-within {
+  background: linear-gradient(135deg, #7c4ddb, #9168e0);
+  box-shadow: 
+    0 15px 40px rgba(107, 70, 193, 0.3),
+    inset 0 -2px 10px rgba(255, 255, 255, 0.2);
+  transform: translateY(-5px);
+}
+
+/* Helper text styling */
+.input-panel .helper-text {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* Error state */
+.input-panel .error input {
+  border-color: rgba(255, 100, 100, 0.5);
+  background: rgba(255, 100, 100, 0.1);
+}
+
+.input-panel .error-message {
+  color: rgba(255, 200, 200, 0.9);
+  font-size: 12px;
+  margin-top: 5px;
+  display: block;
+}
+
+/* Success state */
+.input-panel .success input {
+  border-color: rgba(100, 255, 150, 0.5);
+  background: rgba(100, 255, 150, 0.05);
+}
+
+/* Button styling within panel */
+.input-panel button {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  padding: 15px 25px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.5px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  align-self: flex-end;
+  margin-top: 10px;
+}
+
+.input-panel button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.5s ease;
+}
+
+.input-panel button:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-3px);
+  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.15);
+}
+
+.input-panel button:hover::before {
+  left: 100%;
+}
+
+.input-panel button:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Tooltip styling */
+.input-panel .tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  width: max-content;
+  max-width: 200px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.input-panel .tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.7);
+}
+
+.input-panel *:hover > .tooltip {
+  opacity: 1;
+  visibility: visible;
+  bottom: calc(100% + 10px);
+}
+
+/* Animations */
+@keyframes shimmer {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+  }
+  25% {
+    transform: translateY(-10px) translateX(5px);
+  }
+  50% {
+    transform: translateY(0) translateX(10px);
+  }
+  75% {
+    transform: translateY(10px) translateX(5px);
+  }
+}
+
+@keyframes floatReverse {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+  }
+  25% {
+    transform: translateY(10px) translateX(-5px);
+  }
+  50% {
+    transform: translateY(0) translateX(-10px);
+  }
+  75% {
+    transform: translateY(-10px) translateX(-5px);
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(45deg);
+  }
+  100% {
+    transform: rotate(405deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .input-panel {
+    background: linear-gradient(135deg, #5a3aaa, #7b54d6);
+  }
+  
+  .input-panel:hover,
+  .input-panel:focus-within {
+    background: linear-gradient(135deg, #6b46c1, #8662db);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .input-panel {
+    padding: 25px;
+    max-width: 100%;
+  }
+  
+  .input-panel button {
+    width: 100%;
+    align-self: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .input-panel {
+    padding: 20px;
+    border-radius: 15px;
+  }
+  
+  .input-panel input {
+    font-size: 14px;
+    padding: 12px 15px;
+  }
+}
+
+/* Accessible focus states */
+.input-panel input:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+
+.input-panel button:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+
+/* Loading state */
+.input-panel.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+  animation: loading 1.5s infinite;
+  z-index: 9;
+}
+
+@keyframes loading {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
 
     .button-panel {
       display: flex;
@@ -748,120 +1230,308 @@
       background: rgba(255, 255, 255, 0.14);
     }
     .button-panel {
-      display: flex;
-      gap: 15px;
-      margin-bottom: 30px;
-      flex-wrap: wrap;
-      justify-content: center;
-      background: linear-gradient(135deg, #2d3748, #4a5568);
-      padding: 25px;
-      border-radius: 20px;
-      box-shadow: 
-        0 15px 35px rgba(0, 0, 0, 0.2),
-        inset 0 2px 6px rgba(255, 255, 255, 0.1);
-      position: relative;
-      max-width: 600px;
-      width: 100%;
-      overflow: hidden;
-    }
+  display: flex;
+  gap: 15px;
+  margin: 40px auto;
+  flex-wrap: wrap;
+  justify-content: center;
+  background: linear-gradient(135deg, #2d3748, #4a5568);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow:
+    0 15px 35px rgba(0, 0, 0, 0.2),
+    inset 0 2px 6px rgba(255, 255, 255, 0.1);
+  position: relative;
+  max-width: 600px;
+  width: 100%;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
 
-    .button-panel::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.2), 
-        transparent
-      );
-    }
+/* Add subtle animated background pattern */
+.button-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(103, 126, 234, 0.1) 0%, transparent 25%),
+    radial-gradient(circle at 80% 70%, rgba(118, 75, 162, 0.1) 0%, transparent 25%);
+  opacity: 0.4;
+  z-index: 0;
+  animation: panelGlow 10s infinite alternate;
+}
 
-    .button-panel button {
-      padding: 12px 24px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      border: none;
-      border-radius: 12px;
-      color: white;
-      font-size: 16px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 
-        0 4px 15px rgba(0, 0, 0, 0.2),
-        inset 0 -2px 4px rgba(0, 0, 0, 0.2);
-      position: relative;
-      overflow: hidden;
-    }
+/* Top border glow effect */
+.button-panel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 20%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.05) 80%,
+    transparent 100%
+  );
+  animation: borderGlow 6s infinite alternate;
+}
 
-    .button-panel button:hover {
-      transform: translateY(-3px) scale(1.02);
-      box-shadow: 
-        0 8px 25px rgba(0, 0, 0, 0.3),
-        inset 0 -2px 4px rgba(0, 0, 0, 0.2);
-      background: linear-gradient(135deg, #7f9cf5, #805ad5);
-    }
+/* Corner accents */
+.button-panel > .corner {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  z-index: 1;
+}
 
-    .button-panel button:active {
-      transform: translateY(1px);
-      box-shadow: 
-        0 2px 10px rgba(0, 0, 0, 0.2),
-        inset 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+.button-panel > .corner-tl {
+  top: 0;
+  left: 0;
+  border-top: 2px solid rgba(103, 126, 234, 0.6);
+  border-left: 2px solid rgba(103, 126, 234, 0.6);
+  border-top-left-radius: 15px;
+}
 
-    .button-panel select {
-      padding: 14px 28px;
-      border: 2px solid rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      background: linear-gradient(135deg, #2d3748, #4a5568);
-      color: white;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      appearance: none;
-      -webkit-appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-      background-size: 16px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
+.button-panel > .corner-tr {
+  top: 0;
+  right: 0;
+  border-top: 2px solid rgba(118, 75, 162, 0.6);
+  border-right: 2px solid rgba(118, 75, 162, 0.6);
+  border-top-right-radius: 15px;
+}
 
-    .button-panel select:hover {
-      background: #000000;
-      color: #ffffff;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-    }
+.button-panel > .corner-bl {
+  bottom: 0;
+  left: 0;
+  border-bottom: 2px solid rgba(118, 75, 162, 0.6);
+  border-left: 2px solid rgba(118, 75, 162, 0.6);
+  border-bottom-left-radius: 15px;
+}
 
-    .button-panel select:focus {
-      outline: none;
-      background: #000000;
-      color: #ffffff;
-      border-color: rgba(255, 255, 255, 0.2);
-    }
+.button-panel > .corner-br {
+  bottom: 0;
+  right: 0;
+  border-bottom: 2px solid rgba(103, 126, 234, 0.6);
+  border-right: 2px solid rgba(103, 126, 234, 0.6);
+  border-bottom-right-radius: 15px;
+}
 
-    .button-panel select option {
-      background: #ffffff;
-      color: #000000;
-      padding: 12px;
-      font-size: 12px;
-      font-weight: 600;
-    }
+.button-panel button {
+  padding: 14px 28px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow:
+    0 4px 15px rgba(0, 0, 0, 0.2),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
 
-    .button-panel select option:hover {
-      background: #000000;
-      color: #ffffff;
-    }
+/* Button ripple effect */
+.button-panel button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%, -50%);
+  transform-origin: 50% 50%;
+  z-index: -1;
+}
 
-    .button-panel select option:checked {
-      background: #000000;
-      color: #ffffff;
-    }
+.button-panel button:focus::after {
+  animation: ripple 1s ease-out;
+}
 
+/* Button glow on hover */
+.button-panel button::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(135deg, #7f9cf5, #805ad5);
+  z-index: -2;
+  border-radius: 14px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.button-panel button:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.3),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #7f9cf5, #805ad5);
+}
+
+.button-panel button:hover::before {
+  opacity: 0.5;
+  animation: buttonGlow 1.5s infinite alternate;
+}
+
+.button-panel button:active {
+  transform: translateY(1px);
+  box-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.2),
+    inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button-panel select {
+  padding: 14px 28px 14px 20px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2d3748, #4a5568);
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  position: relative;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.button-panel select:hover {
+  background: linear-gradient(135deg, #1a202c, #2d3748);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.button-panel select:focus {
+  outline: none;
+  background: linear-gradient(135deg, #1a202c, #2d3748);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.15),
+    0 0 0 3px rgba(103, 126, 234, 0.2);
+}
+
+.button-panel select option {
+  background: #2d3748;
+  color: white;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.button-panel select option:hover {
+  background: #4a5568;
+}
+
+.button-panel select option:checked {
+  background: #667eea;
+  color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .button-panel {
+    padding: 20px;
+    gap: 10px;
+  }
+  
+  .button-panel button,
+  .button-panel select {
+    width: 100%;
+    text-align: center;
+    padding: 12px 20px;
+  }
+  
+  .button-panel select {
+    background-position: right 20px center;
+  }
+}
+
+/* Animations */
+@keyframes ripple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 1;
+  }
+  20% {
+    transform: scale(25, 25);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(50, 50);
+    opacity: 0;
+  }
+}
+
+@keyframes buttonGlow {
+  0% {
+    box-shadow: 0 0 5px rgba(103, 126, 234, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 15px rgba(118, 75, 162, 0.8);
+  }
+}
+
+@keyframes borderGlow {
+  0%, 100% {
+    opacity: 0.3;
+    transform: translateX(-30%);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translateX(30%);
+  }
+}
+
+@keyframes panelGlow {
+  0% {
+    opacity: 0.2;
+    background-position: 0% 0%;
+  }
+  100% {
+    opacity: 0.5;
+    background-position: 100% 100%;
+  }
+}
+
+/* Dark mode enhancements */
+@media (prefers-color-scheme: dark) {
+  .button-panel {
+    background: linear-gradient(135deg, #1a202c, #2d3748);
+  }
+  
+  .button-panel button {
+    background: linear-gradient(135deg, #5a67d8, #6b46c1);
+  }
+  
+  .button-panel button:hover {
+    background: linear-gradient(135deg, #667eea, #805ad5);
+  }
+}
     /* Create a container for input and button panels */
     body {
       display: flex;
@@ -944,12 +1614,510 @@
       }
     }
 
+    :root {
+  --panel-bg: #0f172a;
+  --panel-gradient: linear-gradient(135deg, #0f172a, #1e293b);
+  --glow-color-1: #38bdf8;
+  --glow-color-2: #818cf8;
+  --glow-color-3: #c084fc;
+  --accent-color-1: #10b981;
+  --accent-color-2: #f59e0b;
+  --accent-color-3: #ef4444;
+  --glass-highlight: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: rgba(0, 0, 0, 0.5);
+}
+
+body {
+  background-color: #030712;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: white;
+  perspective: 1000px;
+  overflow-x: hidden;
+}
+
+/* Main panel container with 3D effect */
+.button-panel {
+  display: flex;
+  gap: 16px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  justify-content: center;
+  background: var(--panel-gradient);
+  padding: 40px;
+  border-radius: 24px;
+  position: relative;
+  max-width: 700px;
+  width: 100%;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.5),
+    0 5px 15px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 0 30px rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 10;
+}
+
+/* Tilt effect on hover */
+.button-panel:hover {
+  transform: translateY(-5px) rotateX(5deg);
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.6),
+    0 5px 15px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 0 30px rgba(0, 0, 0, 0.8);
+}
+
+/* Glowing background effect with animation */
+.button-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 10% 10%, var(--glow-color-1) 0%, transparent 40%),
+    radial-gradient(circle at 90% 90%, var(--glow-color-2) 0%, transparent 40%),
+    radial-gradient(circle at 90% 10%, var(--glow-color-3) 0%, transparent 40%),
+    radial-gradient(circle at 10% 90%, var(--accent-color-1) 0%, transparent 40%);
+  opacity: 0.15;
+  z-index: -1;
+  filter: blur(30px);
+  animation: backgroundPulse 10s infinite alternate;
+}
+
+/* Panel glass-like border */
+.button-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.05);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Moving light effect */
+.light-effect {
+  position: absolute;
+  top: -150%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    135deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.01) 40%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0.01) 60%,
+    transparent 80%
+  );
+  transform: rotate(35deg);
+  animation: lightMove 8s infinite linear;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Floating particles */
+.particles-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--glow-color-1);
+  opacity: 0.4;
+  animation: float 10s infinite linear;
+}
+
+.particle:nth-child(2n) {
+  width: 8px;
+  height: 8px;
+  background: var(--glow-color-2);
+  animation-duration: 15s;
+}
+
+.particle:nth-child(3n) {
+  width: 4px;
+  height: 4px;
+  background: var(--glow-color-3);
+  animation-duration: 20s;
+}
+
+.particle:nth-child(4n) {
+  width: 3px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--accent-color-1);
+  animation-duration: 25s;
+}
+
+/* High-end 3D button with neon effect */
+.button-panel button {
+  padding: 14px 28px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  z-index: 5;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  transform-style: preserve-3d;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow:
+    0 5px 15px rgba(0, 0, 0, 0.3),
+    inset 0 0 5px rgba(255, 255, 255, 0.05);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Button glow effects */
+.button-panel button::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(
+    45deg,
+    var(--glow-color-1),
+    var(--glow-color-2),
+    var(--glow-color-3),
+    var(--accent-color-1)
+  );
+  border-radius: 16px;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  filter: blur(8px);
+}
+
+/* Button hover glow */
+.button-panel button:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow:
+    0 15px 30px rgba(0, 0, 0, 0.4),
+    0 5px 15px rgba(var(--glow-color-1), 0.3),
+    inset 0 0 5px rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.button-panel button:hover::before {
+  opacity: 1;
+  animation: borderGlow 3s infinite linear;
+}
+
+/* Button press effect */
+.button-panel button:active {
+  transform: translateY(-2px) scale(0.98);
+  box-shadow:
+    0 5px 15px rgba(0, 0, 0, 0.2),
+    inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Button highlights */
+.button-panel button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: 0.5s;
+  z-index: 1;
+}
+
+.button-panel button:hover::after {
+  left: 100%;
+  transition: 0.7s;
+}
+
+/* Button text gradient on hover */
+.button-panel button:hover span {
+  background: linear-gradient(
+    90deg,
+    var(--glow-color-1),
+    var(--glow-color-2),
+    var(--glow-color-3)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: textGradient 3s infinite linear;
+}
+
+/* Colored buttons */
+.button-panel button.primary {
+  --button-color: var(--glow-color-1);
+}
+
+.button-panel button.secondary {
+  --button-color: var(--glow-color-2);
+}
+
+.button-panel button.warning {
+  --button-color: var(--accent-color-2);
+}
+
+.button-panel button.danger {
+  --button-color: var(--accent-color-3);
+}
+
+.button-panel button.colored {
+  border-color: var(--button-color);
+  box-shadow:
+    0 5px 15px rgba(0, 0, 0, 0.3),
+    0 0 5px var(--button-color),
+    inset 0 0 5px rgba(255, 255, 255, 0.05);
+}
+
+.button-panel button.colored::before {
+  background: var(--button-color);
+}
+
+.button-panel button.colored:hover {
+  box-shadow:
+    0 15px 30px rgba(0, 0, 0, 0.4),
+    0 0 20px var(--button-color),
+    inset 0 0 5px rgba(255, 255, 255, 0.1);
+}
+
+/* Futuristic select dropdown */
+.button-panel select {
+  padding: 14px 40px 14px 20px;
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.7);
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  position: relative;
+  z-index: 5;
+  box-shadow:
+    0 5px 15px rgba(0, 0, 0, 0.3),
+    inset 0 0 5px rgba(255, 255, 255, 0.05);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Custom select arrow */
+.select-wrapper {
+  position: relative;
+  z-index: 5;
+}
+
+.select-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid rgba(255, 255, 255, 0.7);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.7);
+  pointer-events: none;
+  transform-origin: 50% 50%;
+  transition: all 0.3s ease;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.select-wrapper:hover::after {
+  border-color: white;
+}
+
+/* Select hover and focus states */
+.button-panel select:hover,
+.button-panel select:focus {
+  transform: translateY(-5px);
+  box-shadow:
+    0 15px 30px rgba(0, 0, 0, 0.4),
+    0 0 15px rgba(var(--glow-color-2), 0.3),
+    inset 0 0 5px rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  outline: none;
+}
+
+.button-panel select:focus {
+  box-shadow:
+    0 15px 30px rgba(0, 0, 0, 0.4),
+    0 0 0 3px rgba(var(--glow-color-2), 0.3),
+    inset 0 0 5px rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .button-panel {
+    padding: 30px 20px;
+    border-radius: 20px;
+  }
+  
+  .button-panel button,
+  .button-panel .select-wrapper {
+    width: 100%;
+  }
+  
+  .button-panel select {
+    width: 100%;
+    text-align: left;
+  }
+}
+
+/* Fancy animations */
+@keyframes backgroundPulse {
+  0% {
+    opacity: 0.1;
+    filter: blur(30px) hue-rotate(0deg);
+  }
+  50% {
+    opacity: 0.2;
+    filter: blur(40px) hue-rotate(90deg);
+  }
+  100% {
+    opacity: 0.15;
+    filter: blur(30px) hue-rotate(180deg);
+  }
+}
+
+@keyframes borderGlow {
+  0% {
+    filter: blur(8px) hue-rotate(0deg);
+  }
+  100% {
+    filter: blur(8px) hue-rotate(360deg);
+  }
+}
+
+@keyframes textGradient {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    filter: hue-rotate(360deg);
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(100px, 100px);
+  }
+  50% {
+    transform: translate(200px, 0);
+  }
+  75% {
+    transform: translate(100px, -100px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes lightMove {
+  0% {
+    transform: translateY(100%) rotate(35deg);
+  }
+  100% {
+    transform: translateY(-100%) rotate(35deg);
+  }
+}
+
+/* Create ripple effect */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(0);
+  animation: ripple 0.6s linear;
+  pointer-events: none;
+}
+/* Add this new CSS for the semi-transparent wrapper */
+.panel-wrapper {
+  display: flex;
+  gap: 21px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 40px;
+  background: rgba(13, 27, 42, 0.6);
+  backdrop-filter: blur(10px);
+  border-radius: 25px;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Adjust the existing panel styles to match */
+.input-panel, .button-panel {
+  flex: 1;
+  margin-bottom: 0;
+  min-width: 300px;
+  max-width: 500px;
+  height: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .panel-wrapper {
+    flex-direction: column;
+    padding: 20px;
+    margin: 15px;
+  }
+  
+  .input-panel, .button-panel {
+    width: 100%;
+    max-width: 100%;
+  }
+}
     /* Connexion Mode Styles */
     #connexionCanvas {
       position: relative;
       width: 100%;
       height: 800px;
-      background: #f0f0f0;
+      background: #c7f301;
       overflow: scroll;
       display: none;
     }
@@ -980,7 +2148,7 @@
       position: absolute;
       width: 450px;
       height: 200px;
-      background: linear-gradient(135deg, #e6e6e6, #d4d4d4);
+      background: linear-gradient(135deg, #e8e5ee, #6902ef);
       border: 2px solid #999;
       border-radius: 10px;
       padding: 15px;
@@ -1019,7 +2187,26 @@
       cursor: pointer;
       transition: background 0.3s ease;
     }
+    .connexion-card h4,
+.connexion-card p {
+  color: #000;  /* Added to ensure headers and paragraphs are black */
+}
 
+.connection-panel {
+  /* ... existing styles ... */
+  color: #000;  /* Added this line */
+}
+
+.connection-panel h4,
+.connection-panel p {
+  color: #000;  /* Added to ensure headers and paragraphs are black */
+}
+
+.connection-description {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #333;  /* Already defined but ensuring it's visible */
+}
     .connection-buttons .edit-connection {
       background: linear-gradient(135deg, #667eea, #764ba2);
       color: #fff;
@@ -1079,7 +2266,92 @@
       transform: rotateY(180deg);
       color: #333;
     }
-    
+ 
+    #mindMapView {
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  overflow: hidden;
+  position: relative;
+}
+
+/* SVG container styling */
+#mindMapView svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Connection lines styling */
+#mindMapView line {
+  stroke-width: 2px;
+  stroke-linecap: round;
+  stroke-dasharray: 4;
+  animation: flowLine 30s linear infinite;
+}
+
+/* Node styling */
+#mindMapView rect {
+  fill: rgba(255, 255, 255, 0.9);
+  stroke: #4a90e2;
+  stroke-width: 2px;
+  rx: 10;
+  ry: 10;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+  transition: all 0.3s ease;
+}
+
+#mindMapView rect:hover {
+  fill: #e8f4ff;
+  stroke: #2779bd;
+  transform: scale(1.05);
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.4));
+}
+
+/* Text styling */
+#mindMapView text {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  fill: #2d3748;
+  font-size: 14px;
+  font-weight: 500;
+  pointer-events: none;
+}
+
+/* Category text */
+#mindMapView text.category {
+  fill: #805ad5;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Connection labels */
+#mindMapView text.connection-label {
+  fill: #ffffff;
+  font-size: 12px;
+  font-weight: 500;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Animations */
+@keyframes flowLine {
+  from {
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  #mindMapView text {
+    font-size: 12px;
+  }
+  
+  #mindMapView text.category {
+    font-size: 10px;
+  }
+}
   </style>
 </head>
 <body>
@@ -1179,8 +2451,8 @@
 
     let currentCards = [];
     let connections = [];
-    let originalPositions = {}; // To store original positions for segregation
-    let isSegregated = false; // Track segregation state
+    let currentFilteredCards = [];
+    // Track segregation state
 
     /******************************
      * Rendering & Storage Logic  *
@@ -1548,97 +2820,108 @@
     }
 
     function enableEditMode(cardElement, card) {
-      cardElement.classList.add('editing');
-      const cardInner = cardElement.querySelector('.flashcard-inner');
-      const originalContent = cardInner.innerHTML;
-      cardInner.innerHTML = '';
-      
-      const editContainer = document.createElement('div');
-      editContainer.className = 'edit-mode';
-      
-      const categoryInput = document.createElement('input');
-      categoryInput.type = 'text';
-      categoryInput.value = card.category || '';
-      categoryInput.placeholder = 'Category';
-      categoryInput.setAttribute('list', 'categoryList');
-      
-      const questionInput = document.createElement('input');
-      questionInput.type = 'text';
-      questionInput.value = card.question;
-      questionInput.placeholder = 'Question / Title';
-      
-      const answerInput = document.createElement('textarea');
-      answerInput.rows = card.type === "note" ? 6 : 4;
-      answerInput.value = card.answer;
-      answerInput.placeholder = 'Answer or note content (LaTeX supported)';
-      
-      const saveBtn = document.createElement('button');
-      saveBtn.className = 'save-btn';
-      saveBtn.textContent = 'Save';
-      saveBtn.onclick = (e) => {
-        e.stopPropagation();
-        card.category = categoryInput.value.trim();
-        card.question = questionInput.value.trim();
-        card.answer = answerInput.value.trim();
-        saveCards();
-        renderCards();
-      };
-      
-      const cancelBtn = document.createElement('button');
-      cancelBtn.className = 'cancel-btn';
-      cancelBtn.textContent = 'Cancel';
-      cancelBtn.onclick = (e) => {
-        e.stopPropagation();
-        cardInner.innerHTML = originalContent;
-        cardElement.classList.remove('editing');
-      };
-      
-      editContainer.appendChild(categoryInput);
-      editContainer.appendChild(questionInput);
-      editContainer.appendChild(answerInput);
-      editContainer.appendChild(saveBtn);
-      editContainer.appendChild(cancelBtn);
-      
-      const subcardsLabel = document.createElement('div');
-      subcardsLabel.textContent = 'Subcards:';
-      subcardsLabel.style.fontWeight = 'bold';
-      subcardsLabel.style.marginTop = '15px';
-      editContainer.appendChild(subcardsLabel);
-      
-      const subcardsSection = document.createElement('div');
-      subcardsSection.className = 'subcards-container';
-      if (!card.subcards) card.subcards = [];
-      card.subcards.forEach(subcard => {
-        subcardsSection.appendChild(createSubcard(subcard, card));
-      });
-      editContainer.appendChild(subcardsSection);
-      
-      const addSubcardBtn = document.createElement('button');
-      addSubcardsSection.style.marginTop = '10px';
-      addSubcardBtn.textContent = 'Add Subcard';
-      addSubcardBtn.style.padding = '6px 12px';
-      addSubcardBtn.style.background = '#667eea';
-      addSubcardBtn.style.color = '#fff';
-      addSubcardBtn.style.border = 'none';
-      addSubcardBtn.style.borderRadius = '5px';
-      addSubcardBtn.style.cursor = 'pointer';
-      addSubcardBtn.onclick = (e) => {
-        e.stopPropagation();
-        const newSubcard = {
-          id: `card-${Date.now()}-${Math.random()}`,
-          question: 'New Subcard',
-          answer: 'Subcard answer',
-          type: 'subcard'
-        };
-        card.subcards.push(newSubcard);
-        saveCards();
-        renderCards();
-      };
-      editContainer.appendChild(addSubcardBtn);
-      
-      cardInner.appendChild(editContainer);
-    }
-
+  cardElement.classList.add('editing');
+  const cardInner = cardElement.querySelector('.flashcard-inner');
+  const originalContent = cardInner.innerHTML;
+  
+  const editContainer = document.createElement('div');
+  editContainer.className = 'edit-mode';
+  
+  // Create form fields
+  const categoryInput = document.createElement('input');
+  categoryInput.type = 'text';
+  categoryInput.value = card.category || '';
+  categoryInput.placeholder = 'Category';
+  categoryInput.setAttribute('list', 'categoryList');
+  
+  const questionInput = document.createElement('input');
+  questionInput.type = 'text';
+  questionInput.value = card.question || '';
+  questionInput.placeholder = 'Question / Title';
+  
+  const answerInput = document.createElement('textarea');
+  answerInput.rows = card.type === "note" ? 6 : 4;
+  answerInput.value = card.answer || '';
+  answerInput.placeholder = 'Answer or note content (LaTeX supported)';
+  
+  // Create button group
+  const buttonGroup = document.createElement('div');
+  buttonGroup.className = 'button-group';
+  
+  const saveBtn = document.createElement('button');
+  saveBtn.className = 'save-btn';
+  saveBtn.textContent = 'Save Changes';
+  saveBtn.onclick = (e) => {
+    e.stopPropagation();
+    card.category = categoryInput.value.trim();
+    card.question = questionInput.value.trim();
+    card.answer = answerInput.value.trim();
+    saveCards();
+    renderCards();
+  };
+  
+  const cancelBtn = document.createElement('button');
+  cancelBtn.className = 'cancel-btn';
+  cancelBtn.textContent = 'Cancel';
+  cancelBtn.onclick = (e) => {
+    e.stopPropagation();
+    cardInner.innerHTML = originalContent;
+    cardElement.classList.remove('editing');
+  };
+  
+  buttonGroup.appendChild(saveBtn);
+  buttonGroup.appendChild(cancelBtn);
+  
+  // Create subcards section
+  const subcardsSection = document.createElement('div');
+  subcardsSection.className = 'subcards-section';
+  
+  const subcardsHeader = document.createElement('div');
+  subcardsHeader.className = 'subcards-header';
+  
+  const subcardsLabel = document.createElement('h3');
+  subcardsLabel.textContent = 'Subcards';
+  
+  const addSubcardBtn = document.createElement('button');
+  addSubcardBtn.className = 'add-subcard-btn';
+  addSubcardBtn.textContent = '+ Add Subcard';
+  addSubcardBtn.onclick = (e) => {
+    e.stopPropagation();
+    const newSubcard = {
+      id: `card-${Date.now()}-${Math.random()}`,
+      question: 'New Subcard',
+      answer: 'Subcard answer',
+      type: 'subcard'
+    };
+    if (!card.subcards) card.subcards = [];
+    card.subcards.push(newSubcard);
+    saveCards();
+    renderCards();
+  };
+  
+  subcardsHeader.appendChild(subcardsLabel);
+  subcardsHeader.appendChild(addSubcardBtn);
+  
+  const subcardsContainer = document.createElement('div');
+  subcardsContainer.className = 'subcards-container';
+  if (!card.subcards) card.subcards = [];
+  card.subcards.forEach(subcard => {
+    subcardsContainer.appendChild(createSubcard(subcard, card));
+  });
+  
+  // Append everything to the edit container
+  editContainer.appendChild(categoryInput);
+  editContainer.appendChild(questionInput);
+  editContainer.appendChild(answerInput);
+  editContainer.appendChild(buttonGroup);
+  editContainer.appendChild(subcardsSection);
+  subcardsSection.appendChild(subcardsHeader);
+  subcardsSection.appendChild(subcardsContainer);
+  
+  // Clear and update the card inner content
+  cardInner.innerHTML = '';
+  cardInner.appendChild(editContainer);
+}
     /******************************
      * Adding New Cards / Notes   *
      ******************************/
@@ -1700,222 +2983,482 @@
     /******************************
      * Connexion Mode Functions   *
      ******************************/
-    class UnionFind {
-      constructor(elements) {
-        this.parent = {};
-        this.rank = {};
-        elements.forEach(el => {
-          this.parent[el] = el;
-          this.rank[el] = 0;
-        });
-      }
+     class UnionFind {
+  constructor(elements) {
+    this.parent = {};
+    this.rank = {};
+    elements.forEach(el => {
+      this.parent[el] = el;
+      this.rank[el] = 0;
+    });
+  }
 
-      find(el) {
-        if (this.parent[el] !== el) {
-          this.parent[el] = this.find(this.parent[el]);
-        }
-        return this.parent[el];
-      }
+  find(el) {
+    if (this.parent[el] !== el) {
+      this.parent[el] = this.find(this.parent[el]);
+    }
+    return this.parent[el];
+  }
 
-      union(el1, el2) {
-        const root1 = this.find(el1);
-        const root2 = this.find(el2);
-        if (root1 === root2) return;
-        if (this.rank[root1] < this.rank[root2]) {
-          this.parent[root1] = root2;
-        } else {
-          this.parent[root2] = root1;
-          if (this.rank[root1] === this.rank[root2]) {
-            this.rank[root1]++;
-          }
-        }
+  union(el1, el2) {
+    const root1 = this.find(el1);
+    const root2 = this.find(el2);
+    if (root1 === root2) return;
+    if (this.rank[root1] < this.rank[root2]) {
+      this.parent[root1] = root2;
+    } else {
+      this.parent[root2] = root1;
+      if (this.rank[root1] === this.rank[root2]) {
+        this.rank[root1]++;
       }
     }
+  }
+}
 
-    function enterConnexionMode() {
-      loadConnections();
-      const filterValue = document.getElementById('filterCategory').value;
-      const filteredCards = filterValue === 'all'
-        ? currentCards
-        : currentCards.filter(card => card.category === filterValue);
-      if (filteredCards.length === 0) {
-        alert('No cards to connect in the selected category!');
+// ------------------------
+// Global State Variables
+// ------------------------
+let isSegregated = false;
+let originalPositions = {};
+let globalEventHandlersInitialized = false;
+let activeConnectionCreation = false;
+
+// Store active drag state
+let activeDrag = {
+  element: null,
+  isDragging: false,
+  startX: 0,
+  startY: 0
+};
+
+// ------------------------
+// Mode Functions
+// ------------------------
+
+function enterConnexionMode() {
+  loadConnections(); // assume you have this implemented
+
+  // Filter cards by selected category
+  const filterValue = document.getElementById('filterCategory').value;
+  const filteredCards =
+    filterValue === 'all'
+      ? currentCards
+      : currentCards.filter(card => card.category === filterValue);
+  if (filteredCards.length === 0) {
+    alert('No cards to connect in the selected category!');
+    return;
+  }
+  isSegregated = false;
+  originalPositions = {};
+
+  // Save filtered cards globally for mind map rendering later
+  currentFilteredCards = filteredCards;
+
+  // Set initial positions (if not already set)
+  assignInitialPositions(filteredCards);
+  renderConnexionCanvas(filteredCards);
+
+  // Hide flashcards view; show the connexion canvas
+  document.getElementById('cardContainer').style.display = 'none';
+  document.getElementById('connexionCanvas').style.display = 'block';
+  document.querySelector('.input-panel').style.display = 'none';
+  document.querySelector('.button-panel').style.display = 'none';
+  document.getElementById('sidePanelToggle').style.display = 'none';
+  document.getElementById('sidePanel').classList.remove('open');
+
+  if (!globalEventHandlersInitialized) {
+    initializeGlobalEventHandlers();
+    globalEventHandlersInitialized = true;
+  }
+}
+
+function exitConnexionMode() {
+  activeConnectionCreation = false;
+  // Show flashcards view and hide connexion canvas
+  document.getElementById('cardContainer').style.display = 'flex';
+  document.getElementById('connexionCanvas').style.display = 'none';
+  document.querySelector('.input-panel').style.display = 'flex';
+  document.querySelector('.button-panel').style.display = 'flex';
+  document.getElementById('sidePanelToggle').style.display = 'block';
+
+  saveCards();
+  saveConnections();
+  renderCards();
+}
+
+// ------------------------
+// Global Event Handlers
+// ------------------------
+
+function initializeGlobalEventHandlers() {
+  document.addEventListener('mousemove', handleGlobalMouseMove);
+  document.addEventListener('mouseup', handleGlobalMouseUp);
+}
+
+function handleGlobalMouseMove(e) {
+  if (!activeDrag.isDragging) return;
+
+  const newLeft = e.clientX - activeDrag.startX;
+  const newTop = e.clientY - activeDrag.startY;
+  activeDrag.element.style.left = `${newLeft}px`;
+  activeDrag.element.style.top = `${newTop}px`;
+
+  if (activeDrag.element.classList.contains('connexion-card')) {
+    const cardId = activeDrag.element.dataset.id;
+    const card = currentCards.find(c => c.id === cardId);
+    if (card) {
+      card.x = newLeft;
+      card.y = newTop;
+      if (!activeConnectionCreation) {
+        highlightNearbyCards(card); // assume this is defined elsewhere
+      }
+    }
+  }
+}
+
+function handleGlobalMouseUp(e) {
+  if (!activeDrag.isDragging) return;
+  
+  const element = activeDrag.element;
+  element.style.zIndex = '';
+
+  if (element.classList.contains('connexion-card')) {
+    const cardId = element.dataset.id;
+    const card = currentCards.find(c => c.id === cardId);
+    if (card && !activeConnectionCreation) {
+      checkForNewConnection(card, currentCards);
+    }
+  }
+  
+  activeDrag.isDragging = false;
+  activeDrag.element = null;
+}
+
+// ------------------------
+// Positioning and Rendering
+// ------------------------
+
+function assignInitialPositions(cards) {
+  const gridSize = 220;
+  const numCols = Math.floor(window.innerWidth / gridSize);
+  cards.forEach((card, index) => {
+    if (card.x === undefined || card.y === undefined) {
+      const row = Math.floor(index / numCols);
+      const col = index % numCols;
+      card.x = col * gridSize + 50;
+      card.y = row * gridSize + 50;
+    }
+  });
+}
+
+/**
+ * Renders the connexion canvas.
+ * This version creates two view containers: one for the grid view and one for the mind map view.
+ * A toggle button lets the user switch between the two.
+ */
+function renderConnexionCanvas(cards) {
+  const canvas = document.getElementById('connexionCanvas');
+  canvas.innerHTML = '';
+
+  // Create control buttons (Back, Segregate, and Toggle View)
+  const backBtn = document.createElement('button');
+  backBtn.textContent = 'Back to Flashcards';
+  backBtn.style.position = 'absolute';
+  backBtn.style.top = '10px';
+  backBtn.style.left = '10px';
+  backBtn.style.padding = '10px 20px';
+  backBtn.style.background = '#ff4757';
+  backBtn.style.color = '#fff';
+  backBtn.style.border = 'none';
+  backBtn.style.borderRadius = '5px';
+  backBtn.style.cursor = 'pointer';
+  backBtn.style.zIndex = '1000';
+  backBtn.onclick = exitConnexionMode;
+  canvas.appendChild(backBtn);
+
+  const segregateBtn = document.createElement('button');
+  segregateBtn.id = 'segregateBtn';
+  segregateBtn.textContent = isSegregated ? 'Restore' : 'Segregate';
+  segregateBtn.style.position = 'absolute';
+  segregateBtn.style.top = '10px';
+  segregateBtn.style.right = '10px';
+  segregateBtn.style.padding = '10px 20px';
+  segregateBtn.style.background = '#28a745';
+  segregateBtn.style.color = '#fff';
+  segregateBtn.style.border = 'none';
+  segregateBtn.style.borderRadius = '5px';
+  segregateBtn.style.cursor = 'pointer';
+  segregateBtn.style.zIndex = '1000';
+  segregateBtn.onclick = () => toggleSegregate(cards);
+  canvas.appendChild(segregateBtn);
+
+  const toggleViewBtn = document.createElement('button');
+  toggleViewBtn.id = 'toggleViewBtn';
+  toggleViewBtn.textContent = 'Mind Map View';
+  toggleViewBtn.style.position = 'absolute';
+  toggleViewBtn.style.top = '10px';
+  toggleViewBtn.style.left = '150px';
+  toggleViewBtn.style.padding = '10px 20px';
+  toggleViewBtn.style.background = '#007bff';
+  toggleViewBtn.style.color = '#fff';
+  toggleViewBtn.style.border = 'none';
+  toggleViewBtn.style.borderRadius = '5px';
+  toggleViewBtn.style.cursor = 'pointer';
+  toggleViewBtn.style.zIndex = '1000';
+  toggleViewBtn.onclick = toggleMindMapView;
+  canvas.appendChild(toggleViewBtn);
+
+  // Create two view containers:
+  // Grid view (default) and Mind Map view (initially hidden)
+  const gridView = document.createElement('div');
+  gridView.id = 'gridView';
+  gridView.style.position = 'relative';
+  gridView.style.width = '100%';
+  gridView.style.height = '100%';
+  canvas.appendChild(gridView);
+
+  const mindMapView = document.createElement('div');
+  mindMapView.id = 'mindMapView';
+  mindMapView.style.position = 'absolute';
+  mindMapView.style.top = '0';
+  mindMapView.style.left = '0';
+  mindMapView.style.width = '100%';
+  mindMapView.style.height = '100%';
+  mindMapView.style.display = 'none';
+  canvas.appendChild(mindMapView);
+
+  // --- Render Grid View ---
+  // Only render individual cards that are not already connected.
+  const connectedCardIds = new Set(connections.flatMap(conn => [conn.card1, conn.card2]));
+  const unconnectedCards = cards.filter(card => !connectedCardIds.has(card.id));
+  unconnectedCards.forEach(card => {
+    const cardDiv = createConnexionCard(card, false);
+    cardDiv.style.left = `${card.x}px`;
+    cardDiv.style.top = `${card.y}px`;
+    gridView.appendChild(cardDiv);
+    makeDraggable(cardDiv, card, cards);
+  });
+
+  // Render connection panels in grid view.
+  const panelWidth = 450;
+  const panelHeight = 200;
+  const margin = 20;
+  let panelX = 20;
+  let panelY = 60;
+  const canvasWidth = gridView.clientWidth || canvas.clientWidth;
+  connections.forEach(conn => {
+    const card1 = cards.find(c => c.id === conn.card1);
+    const card2 = cards.find(c => c.id === conn.card2);
+    if (card1 && card2) {
+      const panel = document.createElement('div');
+      panel.className = 'connection-panel';
+      panel.style.position = 'absolute';
+      panel.style.left = `${panelX}px`;
+      panel.style.top = `${panelY}px`;
+      // Use the connection color (if provided) for the panel border/background
+      panel.style.border = `2px solid ${conn.color || '#000'}`;
+      panel.innerHTML = `
+        <div class="connection-card">
+          <h4>${card1.category || 'General'}</h4>
+          <p>${card1.question}</p>
+        </div>
+        <div class="connection-card" style="margin-left: 10px;">
+          <h4>${card2.category || 'General'}</h4>
+          <p>${card2.question}</p>
+        </div>
+        <div class="connection-description">${conn.description}</div>
+        <div class="connection-buttons">
+          <button class="edit-connection">Edit</button>
+          <button class="view-connection">View</button>
+          <button class="remove-connection">Remove</button>
+        </div>
+      `;
+      gridView.appendChild(panel);
+      makePanelDraggable(panel);
+      panel.querySelector('.edit-connection').addEventListener('click', () => editConnection(conn.id, cards));
+      panel.querySelector('.view-connection').addEventListener('click', () => viewConnection(conn.id, cards));
+      panel.querySelector('.remove-connection').addEventListener('click', () => removeConnection(conn.id, cards));
+      panelX += panelWidth + margin;
+      if (panelX + panelWidth > canvasWidth) {
+        panelX = 0;
+        panelY += panelHeight + margin;
+      }
+    }
+  });
+}
+
+// ------------------------
+// Mind Map Rendering using D3.js
+// ------------------------
+
+function renderMindMap(cards, connections) {
+      const container = d3.select("#mindMapView");
+      if (container.empty()) {
+        console.error("No container found with id 'mindMapView'");
         return;
       }
-      assignInitialPositions(filteredCards);
-      renderConnexionCanvas(filteredCards);
-      document.getElementById('cardContainer').style.display = 'none';
-      document.getElementById('connexionCanvas').style.display = 'block';
-      document.querySelector('.input-panel').style.display = 'none';
-      document.querySelector('.button-panel').style.display = 'none';
-      document.getElementById('sidePanelToggle').style.display = 'none';
-      document.getElementById('sidePanel').classList.remove('open');
-
-      const backBtn = document.createElement('button');
-      backBtn.textContent = 'Back to Flashcards';
-      backBtn.style.position = 'absolute';
-      backBtn.style.top = '10px';
-      backBtn.style.left = '10px';
-      backBtn.style.padding = '10px 20px';
-      backBtn.style.background = '#ff4757';
-      backBtn.style.color = '#fff';
-      backBtn.style.border = 'none';
-      backBtn.style.borderRadius = '5px';
-      backBtn.style.cursor = 'pointer';
-      backBtn.style.zIndex = '1000';
-      backBtn.onclick = exitConnexionMode;
-      document.getElementById('connexionCanvas').appendChild(backBtn);
-
-      // Add Segregate button
-      const segregateBtn = document.createElement('button');
-      segregateBtn.id = 'segregateBtn';
-      segregateBtn.textContent = 'Segregate';
-      segregateBtn.style.position = 'absolute';
-      segregateBtn.style.top = '10px';
-      segregateBtn.style.right = '10px';
-      segregateBtn.style.padding = '10px 20px';
-      segregateBtn.style.background = '#28a745';
-      segregateBtn.style.color = '#fff';
-      segregateBtn.style.border = 'none';
-      segregateBtn.style.borderRadius = '5px';
-      segregateBtn.style.cursor = 'pointer';
-      segregateBtn.style.zIndex = '1000';
-      segregateBtn.onclick = () => toggleSegregate(filteredCards);
-      document.getElementById('connexionCanvas').appendChild(segregateBtn);
-    }
-
-    function exitConnexionMode() {
-      document.getElementById('cardContainer').style.display = 'flex';
-      document.getElementById('connexionCanvas').style.display = 'none';
-      document.querySelector('.input-panel').style.display = 'flex';
-      document.querySelector('.button-panel').style.display = 'flex';
-      document.getElementById('sidePanelToggle').style.display = 'block';
-      saveCards();
-      saveConnections();
-      renderCards();
-    }
-
-    function assignInitialPositions(cards) {
-      const gridSize = 220;
-      const numCols = Math.floor(window.innerWidth / gridSize);
-      cards.forEach((card, index) => {
-        if (card.x === undefined || card.y === undefined) {
-          const row = Math.floor(index / numCols);
-          const col = index % numCols;
-          card.x = col * gridSize + 50;
-          card.y = row * gridSize + 50;
-        }
+      container.selectAll("*").remove();
+      const width = container.node().clientWidth || 800;
+      const height = container.node().clientHeight || 600;
+      console.log("Rendering mind map with", cards.length, "cards and", connections.length, "connections");
+      
+      // Filter connections so that only valid nodes are linked.
+      const filteredConnections = connections.filter(conn =>
+        cards.some(c => c.id === conn.card1) && cards.some(c => c.id === conn.card2)
+      );
+      console.log("Filtered connections:", filteredConnections.length);
+      
+      const nodes = cards.map(card => ({
+        id: card.id,
+        question: card.question,
+        category: card.category,
+        color: card.color || "#ffffff",
+        tag: card.tag || ""
+      }));
+      
+      const links = filteredConnections.map(conn => ({
+        source: conn.card1,
+        target: conn.card2,
+        description: conn.description,
+        color: conn.color || "#666666",
+        tag: conn.tag || ""
+      }));
+      
+      const svg = container.append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .style("border", "1px solid white"); // For debugging
+      
+      // Create a force simulation to compute initial layout.
+      const simulation = d3.forceSimulation(nodes)
+        .force("link", d3.forceLink(links).id(d => d.id).distance(150))
+        .force("charge", d3.forceManyBody().strength(-300))
+        .force("center", d3.forceCenter(width / 2, height / 2));
+      
+      // Draw links (lines)
+      const link = svg.append("g")
+        .attr("stroke-opacity", 0.6)
+        .selectAll("line")
+        .data(links)
+        .enter().append("line")
+        .attr("stroke-width", 2)
+        .attr("stroke", d => d.color);
+      
+      // Create groups for each node (each group will hold a rectangle and its text)
+      const nodeGroup = svg.append("g")
+        .selectAll("g")
+        .data(nodes)
+        .enter().append("g")
+        .attr("class", "node-group");
+      
+      // Append a rectangle to each node group.
+      nodeGroup.append("rect")
+        .attr("rx", 5)
+        .attr("ry", 5)
+        .attr("fill", d => d.color)
+        .attr("stroke", "#333333")
+        .attr("stroke-width", 2);
+      
+      // Append text to each node group.
+      nodeGroup.append("text")
+        .text(d => d.question)
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "middle")
+        .style("fill", "#333333")
+        .style("font-size", "12px");
+      
+      // After appending text, adjust each rectangle’s size to nicely wrap its text.
+      const rectPadding = 10;
+      nodeGroup.each(function() {
+        const g = d3.select(this);
+        const text = g.select("text");
+        const bbox = text.node().getBBox();
+        g.select("rect")
+          .attr("x", bbox.x - rectPadding / 2)
+          .attr("y", bbox.y - rectPadding / 2)
+          .attr("width", bbox.width + rectPadding)
+          .attr("height", bbox.height + rectPadding);
       });
+      
+      // Run the simulation for a fixed number of ticks to compute positions,
+      // then stop it so nodes don't continue moving.
+      for (let i = 0; i < 300; ++i) simulation.tick();
+      simulation.stop();
+      
+      // Freeze nodes at their computed positions.
+      nodes.forEach(n => { n.fx = n.x; n.fy = n.y; });
+      
+      // Function to update positions of nodes and links.
+      function updatePositions() {
+        link
+          .attr("x1", d => d.source.x)
+          .attr("y1", d => d.source.y)
+          .attr("x2", d => d.target.x)
+          .attr("y2", d => d.target.y);
+        nodeGroup.attr("transform", d => `translate(${d.x},${d.y})`);
+      }
+      
+      // Initial positions update.
+      updatePositions();
+      
+      // Drag behavior: When dragging, only update the dragged node.
+      nodeGroup.call(d3.drag()
+        .on("start", function(event, d) {
+          // No simulation restart; the node is already fixed.
+        })
+        .on("drag", function(event, d) {
+          d.x = event.x;
+          d.y = event.y;
+          // Keep the dragged node fixed.
+          d.fx = event.x;
+          d.fy = event.y;
+          updatePositions();
+        })
+        .on("end", function(event, d) {
+          // Optionally, you can keep the node fixed or release it.
+          // Here we keep it fixed.
+          d.fx = event.x;
+          d.fy = event.y;
+          updatePositions();
+        })
+      );
     }
+// ------------------------
+// Toggle between Grid and Mind Map Views
+// ------------------------
 
-    function renderConnexionCanvas(cards) {
-      const canvas = document.getElementById('connexionCanvas');
-      canvas.innerHTML = '';
+function toggleMindMapView() {
+  const gridView = document.getElementById('gridView');
+  const mindMapView = document.getElementById('mindMapView');
+  const toggleBtn = document.getElementById('toggleViewBtn');
+  
+  if (mindMapView.style.display === "none") {
+    // Switch to Mind Map view.
+    gridView.style.display = "none";
+    mindMapView.style.display = "block";
+    toggleBtn.textContent = "Grid View";
+    renderMindMap(currentFilteredCards, connections);
+  } else {
+    // Switch back to Grid view.
+    mindMapView.style.display = "none";
+    gridView.style.display = "block";
+    toggleBtn.textContent = "Mind Map View";
+  }
+}
 
-      // Add Back button
-      const backBtn = document.createElement('button');
-      backBtn.textContent = 'Back to Flashcards';
-      backBtn.style.position = 'absolute';
-      backBtn.style.top = '10px';
-      backBtn.style.left = '10px';
-      backBtn.style.padding = '10px 20px';
-      backBtn.style.background = '#ff4757';
-      backBtn.style.color = '#fff';
-      backBtn.style.border = 'none';
-      backBtn.style.borderRadius = '5px';
-      backBtn.style.cursor = 'pointer';
-      backBtn.style.zIndex = '1000';
-      backBtn.onclick = exitConnexionMode;
-      canvas.appendChild(backBtn);
+// ------------------------
+// Card and Panel Creation
+// ------------------------
 
-      // Add Segregate button
-      const segregateBtn = document.createElement('button');
-      segregateBtn.id = 'segregateBtn';
-      segregateBtn.textContent = isSegregated ? 'Restore' : 'Segregate';
-      segregateBtn.style.position = 'absolute';
-      segregateBtn.style.top = '10px';
-      segregateBtn.style.right = '10px';
-      segregateBtn.style.padding = '10px 20px';
-      segregateBtn.style.background = '#28a745';
-      segregateBtn.style.color = '#fff';
-      segregateBtn.style.border = 'none';
-      segregateBtn.style.borderRadius = '5px';
-      segregateBtn.style.cursor = 'pointer';
-      segregateBtn.style.zIndex = '1000';
-      segregateBtn.onclick = () => toggleSegregate(cards);
-      canvas.appendChild(segregateBtn);
-
-      // Display all individual cards
-      cards.forEach(card => {
-        const cardDiv = createConnexionCard(card, false);
-        cardDiv.style.left = `${card.x}px`;
-        cardDiv.style.top = `${card.y}px`;
-        canvas.appendChild(cardDiv);
-        makeDraggable(cardDiv, card, cards);
-      });
-
-      // Display connection panels in a grid
-      const panelWidth = 450;
-      const panelHeight = 200;
-      const margin = 20;
-      let panelX = 0;
-      let panelY = 0;
-      const canvasWidth = canvas.clientWidth;
-
-      connections.forEach(conn => {
-        const card1 = cards.find(c => c.id === conn.card1);
-        const card2 = cards.find(c => c.id === conn.card2);
-        if (card1 && card2) {
-          const panel = document.createElement('div');
-          panel.className = 'connection-panel';
-          panel.style.left = `${panelX}px`;
-          panel.style.top = `${panelY}px`;
-          panel.innerHTML = `
-            <div class="connection-card">
-              <h4>${card1.category || 'General'}</h4>
-              <p>${card1.question}</p>
-            </div>
-            <div class="connection-card" style="margin-left: 10px;">
-              <h4>${card2.category || 'General'}</h4>
-              <p>${card2.question}</p>
-            </div>
-            <div class="connection-description">${conn.description}</div>
-            <div class="connection-buttons">
-              <button class="edit-connection">Edit</button>
-              <button class="view-connection">View</button>
-              <button class="remove-connection">Remove</button>
-            </div>
-          `;
-          canvas.appendChild(panel);
-          makePanelDraggable(panel);
-
-          // Add event listeners to buttons
-          const editBtn = panel.querySelector('.edit-connection');
-          editBtn.addEventListener('click', () => editConnection(conn.id, cards));
-
-          const viewBtn = panel.querySelector('.view-connection');
-          viewBtn.addEventListener('click', () => viewConnection(conn.id, cards));
-
-          const removeBtn = panel.querySelector('.remove-connection');
-          removeBtn.addEventListener('click', () => removeConnection(conn.id, cards));
-
-          // Update grid position
-          panelX += panelWidth + margin;
-          if (panelX + panelWidth > canvasWidth) {
-            panelX = 0;
-            panelY += panelHeight + margin;
-          }
-        }
-      });
-    }
-
-    function createConnexionCard(card, inContainer) {
+function createConnexionCard(card, inContainer) {
   const cardDiv = document.createElement('div');
   cardDiv.className = 'connexion-card';
   cardDiv.dataset.id = card.id;
   cardDiv.style.position = 'absolute';
   cardDiv.style.width = '200px';
   cardDiv.style.height = '150px';
+  // Use card.color (if set) as background; otherwise, default light gray.
+  cardDiv.style.backgroundColor = card.color || '#f0f0f0';
   cardDiv.innerHTML = `
     <div class="connexion-card-inner">
       <div class="connexion-card-front">
@@ -1928,7 +3471,7 @@
     </div>
   `;
 
-  // Change single click to double click for flip
+  // Double-click to flip the card.
   cardDiv.addEventListener('dblclick', (e) => {
     e.stopPropagation();
     cardDiv.classList.toggle('flipped');
@@ -1945,58 +3488,90 @@
   }
   return cardDiv;
 }
-    function makeDraggable(element, card, allCards) {
-      let isDragging = false;
-      let startX, startY;
-      element.addEventListener('mousedown', e => {
-        isDragging = true;
-        startX = e.clientX - element.offsetLeft;
-        startY = e.clientY - element.offsetTop;
-        element.style.zIndex = '1000';
-      });
 
-      document.addEventListener('mousemove', e => {
-        if (isDragging) {
-          const newLeft = e.clientX - startX;
-          const newTop = e.clientY - startY;
-          element.style.left = `${newLeft}px`;
-          element.style.top = `${newTop}px`;
-          card.x = newLeft;
-          card.y = newTop;
+function makeDraggable(element, card, allCards) {
+  let isDragging = false;
+  let startX, startY;
 
-          // Highlight if close to another card
-          allCards.forEach(otherCard => {
-            if (otherCard.id !== card.id) {
-              const otherElem = document.querySelector(`.connexion-card[data-id="${otherCard.id}"]`);
-              if (otherElem) {
-                const cardRect = element.getBoundingClientRect();
-                const otherRect = otherElem.getBoundingClientRect();
-                if (Math.abs(cardRect.left - otherRect.left) < 100 && Math.abs(cardRect.top - otherRect.top) < 100) {
-                  otherElem.style.border = '2px solid red';
-                } else {
-                  otherElem.style.border = '';
-                }
-              }
+  element.addEventListener('mousedown', e => {
+    isDragging = true;
+    startX = e.clientX - element.offsetLeft;
+    startY = e.clientY - element.offsetTop;
+    element.style.zIndex = '1000';
+    activeDrag = { element, isDragging: true, startX, startY };
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (isDragging) {
+      const newLeft = e.clientX - startX;
+      const newTop = e.clientY - startY;
+      element.style.left = `${newLeft}px`;
+      element.style.top = `${newTop}px`;
+      card.x = newLeft;
+      card.y = newTop;
+
+      // Highlight nearby cards for potential connection.
+      allCards.forEach(otherCard => {
+        if (otherCard.id !== card.id) {
+          const otherElem = document.querySelector(`.connexion-card[data-id="${otherCard.id}"]`);
+          if (otherElem) {
+            const cardRect = element.getBoundingClientRect();
+            const otherRect = otherElem.getBoundingClientRect();
+            if (Math.abs(cardRect.left - otherRect.left) < 100 && Math.abs(cardRect.top - otherRect.top) < 100) {
+              otherElem.style.border = '2px solid red';
+            } else {
+              otherElem.style.border = '';
             }
-          });
-        }
-      });
-
-      document.addEventListener('mouseup', () => {
-        if (isDragging) {
-          isDragging = false;
-          element.style.zIndex = '';
-          checkForNewConnection(card, allCards);
+          }
         }
       });
     }
+  });
 
-// ... existing code ...
+  document.addEventListener('mouseup', () => {
+    if (isDragging) {
+      isDragging = false;
+      element.style.zIndex = '';
+      checkForNewConnection(card, allCards);
+    }
+  });
+}
+
+function makePanelDraggable(element) {
+  let isDragging = false;
+  let startX, startY;
+  element.addEventListener('mousedown', e => {
+    isDragging = true;
+    startX = e.clientX - element.offsetLeft;
+    startY = e.clientY - element.offsetTop;
+    element.style.zIndex = '1000';
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (isDragging) {
+      const newLeft = e.clientX - startX;
+      const newTop = e.clientY - startY;
+      element.style.left = `${newLeft}px`;
+      element.style.top = `${newTop}px`;
+    }
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (isDragging) {
+      isDragging = false;
+      element.style.zIndex = '';
+    }
+  });
+}
+
+// ------------------------
+// Connection Handling
+// ------------------------
 
 function checkForNewConnection(card, allCards) {
   const cardElem = document.querySelector(`.connexion-card[data-id="${card.id}"]`);
   
-  // Remove any existing "can-connect" highlighting from all cards
+  // Remove previous connection highlighting.
   document.querySelectorAll('.connexion-card').forEach(elem => {
     elem.classList.remove('can-connect');
   });
@@ -2004,23 +3579,19 @@ function checkForNewConnection(card, allCards) {
   allCards.forEach(otherCard => {
     if (otherCard.id !== card.id) {
       const otherElem = document.querySelector(`.connexion-card[data-id="${otherCard.id}"]`);
-      
       if (cardElem && otherElem) {
         const cardRect = cardElem.getBoundingClientRect();
         const otherRect = otherElem.getBoundingClientRect();
-        
         const distanceX = Math.abs(cardRect.left - otherRect.left);
         const distanceY = Math.abs(cardRect.top - otherRect.top);
         const connectionThreshold = 100;
-        
         if (distanceX < connectionThreshold && distanceY < connectionThreshold) {
-          // Highlight the cards that are close enough to connect
           cardElem.classList.add('can-connect');
           otherElem.classList.add('can-connect');
           
-          // Check if a connection already exists between these two cards
-          const existingConn = connections.find(conn => 
-            (conn.card1 === card.id && conn.card2 === otherCard.id) || 
+          // Check if a connection already exists.
+          const existingConn = connections.find(conn =>
+            (conn.card1 === card.id && conn.card2 === otherCard.id) ||
             (conn.card1 === otherCard.id && conn.card2 === card.id)
           );
           
@@ -2028,21 +3599,27 @@ function checkForNewConnection(card, allCards) {
             setTimeout(() => {
               if (confirm('Create a connection between these cards?')) {
                 const description = prompt('Enter a description for this connection:') || 'New connection';
+                // Prompt for a tag and a color for the connection.
+                const connectionTag = prompt("Enter a tag for this connection (e.g., cause-effect, analogy):", "general");
+                const connectionColor = prompt("Enter a color for this connection (hex code, e.g., #FF0000):", "#000000");
                 const newConn = {
                   id: `conn-${Date.now()}-${Math.random()}`,
                   card1: card.id,
                   card2: otherCard.id,
-                  description: description
+                  description: description,
+                  tag: connectionTag,
+                  color: connectionColor
                 };
                 connections.push(newConn);
   
-                // Create and display the connection panel immediately
+                // Create and display connection panel immediately.
                 const canvas = document.getElementById('connexionCanvas');
                 const panel = document.createElement('div');
                 panel.className = 'connection-panel';
-                // Position the panel in the middle between the two cards.
+                panel.style.position = 'absolute';
                 panel.style.left = `${(cardRect.left + otherRect.left) / 2}px`;
                 panel.style.top = `${(cardRect.top + otherRect.top) / 2}px`;
+                panel.style.border = `2px solid ${connectionColor}`;
                 panel.innerHTML = `
                   <div class="connection-card">
                     <h4>${card.category || 'General'}</h4>
@@ -2061,22 +3638,18 @@ function checkForNewConnection(card, allCards) {
                 `;
                 canvas.appendChild(panel);
                 makePanelDraggable(panel);
-  
-                // Attach event listeners for the panel buttons
-                panel.querySelector('.edit-connection').addEventListener('click', () => 
+                panel.querySelector('.edit-connection').addEventListener('click', () =>
                   editConnection(newConn.id, allCards));
-                panel.querySelector('.view-connection').addEventListener('click', () => 
+                panel.querySelector('.view-connection').addEventListener('click', () =>
                   viewConnection(newConn.id, allCards));
-                panel.querySelector('.remove-connection').addEventListener('click', () => 
+                panel.querySelector('.remove-connection').addEventListener('click', () =>
                   removeConnection(newConn.id, allCards));
   
-                // Fade out the connected cards (optional)
+                // Optional: fade out and remove connected cards.
                 cardElem.style.transition = 'opacity 0.3s ease';
                 otherElem.style.transition = 'opacity 0.3s ease';
                 cardElem.style.opacity = '0';
                 otherElem.style.opacity = '0';
-  
-                // Remove the two connected cards from the DOM after a brief delay
                 setTimeout(() => {
                   cardElem.remove();
                   otherElem.remove();
@@ -2092,40 +3665,10 @@ function checkForNewConnection(card, allCards) {
   });
 }
 
-// ... existing code ...
-
-    function makePanelDraggable(element) {
-      let isDragging = false;
-      let startX, startY;
-      element.addEventListener('mousedown', e => {
-        isDragging = true;
-        startX = e.clientX - element.offsetLeft;
-        startY = e.clientY - element.offsetTop;
-        element.style.zIndex = '1000';
-      });
-
-      document.addEventListener('mousemove', e => {
-        if (isDragging) {
-          const newLeft = e.clientX - startX;
-          const newTop = e.clientY - startY;
-          element.style.left = `${newLeft}px`;
-          element.style.top = `${newTop}px`;
-        }
-      });
-
-      document.addEventListener('mouseup', () => {
-        if (isDragging) {
-          isDragging = false;
-          element.style.zIndex = '';
-        }
-      });
-    }
-
-    function toggleSegregate(cards) {
+function toggleSegregate(cards) {
   const canvas = document.getElementById('connexionCanvas');
   
   if (isSegregated) {
-    // Restore original positions
     Object.keys(originalPositions).forEach(id => {
       const elem =
         document.querySelector(`[data-id="${id}"]`) ||
@@ -2135,7 +3678,6 @@ function checkForNewConnection(card, allCards) {
         elem.style.top = originalPositions[id].y + 'px';
       }
     });
-    // Remove the separator line if it exists
     const separator = document.getElementById('separatorLine');
     if (separator) {
       separator.remove();
@@ -2143,7 +3685,6 @@ function checkForNewConnection(card, allCards) {
     isSegregated = false;
     document.getElementById('segregateBtn').textContent = 'Segregate';
   } else {
-    // Save original positions for cards
     originalPositions = {};
     cards.forEach(card => {
       const elem = document.querySelector(`[data-id="${card.id}"]`);
@@ -2154,7 +3695,6 @@ function checkForNewConnection(card, allCards) {
         };
       }
     });
-    // Save original positions for connection panels
     connections.forEach(conn => {
       const panel = Array.from(document.querySelectorAll('.connection-panel')).find(p =>
         p.querySelector('.connection-description')?.textContent === conn.description
@@ -2164,18 +3704,15 @@ function checkForNewConnection(card, allCards) {
           x: parseFloat(panel.style.left), 
           y: parseFloat(panel.style.top) 
         };
-        panel.dataset.connId = conn.id; // Assign connection ID to panel for reference
+        panel.dataset.connId = conn.id;
       }
     });
 
-    // Segregate: connected panels on left, unconnected cards on right
     const panelWidth = 450;
     const cardWidth = 200;
     const margin = 20;
-    
-    // Position connection panels on the left side
     let panelX = 20;
-    let panelY = 100;
+    let panelY = 40;
     connections.forEach(conn => {
       const panel = Array.from(document.querySelectorAll('.connection-panel')).find(p =>
         p.dataset.connId === conn.id
@@ -2185,7 +3722,6 @@ function checkForNewConnection(card, allCards) {
         panel.style.top = `${panelY}px`;
         panel.style.transition = 'all 0.5s ease';
         panelX += panelWidth + margin;
-        // If the next panel exceeds half the canvas width, start a new row
         if (panelX + panelWidth > canvas.clientWidth / 2) {
           panelX = 20;
           panelY += 220;
@@ -2193,19 +3729,12 @@ function checkForNewConnection(card, allCards) {
       }
     });
 
-    // Position unconnected cards on the right side in a grid layout
     const connectedCardIds = new Set(connections.flatMap(conn => [conn.card1, conn.card2]));
     const unconnectedCards = cards.filter(card => !connectedCardIds.has(card.id));
-
-    // Define a fixed card height (adjust if needed)
     const cardHeight = 170;
-    // The right half starts at the canvas' midpoint plus a margin.
     const rightSideStart = canvas.clientWidth / 2 + margin;
-    // Calculate available width on the right side
     const availableWidth = canvas.clientWidth / 2 - margin;
-    // Calculate the number of cards per row that fit in the available width.
     const cardsPerRow = Math.floor(availableWidth / (cardWidth + margin));
-
     unconnectedCards.forEach((card, index) => {
       const row = Math.floor(index / cardsPerRow);
       const col = index % cardsPerRow;
@@ -2216,13 +3745,11 @@ function checkForNewConnection(card, allCards) {
         cardElem.style.left = `${x}px`;
         cardElem.style.top = `${y}px`;
         cardElem.style.transition = 'all 0.5s ease';
-        // Update card data positions
         card.x = x;
         card.y = y;
       }
     });
 
-    // Draw a vertical separator line between the two sections
     let separator = document.getElementById('separatorLine');
     if (!separator) {
       separator = document.createElement('div');
@@ -2231,11 +3758,9 @@ function checkForNewConnection(card, allCards) {
       separator.style.backgroundColor = 'black';
       separator.style.width = '2px';
       separator.style.top = '0';
-      // Set the height to span the entire canvas
       separator.style.height = canvas.clientHeight + 'px';
       canvas.appendChild(separator);
     }
-    // Position the separator exactly at the canvas midpoint
     separator.style.left = canvas.clientWidth / 2 + 'px';
 
     isSegregated = true;
@@ -2243,37 +3768,40 @@ function checkForNewConnection(card, allCards) {
   }
 }
 
+// ------------------------
+// Connection Panel Actions
+// ------------------------
 
-    function editConnection(connId, cards) {
-      const conn = connections.find(c => c.id === connId);
-      if (conn) {
-        const newDesc = prompt('Edit connection description:', conn.description);
-        if (newDesc !== null) {
-          conn.description = newDesc;
-          saveConnections();
-          renderConnexionCanvas(cards);
-        }
-      }
+function editConnection(connId, cards) {
+  const conn = connections.find(c => c.id === connId);
+  if (conn) {
+    const newDesc = prompt('Edit connection description:', conn.description);
+    if (newDesc !== null) {
+      conn.description = newDesc;
+      saveConnections();
+      renderConnexionCanvas(cards);
     }
+  }
+}
 
-    function viewConnection(connId, cards) {
-      const conn = connections.find(c => c.id === connId);
-      if (conn) {
-        const card1 = cards.find(c => c.id === conn.card1);
-        const card2 = cards.find(c => c.id === conn.card2);
-        if (card1 && card2) {
-          alert(`Connection Details:\n\nCard 1: ${card1.question}\nCard 2: ${card2.question}\nDescription: ${conn.description}`);
-        }
-      }
+function viewConnection(connId, cards) {
+  const conn = connections.find(c => c.id === connId);
+  if (conn) {
+    const card1 = cards.find(c => c.id === conn.card1);
+    const card2 = cards.find(c => c.id === conn.card2);
+    if (card1 && card2) {
+      alert(`Connection Details:\n\nCard 1: ${card1.question}\nCard 2: ${card2.question}\nDescription: ${conn.description}`);
     }
+  }
+}
 
-    function removeConnection(connId, cards) {
-      if (confirm('Are you sure you want to remove this connection?')) {
-        connections = connections.filter(c => c.id !== connId);
-        saveConnections();
-        renderConnexionCanvas(cards);
-      }
-    }
+function removeConnection(connId, cards) {
+  if (confirm('Are you sure you want to remove this connection?')) {
+    connections = connections.filter(c => c.id !== connId);
+    saveConnections();
+    renderConnexionCanvas(cards);
+  }
+}
 
     /******************************
      * Side Panel Functionality   *
@@ -2503,5 +4031,6 @@ function checkForNewConnection(card, allCards) {
       loadConnections();
     };
   </script>
+ 
 </body>
 </html>
