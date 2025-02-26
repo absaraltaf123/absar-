@@ -458,112 +458,13 @@
     }
 
     /* Footer Styling */
-    footer {
-      margin-top: 40px;
-      text-align: center;
-      font-size: 14px;
-      color: #333;
-    }
+ 
 
-    footer span {
-      font-weight: bold;
-      background: linear-gradient(135deg, #ff6f61, #ff9a8b);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+    
     /* ===== Toggle Button ===== */
-    #sidePanelToggle {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1000;
-      background: #10a37f;
-      color: #fff;
-      border: none;
-      border-radius: 50%;
-      width: 48px;
-      height: 48px;
-      font-size: 24px;
-      cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    #sidePanelToggle:hover {
-      transform: scale(1.1);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-
+   
     /* ===== Side Panel Container ===== */
-    .side-panel {
-      position: fixed;
-      top: 0;
-      right: -300px;
-      width: 300px;
-      height: 100%;
-      background: #343541;
-      color: #fff;
-      box-shadow: -2px 0 12px rgba(0, 0, 0, 0.2);
-      transition: right 0.3s ease;
-      z-index: 1001;
-      display: flex;
-      flex-direction: column;
-      font-family: 'Poppins', sans-serif;
-    }
-    .side-panel.open {
-      right: 0;
-    }
-
-    /* ===== Side Panel Header ===== */
-    .side-panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px;
-      border-bottom: 1px solid #444;
-    }
-    .side-panel-header h3 {
-      font-size: 20px;
-      margin: 0;
-      font-weight: 500;
-    }
-    .side-panel-header button {
-      background: transparent;
-      border: none;
-      color: #fff;
-      font-size: 24px;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    .side-panel-header button:hover {
-      transform: scale(1.1);
-    }
-
-    /* ===== Side Panel Content ===== */
-    .side-panel-content {
-      padding: 16px;
-      flex: 1;
-      overflow-y: auto;
-      background: #2b2c33;
-    }
-    .side-panel-content button {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      background: #3e3f4b;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-bottom: 10px;
-      text-align: left;
-      font-size: 16px;
-      transition: background 0.2s, transform 0.2s;
-    }
-    .side-panel-content button:hover {
-      background: #4e4f5b;
-      transform: translateY(-2px);
-    }
-
+    
     /* Fullscreen overlay animations */
     @keyframes fadeIn {
       from { opacity: 0; }
@@ -2079,15 +1980,18 @@ body {
   display: flex;
   gap: 21px;
   width: 100%;
+  min-width: 800px;
   max-width: 1200px;
+  
   margin: 30px auto;
-  padding: 40px;
+  padding: px;
   background: rgba(13, 27, 42, 0.6);
   backdrop-filter: blur(10px);
   border-radius: 25px;
   box-shadow: 
     0 20px 40px rgba(0, 0, 0, 0.3),
     inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    transform-origin: 2;
 }
 
 /* Adjust the existing panel styles to match */
@@ -2591,7 +2495,7 @@ overflow: auto;
   <div id="noteModal"></div>
   
   <!-- Side Panel Toggle Button & Panel -->
-        <h3>copyright: ABSAR ALTAF SHAH</h3>
+       
            <div class="practice-deck-wrapper" id="practiceDeck">
     <button class="practice-close-btn" onclick="exitPracticeMode()">Close</button>
     <div class="practice-deck" id="practiceDeckContainer"></div>
