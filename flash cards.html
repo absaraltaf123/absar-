@@ -2114,6 +2114,7 @@ body {
 }
     /* Connexion Mode Styles */
     #connexionCanvas {
+overflow: auto;
       position: relative;
       width: 100%;
       height: 800px;
@@ -2125,7 +2126,7 @@ body {
     .connexion-card {
       position: absolute;
       width: 200px;
-      height: 150px;
+      height: 250px;
       background: linear-gradient(135deg, #ffffff, #f5f5f5);
       border: 1px solid #666;
       border-radius: 8px;
@@ -2144,62 +2145,163 @@ body {
   transform: scale(1.05);
 }
 
-    .connection-panel {
-      position: absolute;
-      width: 450px;
-      height: 200px;
-      background: linear-gradient(135deg, #e8e5ee, #6902ef);
-      border: 2px solid #999;
-      border-radius: 10px;
-      padding: 15px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      cursor: move;
+ .connection-panel {
+    position: absolute;
+    width: 450px;
+    min-height: 200px;
+    height: auto;
+    max-height: 80vh;
+    background: linear-gradient(135deg, #1a0033, #6902ef);
+    border: none;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(105, 2, 239, 0.6), 
+                inset 0 0 100px rgba(255, 255, 255, 0.1);
+    cursor: move;
+    overflow-y: auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+    animation: glow 3s infinite alternate;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .connection-panel:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(105, 2, 239, 0.8),
+                inset 0 0 120px rgba(255, 255, 255, 0.15);
+  }
+  
+  @keyframes glow {
+    from {
+      box-shadow: 0 10px 30px rgba(105, 2, 239, 0.6),
+                  inset 0 0 100px rgba(255, 255, 255, 0.1);
     }
+    to {
+      box-shadow: 0 10px 30px rgba(105, 2, 239, 0.8),
+                  inset 0 0 100px rgba(255, 255, 255, 0.2);
+    }
+  }
+  
+.connection-card {
+      background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 15px;
+    flex: 1 0 calc(50% - 15px);
+    min-width: 180px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transform: perspective(1000px) rotateX(5deg);
+  }
 
-    .connection-card {
-      width: 180px;
-      height: 120px;
-      background: linear-gradient(135deg, #ffffff, #f0f0f0);
-      border: 1px solid #777;
-      border-radius: 8px;
-      padding: 10px;
-      display: inline-block;
-      vertical-align: top;
-      margin-right: 10px;
-    }
+    
+  .card:hover {
+    transform: perspective(1000px) rotateX(0deg) translateY(-5px);
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  
+  .connection-description {
+    margin: 20px 0;
+    background: rgba(218, 206, 206, 0.408);
+    padding: 15px;
+    border-radius: 10px;
+    border-left: 4px solid #9c4dff;
+    font-size: 16px;
+    line-height: 1.6;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  }
+  
+  .connection-buttons {
+    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+  }
+  
+  .button {
+    background: linear-gradient(45deg, #6902ef, #af5fff);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(105, 2, 239, 0.4);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .button:hover {
+    background: linear-gradient(45deg, #5b01d3, #9340e0);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(105, 2, 239, 0.6);
+  }
+  
+  .button::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(30deg);
+    transition: all 0.3s ease;
+    opacity: 0;
+  }
+  
+  .button:hover::after {
+    opacity: 1;
+    transform: rotate(30deg) translate(10%, -10%);
+  }
+  
+  /* Custom scrollbar */
+  .connection-panel::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .connection-panel::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+  }
+  
+  .connection-panel::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #6902ef, #af5fff);
+    border-radius: 10px;
+  }
+  
+  .connection-panel::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #5b01d3, #9340e0);
+  }
 
-    .connection-description {
-      margin-top: 10px;
-      font-size: 14px;
-      color: #333;
-    }
+    .connection-buttons button  {
+    background: linear-gradient(45deg, #6902ef, #af5fff);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(105, 2, 239, 0.4);
+    position: relative;
+    overflow: hidden;
+  }
 
-    .connection-buttons {
-      margin-top: 10px;
-    }
-
-    .connection-buttons button {
-      padding: 8px 12px;
-      margin-right: 10px;
-      border: none;
-      border-radius: 5px;
-      font-size: 12px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
     .connexion-card h4,
 .connexion-card p {
-  color: #000;  /* Added to ensure headers and paragraphs are black */
+  color: #033b4e;  /* Added to ensure headers and paragraphs are black */
 }
 
 .connection-panel {
   /* ... existing styles ... */
-  color: #000;  /* Added this line */
+  color: #ffffff;  /* Added this line */
 }
 
 .connection-panel h4,
 .connection-panel p {
-  color: #000;  /* Added to ensure headers and paragraphs are black */
+  color: #ffffff;  /* Added to ensure headers and paragraphs are black */
 }
 
 .connection-description {
@@ -2207,10 +2309,19 @@ body {
   font-size: 14px;
   color: #333;  /* Already defined but ensuring it's visible */
 }
-    .connection-buttons .edit-connection {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: #fff;
-    }
+    .connection-buttons .edit-connection after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(30deg);
+    transition: all 0.3s ease;
+    opacity: 0;
+  }
+
 
     .connection-buttons .edit-connection:hover {
       background: linear-gradient(135deg, #7f9cf5, #805ad5);
@@ -2266,73 +2377,144 @@ body {
       transform: rotateY(180deg);
       color: #333;
     }
+.connection-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.connection-card {
+  flex: 1 1 200px;
+}
  
-    #mindMapView {
-  width: 100%;
-  height: 100vh;
-  background: linear-gradient(135deg, #1a1a2e, #16213e);
-  overflow: hidden;
-  position: relative;
+/* Define reusable variables */
+/* Define reusable variables */
+/* Define reusable variables */
+:root {
+  --bg-start: #a0e948;
+  --bg-end: #ecf2dd;
+  --node-fill: rgba(221, 254, 88, 0.738);
+  --node-stroke: #4a90e2;
+  --node-hover-fill: #c3d1dd;
+  --node-hover-stroke: #2779bd;
+  --text-color: #2d3748;
+  --text-category-color: #805ad5;
+  --line-stroke-width: 2px;
+  --line-dasharray: 6;
+  --drop-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --drop-shadow-hover: 0 6px 12px rgba(0, 0, 0, 0.4);
+  --transition-duration: 0.3s;
+  --transition-timing: ease;
+  --node-border-radius: 5px;
 }
 
-/* SVG container styling */
+/* Mind Map Container with animated gradient and overlay texture */
+#mindMapView {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+  background-size: 300% 300%;
+  animation: gradientShift 20s ease infinite;
+}
+
+/* Additional background texture for depth */
+#mindMapView::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+  animation: pulseBg 12s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Animated background gradient shift */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Pulse animation for the background overlay */
+
+
+/* SVG Container stays above the background overlay */
 #mindMapView svg {
   width: 100%;
   height: 100%;
+  position: relative;
+  z-index: 1;
 }
 
-/* Connection lines styling */
+/* Connection Lines with glowing effect and animated dash offset */
 #mindMapView line {
-  stroke-width: 2px;
+  stroke: var(--node-stroke);
+  stroke-width: var(--line-stroke-width);
   stroke-linecap: round;
-  stroke-dasharray: 4;
+  stroke-dasharray: var(--line-dasharray);
+  filter: drop-shadow(0 0 8px rgba(17, 1, 1, 0.6));
   animation: flowLine 30s linear infinite;
 }
 
-/* Node styling */
+/* Nodes reimagined with enhanced shadow, slight rotation on hover, and increased scale */
 #mindMapView rect {
-  fill: rgba(255, 255, 255, 0.9);
-  stroke: #4a90e2;
-  stroke-width: 2px;
-  rx: 10;
-  ry: 10;
-  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
-  transition: all 0.3s ease;
+  fill: var(--node-fill);
+  stroke: var(--node-stroke);
+  stroke-width: var(--line-stroke-width);
+  rx: calc(var(--node-border-radius)* 1);
+  ry: calc(var(--node-border-radius) * 1.5);
+  filter: drop-shadow(var(--drop-shadow)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
+  transition: transform var(--transition-duration) var(--transition-timing),
+              fill var(--transition-duration) var(--transition-timing),
+              filter var(--transition-duration) var(--transition-timing);
 }
 
+/* Enhanced Node Hover Effects */
 #mindMapView rect:hover {
-  fill: #e8f4ff;
-  stroke: #2779bd;
-  transform: scale(1.05);
-  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.4));
+  fill: var(--node-hover-fill);
+  stroke: var(--node-hover-stroke);
+  transform: scale(1.1) rotate(1deg);
+  filter: drop-shadow(var(--drop-shadow-hover)) drop-shadow(0 0 12px rgba(255, 255, 255, 0.3));
 }
 
-/* Text styling */
+/* Text Styling with pronounced shadows for clarity */
 #mindMapView text {
   font-family: 'Segoe UI', system-ui, sans-serif;
-  fill: #2d3748;
-  font-size: 14px;
+  fill: var(--text-color);
+  font-size: 16px;
   font-weight: 500;
   pointer-events: none;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+#mindMapView text {
+  white-space: normal; /* Allow wrapping */
+  overflow-wrap: break-word;
+  padding: 5px; /* Some padding inside the node, if applicable */
 }
 
-/* Category text */
+/* Category Text Styling with letter spacing and shadow */
 #mindMapView text.category {
-  fill: #805ad5;
-  font-size: 12px;
+  fill: var(--text-category-color);
+  font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Connection labels */
+/* Connection Labels with increased font size and shadow */
 #mindMapView text.connection-label {
   fill: #ffffff;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-/* Animations */
+/* Animation for connection lines */
 @keyframes flowLine {
   from {
     stroke-dashoffset: 1000;
@@ -2342,16 +2524,38 @@ body {
   }
 }
 
-/* Responsive adjustments */
+/* Responsive Adjustments for smaller screens */
 @media (max-width: 768px) {
   #mindMapView text {
-    font-size: 12px;
+    font-size: 14px;
   }
   
   #mindMapView text.category {
-    font-size: 10px;
+    font-size: 12px;
+  }
+  
+  #mindMapView text.connection-label {
+    font-size: 12px;
   }
 }
+.mind-map-button  {
+    background: linear-gradient(45deg, #6902ef, #af5fff);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(105, 2, 239, 0.4);
+    position: relative;
+    overflow: hidden;
+  }
+
+
+
+
+
   </style>
 </head>
 <body>
@@ -2387,17 +2591,8 @@ body {
   <div id="noteModal"></div>
   
   <!-- Side Panel Toggle Button & Panel -->
-  <button id="sidePanelToggle">☰</button>
-  <div id="sidePanel" class="side-panel">
-    <div class="side-panel-header">
-      <h3>Tools</h3>
-      <button id="closeSidePanel" style="background:none; border:none; color:#fff; font-size:24px; cursor:pointer;">×</button>
-    </div>
-    <div class="side-panel-content">
-      <button id="inkToLatexBtn">Ink to LaTeX</button>
-    </div>
-  </div>
-  <div class="practice-deck-wrapper" id="practiceDeck">
+        <h3>copyright: ABSAR ALTAF SHAH</h3>
+           <div class="practice-deck-wrapper" id="practiceDeck">
     <button class="practice-close-btn" onclick="exitPracticeMode()">Close</button>
     <div class="practice-deck" id="practiceDeckContainer"></div>
     <div class="practice-controls">
@@ -2405,585 +2600,71 @@ body {
       <button class="control-btn" onclick="showNextCard()">Next</button>
     </div>
   </div>
-  
-  <script>
-    /***********************
-     * Default Cards Data  *
-     ***********************/
-    const cardsData = [
-      {
-        category: "Quantum Mechanics",
-        question: "Time-independent Schrödinger Equation",
-        answer: "$$ -\\frac{\\hbar^2}{2m}\\nabla^2\\psi(\\mathbf{r}) + V(\\mathbf{r})\\psi(\\mathbf{r}) = E\\psi(\\mathbf{r}) $$",
-        type: "card"
-      },
-      {
-        category: "Quantum Mechanics",
-        question: "Time-dependent Schrödinger Equation",
-        answer: "$$ i\\hbar\\,\\frac{\\partial}{\\partial t}\\psi(\\mathbf{r},t) = -\\frac{\\hbar^2}{2m}\\nabla^2\\psi(\\mathbf{r},t) + V(\\mathbf{r})\\psi(\\mathbf{r},t) $$",
-        type: "card"
-      },
-      {
-        category: "Quantum Mechanics",
-        question: "Momentum Operator",
-        answer: "$$ \\hat{p} = -i\\hbar\\,\\frac{\\partial}{\\partial x} $$",
-        type: "card"
-      },
-      {
-        category: "Quantum Mechanics",
-        question: "Position Operator",
-        answer: "$$ \\hat{x} = x $$",
-        type: "card"
-      },
-      {
-        category: "Quantum Mechanics",
-        question: "Probability Density",
-        answer: "$$ \\rho(\\mathbf{r},t) = |\\psi(\\mathbf{r},t)|^2 $$",
-        type: "card"
-      },
-      {
-        category: "Quantum Mechanics",
-        question: "Current Density",
-        answer: "$$ \\mathbf{j}(\\mathbf{r},t) = \\frac{\\hbar}{2mi}\\left(\\psi^*\\nabla\\psi - \\psi\\nabla\\psi^*\\right) $$",
-        type: "card"
-      }
-    ];
+ <script> 
+/***********************
+ * Default Cards Data  *
+ ***********************/
+const cardsData = [
+  {
+    category: "Quantum Mechanics",
+    question: "Time-independent Schrödinger Equation",
+    answer: "$$ -\\frac{\\hbar^2}{2m}\\nabla^2\\psi(\\mathbf{r}) + V(\\mathbf{r})\\psi(\\mathbf{r}) = E\\psi(\\mathbf{r}) $$",
+    type: "card"
+  },
+  {
+    category: "Quantum Mechanics",
+    question: "Time-dependent Schrödinger Equation",
+    answer: "$$ i\\hbar\\,\\frac{\\partial}{\\partial t}\\psi(\\mathbf{r},t) = -\\frac{\\hbar^2}{2m}\\nabla^2\\psi(\\mathbf{r},t) + V(\\mathbf{r})\\psi(\\mathbf{r},t) $$",
+    type: "card"
+  },
+  {
+    category: "Quantum Mechanics",
+    question: "Momentum Operator",
+    answer: "$$ \\hat{p} = -i\\hbar\\,\\frac{\\partial}{\\partial x} $$",
+    type: "card"
+  },
+  {
+    category: "Quantum Mechanics",
+    question: "Position Operator",
+    answer: "$$ \\hat{x} = x $$",
+    type: "card"
+  },
+  {
+    category: "Quantum Mechanics",
+    question: "Probability Density",
+    answer: "$$ \\rho(\\mathbf{r},t) = |\\psi(\\mathbf{r},t)|^2 $$",
+    type: "card"
+  },
+  {
+    category: "Quantum Mechanics",
+    question: "Current Density",
+    answer: "$$ \\mathbf{j}(\\mathbf{r},t) = \\frac{\\hbar}{2mi}\\left(\\psi^*\\nabla\\psi - \\psi\\nabla\\psi^*\\right) $$",
+    type: "card"
+  }
+];
 
-    let currentCards = [];
-    let connections = [];
-    let currentFilteredCards = [];
-    // Track segregation state
+let currentCards = [];
+let connections = [];
+let currentFilteredCards = [];
+let isSelectMode = false; // Tracks if we’re in selection mode
+let selectedCards = new Set(); // Stores the IDs of selected cards
 
-    /******************************
-     * Rendering & Storage Logic  *
-     ******************************/
-    function renderCards() {
-      const container = document.getElementById('cardContainer');
-      container.innerHTML = '';
-      const filterValue = document.getElementById('filterCategory').value;
-      const filteredCards = filterValue === 'all'
-        ? currentCards
-        : currentCards.filter(card => card.category === filterValue);
-      filteredCards.forEach(card => {
-        container.appendChild(createCard(card));
-      });
-      updateCategoryLists();
-    }
+// Track segregation state
+let isSegregated = false;
+let originalPositions = {};
+let globalEventHandlersInitialized = false;
+let activeConnectionCreation = false;
 
-    function updateCategoryLists() {
-      const categorySet = new Set();
-      currentCards.forEach(card => {
-        if (card.category) categorySet.add(card.category);
-      });
-      const dataList = document.getElementById('categoryList');
-      dataList.innerHTML = '';
-      categorySet.forEach(cat => {
-        const option = document.createElement('option');
-        option.value = cat;
-        dataList.appendChild(option);
-      });
-      const filterSelect = document.getElementById('filterCategory');
-      const currentSelection = filterSelect.value;
-      filterSelect.innerHTML = '<option value="all">Show All Categories</option>';
-      categorySet.forEach(cat => {
-        const option = document.createElement('option');
-        option.value = cat;
-        option.textContent = cat;
-        filterSelect.appendChild(option);
-      });
-      filterSelect.value = currentSelection;
-    }
+// Store active drag state
+let activeDrag = {
+  element: null,
+  isDragging: false,
+  startX: 0,
+  startY: 0
+};
 
-    function loadCards() {
-      const saved = localStorage.getItem('flashcards');
-      if (saved) {
-        currentCards = JSON.parse(saved);
-      } else {
-        currentCards = cardsData.map(card => ({
-          ...card,
-          id: `card-${Date.now()}-${Math.random()}`
-        }));
-      }
-      renderCards();
-    }
-
-    function saveCards() {
-      localStorage.setItem('flashcards', JSON.stringify(currentCards));
-    }
-
-    function loadConnections() {
-      const saved = localStorage.getItem('connections');
-      if (saved) {
-        connections = JSON.parse(saved);
-      } else {
-        connections = [];
-      }
-    }
-
-    function saveConnections() {
-      localStorage.setItem('connections', JSON.stringify(connections));
-    }
-
-    /******************************
-     * Modal Functions for Subcards *
-     ******************************/
-    function openSubcardsModal(parentCard) {
-      const modal = document.getElementById('subcardsModal');
-      modal.innerHTML = '';
-      
-      const modalContent = document.createElement('div');
-      modalContent.className = 'modal-content';
-      
-      const closeBtn = document.createElement('button');
-      closeBtn.className = 'close-modal';
-      closeBtn.textContent = '×';
-      closeBtn.onclick = closeSubcardsModal;
-      modalContent.appendChild(closeBtn);
-      
-      const modalTitle = document.createElement('h2');
-      modalTitle.textContent = 'Subcards';
-      modalTitle.style.textAlign = 'center';
-      modalContent.appendChild(modalTitle);
-      
-      const modalSubcardsContainer = document.createElement('div');
-      modalSubcardsContainer.className = 'modal-subcards-container';
-      if (parentCard.subcards && parentCard.subcards.length > 0) {
-        parentCard.subcards.forEach(subcard => {
-          modalSubcardsContainer.appendChild(createSubcardForModal(subcard));
-        });
-      } else {
-        const noSubcardsMsg = document.createElement('p');
-        noSubcardsMsg.textContent = 'No subcards available.';
-        modalSubcardsContainer.appendChild(noSubcardsMsg);
-      }
-      modalContent.appendChild(modalSubcardsContainer);
-      modal.appendChild(modalContent);
-      modal.style.display = 'flex';
-    }
-
-    function closeSubcardsModal() {
-      const modal = document.getElementById('subcardsModal');
-      modal.style.display = 'none';
-    }
-
-    /******************************
-     * Modal Functions for Expanded Note *
-     ******************************/
-    function openNoteModal(noteCard) {
-      const noteModal = document.getElementById('noteModal');
-      noteModal.innerHTML = '';
-      
-      const modalContent = document.createElement('div');
-      modalContent.className = 'modal-content';
-      
-      const closeBtn = document.createElement('button');
-      closeBtn.className = 'close-modal';
-      closeBtn.textContent = '×';
-      closeBtn.onclick = closeNoteModal;
-      modalContent.appendChild(closeBtn);
-      
-      const modalTitle = document.createElement('h2');
-      modalTitle.textContent = noteCard.question;
-      modalTitle.style.textAlign = 'center';
-      modalContent.appendChild(modalTitle);
-      
-      const contentDiv = document.createElement('div');
-      contentDiv.innerHTML = noteCard.answer;
-      contentDiv.style.marginTop = '20px';
-      modalContent.appendChild(contentDiv);
-      
-      noteModal.appendChild(modalContent);
-      noteModal.style.display = 'flex';
-      
-      if (window.MathJax) {
-        MathJax.typesetPromise([contentDiv])
-          .catch(err => console.log(err.message));
-      }
-    }
-
-    function closeNoteModal() {
-      document.getElementById('noteModal').style.display = 'none';
-    }
-
-    /******************************
-     * Subcard Creation Functions *
-     ******************************/
-    function createSubcard(subcard, parentCard) {
-      const subcardElement = document.createElement('div');
-      subcardElement.className = 'flashcard subcard';
-      subcardElement.dataset.subcardId = subcard.id;
-      
-      const deleteBtn = document.createElement('button');
-      deleteBtn.className = 'delete-btn';
-      deleteBtn.textContent = '×';
-      deleteBtn.onclick = (e) => {
-        e.stopPropagation();
-        parentCard.subcards = parentCard.subcards.filter(sc => sc.id !== subcard.id);
-        saveCards();
-        renderCards();
-      };
-      
-      const editBtn = document.createElement('button');
-      editBtn.className = 'edit-btn';
-      editBtn.textContent = '✎';
-      editBtn.onclick = (e) => {
-        e.stopPropagation();
-        enableSubcardEditMode(subcardElement, subcard, parentCard);
-      };
-      
-      const subcardInner = document.createElement('div');
-      subcardInner.className = 'flashcard-inner';
-      subcardInner.innerHTML = `
-        <div class="flashcard-front">
-          <div>${subcard.question}</div>
-        </div>
-        <div class="flashcard-back">${subcard.answer}</div>
-      `;
-      
-      subcardElement.onclick = (e) => {
-        e.stopPropagation();
-        if (subcardElement.classList.contains('editing')) return;
-        openSubcardsModal(parentCard);
-      };
-      
-      subcardElement.appendChild(deleteBtn);
-      subcardElement.appendChild(editBtn);
-      subcardElement.appendChild(subcardInner);
-      return subcardElement;
-    }
-
-    function createSubcardForModal(subcard) {
-      const subcardElement = document.createElement('div');
-      subcardElement.className = 'flashcard subcard';
-      subcardElement.dataset.subcardId = subcard.id;
-      
-      const subcardInner = document.createElement('div');
-      subcardInner.className = 'flashcard-inner';
-      subcardInner.innerHTML = `
-        <div class="flashcard-front">
-          <div>${subcard.question}</div>
-        </div>
-        <div class="flashcard-back">${subcard.answer}</div>
-      `;
-      
-      subcardElement.onclick = () => {
-        subcardElement.classList.toggle('flipped');
-        setTimeout(() => {
-          if (window.MathJax) {
-            MathJax.typesetPromise([subcardElement.querySelector('.flashcard-back')])
-              .catch(err => console.log(err.message));
-          }
-        }, 500);
-      };
-      
-      subcardElement.appendChild(subcardInner);
-      return subcardElement;
-    }
-
-    /******************************
-     * Card Creation Functions    *
-     ******************************/
-    function createCard(card) {
-      const cardElement = document.createElement('div');
-      cardElement.className = 'flashcard';
-      if (card.type === "note") cardElement.classList.add("note");
-      cardElement.dataset.cardId = card.id;
-      
-      const deleteBtn = document.createElement('button');
-      deleteBtn.className = 'delete-btn';
-      deleteBtn.textContent = '×';
-      deleteBtn.onclick = (e) => {
-        e.stopPropagation();
-        currentCards = currentCards.filter(c => c.id !== card.id);
-        saveCards();
-        renderCards();
-      };
-      
-      const editBtn = document.createElement('button');
-      editBtn.className = 'edit-btn';
-      editBtn.textContent = '✎';
-      editBtn.onclick = (e) => {
-        e.stopPropagation();
-        enableEditMode(cardElement, card);
-      };
-      
-      const cardInner = document.createElement('div');
-      cardInner.className = 'flashcard-inner';
-      cardInner.innerHTML = `
-        <div class="flashcard-front">
-          ${card.category ? `<div style="font-weight:bold; margin-bottom:8px;">${card.category}</div>` : ''}
-          <div>${card.question}</div>
-        </div>
-        <div class="flashcard-back">${card.answer}</div>
-      `;
-      
-      cardElement.onclick = () => {
-        if (!cardElement.classList.contains('editing')) {
-          cardElement.classList.toggle('flipped');
-          setTimeout(() => {
-            if (window.MathJax) {
-              MathJax.typesetPromise([cardInner.querySelector('.flashcard-back')])
-                .catch(err => console.log(err.message));
-            }
-          }, 500);
-        }
-      };
-      
-      cardElement.appendChild(deleteBtn);
-      cardElement.appendChild(editBtn);
-      cardElement.appendChild(cardInner);
-      
-      if (card.subcards && card.subcards.length > 0) {
-        const toggleSubcardsBtn = document.createElement('button');
-        toggleSubcardsBtn.textContent = 'Show Subcards';
-        toggleSubcardsBtn.style.marginTop = '10px';
-        toggleSubcardsBtn.style.padding = '6px 12px';
-        toggleSubcardsBtn.style.background = '#667eea';
-        toggleSubcardsBtn.style.color = '#fff';
-        toggleSubcardsBtn.style.border = 'none';
-        toggleSubcardsBtn.style.borderRadius = '5px';
-        toggleSubcardsBtn.style.cursor = 'pointer';
-        toggleSubcardsBtn.onclick = (e) => {
-          e.stopPropagation();
-          openSubcardsModal(card);
-        };
-        cardElement.appendChild(toggleSubcardsBtn);
-      }
-      
-      if (card.type === "note") {
-        const expandBtn = document.createElement('button');
-        expandBtn.textContent = 'Expand';
-        expandBtn.style.marginTop = '10px';
-        expandBtn.style.padding = '6px 12px';
-        expandBtn.style.background = '#28a745';
-        expandBtn.style.color = '#fff';
-        expandBtn.style.border = 'none';
-        expandBtn.style.borderRadius = '5px';
-        expandBtn.style.cursor = 'pointer';
-        expandBtn.onclick = (e) => {
-          e.stopPropagation();
-          openNoteModal(card);
-        };
-        cardElement.appendChild(expandBtn);
-      }
-      
-      return cardElement;
-    }
-
-    /******************************
-     * Edit Mode Functions        *
-     ******************************/
-    function enableSubcardEditMode(subcardElement, subcard, parentCard) {
-      subcardElement.classList.add('editing');
-      const subcardInner = subcardElement.querySelector('.flashcard-inner');
-      const originalContent = subcardInner.innerHTML;
-      subcardInner.innerHTML = '';
-      
-      const editContainer = document.createElement('div');
-      editContainer.className = 'edit-mode';
-      
-      const questionInput = document.createElement('input');
-      questionInput.type = 'text';
-      questionInput.value = subcard.question;
-      questionInput.placeholder = 'Subcard Question';
-      
-      const answerInput = document.createElement('textarea');
-      answerInput.rows = 4;
-      answerInput.value = subcard.answer;
-      answerInput.placeholder = 'Subcard Answer (LaTeX supported)';
-      
-      const saveBtn = document.createElement('button');
-      saveBtn.className = 'save-btn';
-      saveBtn.textContent = 'Save';
-      saveBtn.onclick = (e) => {
-        e.stopPropagation();
-        subcard.question = questionInput.value.trim();
-        subcard.answer = answerInput.value.trim();
-        saveCards();
-        renderCards();
-      };
-      
-      const cancelBtn = document.createElement('button');
-      cancelBtn.className = 'cancel-btn';
-      cancelBtn.textContent = 'Cancel';
-      cancelBtn.onclick = (e) => {
-        e.stopPropagation();
-        subcardInner.innerHTML = originalContent;
-        subcardElement.classList.remove('editing');
-      };
-      
-      editContainer.appendChild(questionInput);
-      editContainer.appendChild(answerInput);
-      editContainer.appendChild(saveBtn);
-      editContainer.appendChild(cancelBtn);
-      subcardInner.appendChild(editContainer);
-    }
-
-    function enableEditMode(cardElement, card) {
-  cardElement.classList.add('editing');
-  const cardInner = cardElement.querySelector('.flashcard-inner');
-  const originalContent = cardInner.innerHTML;
-  
-  const editContainer = document.createElement('div');
-  editContainer.className = 'edit-mode';
-  
-  // Create form fields
-  const categoryInput = document.createElement('input');
-  categoryInput.type = 'text';
-  categoryInput.value = card.category || '';
-  categoryInput.placeholder = 'Category';
-  categoryInput.setAttribute('list', 'categoryList');
-  
-  const questionInput = document.createElement('input');
-  questionInput.type = 'text';
-  questionInput.value = card.question || '';
-  questionInput.placeholder = 'Question / Title';
-  
-  const answerInput = document.createElement('textarea');
-  answerInput.rows = card.type === "note" ? 6 : 4;
-  answerInput.value = card.answer || '';
-  answerInput.placeholder = 'Answer or note content (LaTeX supported)';
-  
-  // Create button group
-  const buttonGroup = document.createElement('div');
-  buttonGroup.className = 'button-group';
-  
-  const saveBtn = document.createElement('button');
-  saveBtn.className = 'save-btn';
-  saveBtn.textContent = 'Save Changes';
-  saveBtn.onclick = (e) => {
-    e.stopPropagation();
-    card.category = categoryInput.value.trim();
-    card.question = questionInput.value.trim();
-    card.answer = answerInput.value.trim();
-    saveCards();
-    renderCards();
-  };
-  
-  const cancelBtn = document.createElement('button');
-  cancelBtn.className = 'cancel-btn';
-  cancelBtn.textContent = 'Cancel';
-  cancelBtn.onclick = (e) => {
-    e.stopPropagation();
-    cardInner.innerHTML = originalContent;
-    cardElement.classList.remove('editing');
-  };
-  
-  buttonGroup.appendChild(saveBtn);
-  buttonGroup.appendChild(cancelBtn);
-  
-  // Create subcards section
-  const subcardsSection = document.createElement('div');
-  subcardsSection.className = 'subcards-section';
-  
-  const subcardsHeader = document.createElement('div');
-  subcardsHeader.className = 'subcards-header';
-  
-  const subcardsLabel = document.createElement('h3');
-  subcardsLabel.textContent = 'Subcards';
-  
-  const addSubcardBtn = document.createElement('button');
-  addSubcardBtn.className = 'add-subcard-btn';
-  addSubcardBtn.textContent = '+ Add Subcard';
-  addSubcardBtn.onclick = (e) => {
-    e.stopPropagation();
-    const newSubcard = {
-      id: `card-${Date.now()}-${Math.random()}`,
-      question: 'New Subcard',
-      answer: 'Subcard answer',
-      type: 'subcard'
-    };
-    if (!card.subcards) card.subcards = [];
-    card.subcards.push(newSubcard);
-    saveCards();
-    renderCards();
-  };
-  
-  subcardsHeader.appendChild(subcardsLabel);
-  subcardsHeader.appendChild(addSubcardBtn);
-  
-  const subcardsContainer = document.createElement('div');
-  subcardsContainer.className = 'subcards-container';
-  if (!card.subcards) card.subcards = [];
-  card.subcards.forEach(subcard => {
-    subcardsContainer.appendChild(createSubcard(subcard, card));
-  });
-  
-  // Append everything to the edit container
-  editContainer.appendChild(categoryInput);
-  editContainer.appendChild(questionInput);
-  editContainer.appendChild(answerInput);
-  editContainer.appendChild(buttonGroup);
-  editContainer.appendChild(subcardsSection);
-  subcardsSection.appendChild(subcardsHeader);
-  subcardsSection.appendChild(subcardsContainer);
-  
-  // Clear and update the card inner content
-  cardInner.innerHTML = '';
-  cardInner.appendChild(editContainer);
-}
-    /******************************
-     * Adding New Cards / Notes   *
-     ******************************/
-    function addNewCard() {
-      const categoryInput = document.getElementById('category');
-      const questionInput = document.getElementById('question');
-      const answerInput = document.getElementById('answer');
-      const category = categoryInput.value.trim();
-      const question = questionInput.value.trim();
-      const answer = answerInput.value.trim();
-      if (question && answer) {
-        currentCards.push({
-          id: `card-${Date.now()}-${Math.random()}`,
-          category,
-          question,
-          answer,
-          type: "card"
-        });
-        saveCards();
-        renderCards();
-        categoryInput.value = '';
-        questionInput.value = '';
-        answerInput.value = '';
-      }
-    }
-
-    function addNewNote() {
-      const categoryInput = document.getElementById('category');
-      const questionInput = document.getElementById('question');
-      const answerInput = document.getElementById('answer');
-      const category = categoryInput.value.trim();
-      const question = questionInput.value.trim();
-      const answer = answerInput.value.trim();
-      if (question && answer) {
-        currentCards.push({
-          id: `card-${Date.now()}-${Math.random()}`,
-          category,
-          question,
-          answer,
-          type: "note"
-        });
-        saveCards();
-        renderCards();
-        categoryInput.value = '';
-        questionInput.value = '';
-        answerInput.value = '';
-      }
-    }
-
-    function shuffleCards() {
-      for (let i = currentCards.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [currentCards[i], currentCards[j]] = [currentCards[j], currentCards[i]];
-      }
-      saveCards();
-      renderCards();
-    }
-
-    /******************************
-     * Connexion Mode Functions   *
-     ******************************/
-     class UnionFind {
+// Union-Find class for clustering
+class UnionFind {
   constructor(elements) {
     this.parent = {};
     this.rank = {};
@@ -3015,56 +2696,520 @@ body {
   }
 }
 
-// ------------------------
-// Global State Variables
-// ------------------------
-let isSegregated = false;
-let originalPositions = {};
-let globalEventHandlersInitialized = false;
-let activeConnectionCreation = false;
-
-// Store active drag state
-let activeDrag = {
-  element: null,
-  isDragging: false,
-  startX: 0,
-  startY: 0
-};
-
-// ------------------------
-// Mode Functions
-// ------------------------
-
-function enterConnexionMode() {
-  loadConnections(); // assume you have this implemented
-
-  // Filter cards by selected category
+/******************************
+ * Rendering & Storage Logic  *
+ ******************************/
+function renderCards() {
+  const container = document.getElementById('cardContainer');
+  container.innerHTML = '';
   const filterValue = document.getElementById('filterCategory').value;
-  const filteredCards =
-    filterValue === 'all'
-      ? currentCards
-      : currentCards.filter(card => card.category === filterValue);
+  const filteredCards = filterValue === 'all'
+    ? currentCards
+    : currentCards.filter(card => card.category === filterValue);
+  filteredCards.forEach(card => {
+    container.appendChild(createCard(card));
+  });
+  updateCategoryLists();
+}
+
+function updateCategoryLists() {
+  const categorySet = new Set();
+  currentCards.forEach(card => {
+    if (card.category) categorySet.add(card.category);
+  });
+  const dataList = document.getElementById('categoryList');
+  dataList.innerHTML = '';
+  categorySet.forEach(cat => {
+    const option = document.createElement('option');
+    option.value = cat;
+    dataList.appendChild(option);
+  });
+  const filterSelect = document.getElementById('filterCategory');
+  const currentSelection = filterSelect.value;
+  filterSelect.innerHTML = '<option value="all">Show All Categories</option>';
+  categorySet.forEach(cat => {
+    const option = document.createElement('option');
+    option.value = cat;
+    option.textContent = cat;
+    filterSelect.appendChild(option);
+  });
+  filterSelect.value = currentSelection;
+}
+
+function loadCards() {
+  const saved = localStorage.getItem('flashcards');
+  if (saved) {
+    currentCards = JSON.parse(saved);
+  } else {
+    currentCards = cardsData.map(card => ({
+      ...card,
+      id: `card-${Date.now()}-${Math.random()}`
+    }));
+  }
+  renderCards();
+}
+
+function saveCards() {
+  localStorage.setItem('flashcards', JSON.stringify(currentCards));
+}
+
+function loadConnections() {
+  const saved = localStorage.getItem('connections');
+  if (saved) {
+    connections = JSON.parse(saved);
+    connections = connections.map(conn => {
+      // If 'cards' exists, keep the connection as is
+      if (conn.cards) {
+        return conn;
+      } 
+      // Migrate legacy format with 'card1' and 'card2'
+      else if (conn.card1 && conn.card2) {
+        return {
+          id: conn.id,
+          cards: [conn.card1, conn.card2],
+          description: conn.description,
+          tag: conn.tag,
+          color: conn.color
+        };
+      } 
+      // Log and discard invalid connections
+      else {
+        console.warn('Invalid connection found and will be removed:', conn);
+        return null;
+      }
+    }).filter(Boolean); // Remove null entries
+  } else {
+    connections = [];
+  }
+}
+
+function saveConnections() {
+  localStorage.setItem('connections', JSON.stringify(connections));
+}
+
+/******************************
+ * Modal Functions for Subcards *
+ ******************************/
+function openSubcardsModal(parentCard) {
+  const modal = document.getElementById('subcardsModal');
+  modal.innerHTML = '';
+  const modalContent = document.createElement('div');
+  modalContent.className = 'modal-content';
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'close-modal';
+  closeBtn.textContent = '×';
+  closeBtn.onclick = closeSubcardsModal;
+  modalContent.appendChild(closeBtn);
+  const modalTitle = document.createElement('h2');
+  modalTitle.textContent = 'Subcards';
+  modalTitle.style.textAlign = 'center';
+  modalContent.appendChild(modalTitle);
+  const modalSubcardsContainer = document.createElement('div');
+  modalSubcardsContainer.className = 'modal-subcards-container';
+  if (parentCard.subcards && parentCard.subcards.length > 0) {
+    parentCard.subcards.forEach(subcard => {
+      modalSubcardsContainer.appendChild(createSubcardForModal(subcard));
+    });
+  } else {
+    const noSubcardsMsg = document.createElement('p');
+    noSubcardsMsg.textContent = 'No subcards available.';
+    modalSubcardsContainer.appendChild(noSubcardsMsg);
+  }
+  modalContent.appendChild(modalSubcardsContainer);
+  modal.appendChild(modalContent);
+  modal.style.display = 'flex';
+}
+
+function closeSubcardsModal() {
+  document.getElementById('subcardsModal').style.display = 'none';
+}
+
+/******************************
+ * Modal Functions for Expanded Note *
+ ******************************/
+function openNoteModal(noteCard) {
+  const noteModal = document.getElementById('noteModal');
+  noteModal.innerHTML = '';
+  const modalContent = document.createElement('div');
+  modalContent.className = 'modal-content';
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'close-modal';
+  closeBtn.textContent = '×';
+  closeBtn.onclick = closeNoteModal;
+  modalContent.appendChild(closeBtn);
+  const modalTitle = document.createElement('h2');
+  modalTitle.textContent = noteCard.question;
+  modalTitle.style.textAlign = 'center';
+  modalContent.appendChild(modalTitle);
+  const contentDiv = document.createElement('div');
+  contentDiv.innerHTML = noteCard.answer;
+  contentDiv.style.marginTop = '20px';
+  modalContent.appendChild(contentDiv);
+  noteModal.appendChild(modalContent);
+  noteModal.style.display = 'flex';
+  if (window.MathJax) {
+    MathJax.typesetPromise([contentDiv]).catch(err => console.log(err.message));
+  }
+}
+
+function closeNoteModal() {
+  document.getElementById('noteModal').style.display = 'none';
+}
+
+/******************************
+ * Subcard Creation Functions *
+ ******************************/
+function createSubcard(subcard, parentCard) {
+  const subcardElement = document.createElement('div');
+  subcardElement.className = 'flashcard subcard';
+  subcardElement.dataset.subcardId = subcard.id;
+  const deleteBtn = document.createElement('button');
+  deleteBtn.className = 'delete-btn';
+  deleteBtn.textContent = '×';
+  deleteBtn.onclick = (e) => {
+    e.stopPropagation();
+    parentCard.subcards = parentCard.subcards.filter(sc => sc.id !== subcard.id);
+    saveCards();
+    renderCards();
+  };
+  const editBtn = document.createElement('button');
+  editBtn.className = 'edit-btn';
+  editBtn.textContent = '✎';
+  editBtn.onclick = (e) => {
+    e.stopPropagation();
+    enableSubcardEditMode(subcardElement, subcard, parentCard);
+  };
+  const subcardInner = document.createElement('div');
+  subcardInner.className = 'flashcard-inner';
+  subcardInner.innerHTML = `
+    <div class="flashcard-front">
+      <div>${subcard.question}</div>
+    </div>
+    <div class="flashcard-back">${subcard.answer}</div>
+  `;
+  subcardElement.onclick = (e) => {
+    e.stopPropagation();
+    if (subcardElement.classList.contains('editing')) return;
+    openSubcardsModal(parentCard);
+  };
+  subcardElement.appendChild(deleteBtn);
+  subcardElement.appendChild(editBtn);
+  subcardElement.appendChild(subcardInner);
+  return subcardElement;
+}
+
+function createSubcardForModal(subcard) {
+  const subcardElement = document.createElement('div');
+  subcardElement.className = 'flashcard subcard';
+  subcardElement.dataset.subcardId = subcard.id;
+  const subcardInner = document.createElement('div');
+  subcardInner.className = 'flashcard-inner';
+  subcardInner.innerHTML = `
+    <div class="flashcard-front">
+      <div>${subcard.question}</div>
+    </div>
+    <div class="flashcard-back">${subcard.answer}</div>
+  `;
+  subcardElement.onclick = () => {
+    subcardElement.classList.toggle('flipped');
+    setTimeout(() => {
+      if (window.MathJax) {
+        MathJax.typesetPromise([subcardElement.querySelector('.flashcard-back')]).catch(err => console.log(err.message));
+      }
+    }, 500);
+  };
+  subcardElement.appendChild(subcardInner);
+  return subcardElement;
+}
+
+/******************************
+ * Card Creation Functions    *
+ ******************************/
+function createCard(card) {
+  const cardElement = document.createElement('div');
+  cardElement.className = 'flashcard';
+  if (card.type === "note") cardElement.classList.add("note");
+  cardElement.dataset.cardId = card.id;
+  const deleteBtn = document.createElement('button');
+  deleteBtn.className = 'delete-btn';
+  deleteBtn.textContent = '×';
+  deleteBtn.onclick = (e) => {
+    e.stopPropagation();
+    currentCards = currentCards.filter(c => c.id !== card.id);
+    saveCards();
+    renderCards();
+  };
+  const editBtn = document.createElement('button');
+  editBtn.className = 'edit-btn';
+  editBtn.textContent = '✎';
+  editBtn.onclick = (e) => {
+    e.stopPropagation();
+    enableEditMode(cardElement, card);
+  };
+  const cardInner = document.createElement('div');
+  cardInner.className = 'flashcard-inner';
+  cardInner.innerHTML = `
+    <div class="flashcard-front">
+      ${card.category ? `<div style="font-weight:bold; margin-bottom:8px;">${card.category}</div>` : ''}
+      <div>${card.question}</div>
+    </div>
+    <div class="flashcard-back">${card.answer}</div>
+  `;
+  cardElement.onclick = () => {
+    if (!cardElement.classList.contains('editing')) {
+      cardElement.classList.toggle('flipped');
+      setTimeout(() => {
+        if (window.MathJax) {
+          MathJax.typesetPromise([cardInner.querySelector('.flashcard-back')]).catch(err => console.log(err.message));
+        }
+      }, 500);
+    }
+  };
+  cardElement.appendChild(deleteBtn);
+  cardElement.appendChild(editBtn);
+  cardElement.appendChild(cardInner);
+  if (card.subcards && card.subcards.length > 0) {
+    const toggleSubcardsBtn = document.createElement('button');
+    toggleSubcardsBtn.textContent = 'Show Subcards';
+    toggleSubcardsBtn.style.marginTop = '10px';
+    toggleSubcardsBtn.style.padding = '6px 12px';
+    toggleSubcardsBtn.style.background = '#667eea';
+    toggleSubcardsBtn.style.color = '#fff';
+    toggleSubcardsBtn.style.border = 'none';
+    toggleSubcardsBtn.style.borderRadius = '5px';
+    toggleSubcardsBtn.style.cursor = 'pointer';
+    toggleSubcardsBtn.onclick = (e) => {
+      e.stopPropagation();
+      openSubcardsModal(card);
+    };
+    cardElement.appendChild(toggleSubcardsBtn);
+  }
+  if (card.type === "note") {
+    const expandBtn = document.createElement('button');
+    expandBtn.textContent = 'Expand';
+    expandBtn.style.marginTop = '10px';
+    expandBtn.style.padding = '6px 12px';
+    expandBtn.style.background = '#28a745';
+    expandBtn.style.color = '#fff';
+    expandBtn.style.border = 'none';
+    expandBtn.style.borderRadius = '5px';
+    expandBtn.style.cursor = 'pointer';
+    expandBtn.onclick = (e) => {
+      e.stopPropagation();
+      openNoteModal(card);
+    };
+    cardElement.appendChild(expandBtn);
+  }
+  return cardElement;
+}
+
+/******************************
+ * Edit Mode Functions        *
+ ******************************/
+function enableSubcardEditMode(subcardElement, subcard, parentCard) {
+  subcardElement.classList.add('editing');
+  const subcardInner = subcardElement.querySelector('.flashcard-inner');
+  const originalContent = subcardInner.innerHTML;
+  subcardInner.innerHTML = '';
+  const editContainer = document.createElement('div');
+  editContainer.className = 'edit-mode';
+  const questionInput = document.createElement('input');
+  questionInput.type = 'text';
+  questionInput.value = subcard.question;
+  questionInput.placeholder = 'Subcard Question';
+  const answerInput = document.createElement('textarea');
+  answerInput.rows = 4;
+  answerInput.value = subcard.answer;
+  answerInput.placeholder = 'Subcard Answer (LaTeX supported)';
+  const saveBtn = document.createElement('button');
+  saveBtn.className = 'save-btn';
+  saveBtn.textContent = 'Save';
+  saveBtn.onclick = (e) => {
+    e.stopPropagation();
+    subcard.question = questionInput.value.trim();
+    subcard.answer = answerInput.value.trim();
+    saveCards();
+    renderCards();
+  };
+  const cancelBtn = document.createElement('button');
+  cancelBtn.className = 'cancel-btn';
+  cancelBtn.textContent = 'Cancel';
+  cancelBtn.onclick = (e) => {
+    e.stopPropagation();
+    subcardInner.innerHTML = originalContent;
+    subcardElement.classList.remove('editing');
+  };
+  editContainer.appendChild(questionInput);
+  editContainer.appendChild(answerInput);
+  editContainer.appendChild(saveBtn);
+  editContainer.appendChild(cancelBtn);
+  subcardInner.appendChild(editContainer);
+}
+
+function enableEditMode(cardElement, card) {
+  cardElement.classList.add('editing');
+  const cardInner = cardElement.querySelector('.flashcard-inner');
+  const originalContent = cardInner.innerHTML;
+  const editContainer = document.createElement('div');
+  editContainer.className = 'edit-mode';
+  const categoryInput = document.createElement('input');
+  categoryInput.type = 'text';
+  categoryInput.value = card.category || '';
+  categoryInput.placeholder = 'Category';
+  categoryInput.setAttribute('list', 'categoryList');
+  const questionInput = document.createElement('input');
+  questionInput.type = 'text';
+  questionInput.value = card.question || '';
+  questionInput.placeholder = 'Question / Title';
+  const answerInput = document.createElement('textarea');
+  answerInput.rows = card.type === "note" ? 6 : 4;
+  answerInput.value = card.answer || '';
+  answerInput.placeholder = 'Answer or note content (LaTeX supported)';
+  const buttonGroup = document.createElement('div');
+  buttonGroup.className = 'button-group';
+  const saveBtn = document.createElement('button');
+  saveBtn.className = 'save-btn';
+  saveBtn.textContent = 'Save Changes';
+  saveBtn.onclick = (e) => {
+    e.stopPropagation();
+    card.category = categoryInput.value.trim();
+    card.question = questionInput.value.trim();
+    card.answer = answerInput.value.trim();
+    saveCards();
+    renderCards();
+  };
+  const cancelBtn = document.createElement('button');
+  cancelBtn.className = 'cancel-btn';
+  cancelBtn.textContent = 'Cancel';
+  cancelBtn.onclick = (e) => {
+    e.stopPropagation();
+    cardInner.innerHTML = originalContent;
+    cardElement.classList.remove('editing');
+  };
+  buttonGroup.appendChild(saveBtn);
+  buttonGroup.appendChild(cancelBtn);
+  const subcardsSection = document.createElement('div');
+  subcardsSection.className = 'subcards-section';
+  const subcardsHeader = document.createElement('div');
+  subcardsHeader.className = 'subcards-header';
+  const subcardsLabel = document.createElement('h3');
+  subcardsLabel.textContent = 'Subcards';
+  const addSubcardBtn = document.createElement('button');
+  addSubcardBtn.className = 'add-subcard-btn';
+  addSubcardBtn.textContent = '+ Add Subcard';
+  addSubcardBtn.onclick = (e) => {
+    e.stopPropagation();
+    const newSubcard = {
+      id: `card-${Date.now()}-${Math.random()}`,
+      question: 'New Subcard',
+      answer: 'Subcard answer',
+      type: 'subcard'
+    };
+    if (!card.subcards) card.subcards = [];
+    card.subcards.push(newSubcard);
+    saveCards();
+    renderCards();
+  };
+  subcardsHeader.appendChild(subcardsLabel);
+  subcardsHeader.appendChild(addSubcardBtn);
+  const subcardsContainer = document.createElement('div');
+  subcardsContainer.className = 'subcards-container';
+  if (!card.subcards) card.subcards = [];
+  card.subcards.forEach(subcard => {
+    subcardsContainer.appendChild(createSubcard(subcard, card));
+  });
+  editContainer.appendChild(categoryInput);
+  editContainer.appendChild(questionInput);
+  editContainer.appendChild(answerInput);
+  editContainer.appendChild(buttonGroup);
+  editContainer.appendChild(subcardsSection);
+  subcardsSection.appendChild(subcardsHeader);
+  subcardsSection.appendChild(subcardsContainer);
+  cardInner.innerHTML = '';
+  cardInner.appendChild(editContainer);
+}
+
+/******************************
+ * Adding New Cards / Notes   *
+ ******************************/
+function addNewCard() {
+  const categoryInput = document.getElementById('category');
+  const questionInput = document.getElementById('question');
+  const answerInput = document.getElementById('answer');
+  const category = categoryInput.value.trim();
+  const question = questionInput.value.trim();
+  const answer = answerInput.value.trim();
+  if (question && answer) {
+    currentCards.push({
+      id: `card-${Date.now()}-${Math.random()}`,
+      category,
+      question,
+      answer,
+      type: "card"
+    });
+    saveCards();
+    renderCards();
+    categoryInput.value = '';
+    questionInput.value = '';
+    answerInput.value = '';
+  }
+}
+
+function addNewNote() {
+  const categoryInput = document.getElementById('category');
+  const questionInput = document.getElementById('question');
+  const answerInput = document.getElementById('answer');
+  const category = categoryInput.value.trim();
+  const question = questionInput.value.trim();
+  const answer = answerInput.value.trim();
+  if (question && answer) {
+    currentCards.push({
+      id: `card-${Date.now()}-${Math.random()}`,
+      category,
+      question,
+      answer,
+      type: "note"
+    });
+    saveCards();
+    renderCards();
+    categoryInput.value = '';
+    questionInput.value = '';
+    answerInput.value = '';
+  }
+}
+
+function shuffleCards() {
+  for (let i = currentCards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [currentCards[i], currentCards[j]] = [currentCards[j], currentCards[i]];
+  }
+  saveCards();
+  renderCards();
+}
+
+/******************************
+ * Connexion Mode Functions   *
+ ******************************/
+function enterConnexionMode() {
+  loadConnections();
+  const filterValue = document.getElementById('filterCategory').value;
+  const filteredCards = filterValue === 'all'
+    ? currentCards
+    : currentCards.filter(card => card.category === filterValue);
   if (filteredCards.length === 0) {
     alert('No cards to connect in the selected category!');
     return;
   }
   isSegregated = false;
   originalPositions = {};
-
-  // Save filtered cards globally for mind map rendering later
-  currentFilteredCards = filteredCards;
-
-  // Set initial positions (if not already set)
   assignInitialPositions(filteredCards);
+  currentFilteredCards = filteredCards;
   renderConnexionCanvas(filteredCards);
-
-  // Hide flashcards view; show the connexion canvas
   document.getElementById('cardContainer').style.display = 'none';
   document.getElementById('connexionCanvas').style.display = 'block';
   document.querySelector('.input-panel').style.display = 'none';
   document.querySelector('.button-panel').style.display = 'none';
-  document.getElementById('sidePanelToggle').style.display = 'none';
-  document.getElementById('sidePanel').classList.remove('open');
+  
 
   if (!globalEventHandlersInitialized) {
     initializeGlobalEventHandlers();
@@ -3074,21 +3219,15 @@ function enterConnexionMode() {
 
 function exitConnexionMode() {
   activeConnectionCreation = false;
-  // Show flashcards view and hide connexion canvas
   document.getElementById('cardContainer').style.display = 'flex';
   document.getElementById('connexionCanvas').style.display = 'none';
   document.querySelector('.input-panel').style.display = 'flex';
   document.querySelector('.button-panel').style.display = 'flex';
-  document.getElementById('sidePanelToggle').style.display = 'block';
-
+  
   saveCards();
   saveConnections();
   renderCards();
 }
-
-// ------------------------
-// Global Event Handlers
-// ------------------------
 
 function initializeGlobalEventHandlers() {
   document.addEventListener('mousemove', handleGlobalMouseMove);
@@ -3097,12 +3236,10 @@ function initializeGlobalEventHandlers() {
 
 function handleGlobalMouseMove(e) {
   if (!activeDrag.isDragging) return;
-
   const newLeft = e.clientX - activeDrag.startX;
   const newTop = e.clientY - activeDrag.startY;
   activeDrag.element.style.left = `${newLeft}px`;
   activeDrag.element.style.top = `${newTop}px`;
-
   if (activeDrag.element.classList.contains('connexion-card')) {
     const cardId = activeDrag.element.dataset.id;
     const card = currentCards.find(c => c.id === cardId);
@@ -3110,7 +3247,7 @@ function handleGlobalMouseMove(e) {
       card.x = newLeft;
       card.y = newTop;
       if (!activeConnectionCreation) {
-        highlightNearbyCards(card); // assume this is defined elsewhere
+        highlightNearbyCards(card);
       }
     }
   }
@@ -3118,25 +3255,18 @@ function handleGlobalMouseMove(e) {
 
 function handleGlobalMouseUp(e) {
   if (!activeDrag.isDragging) return;
-  
   const element = activeDrag.element;
   element.style.zIndex = '';
-
   if (element.classList.contains('connexion-card')) {
     const cardId = element.dataset.id;
     const card = currentCards.find(c => c.id === cardId);
     if (card && !activeConnectionCreation) {
-      checkForNewConnection(card, currentCards);
+      detectAndCreateConnections(card, currentFilteredCards);
     }
   }
-  
   activeDrag.isDragging = false;
   activeDrag.element = null;
 }
-
-// ------------------------
-// Positioning and Rendering
-// ------------------------
 
 function assignInitialPositions(cards) {
   const gridSize = 220;
@@ -3151,16 +3281,9 @@ function assignInitialPositions(cards) {
   });
 }
 
-/**
- * Renders the connexion canvas.
- * This version creates two view containers: one for the grid view and one for the mind map view.
- * A toggle button lets the user switch between the two.
- */
 function renderConnexionCanvas(cards) {
   const canvas = document.getElementById('connexionCanvas');
   canvas.innerHTML = '';
-
-  // Create control buttons (Back, Segregate, and Toggle View)
   const backBtn = document.createElement('button');
   backBtn.textContent = 'Back to Flashcards';
   backBtn.style.position = 'absolute';
@@ -3175,7 +3298,6 @@ function renderConnexionCanvas(cards) {
   backBtn.style.zIndex = '1000';
   backBtn.onclick = exitConnexionMode;
   canvas.appendChild(backBtn);
-
   const segregateBtn = document.createElement('button');
   segregateBtn.id = 'segregateBtn';
   segregateBtn.textContent = isSegregated ? 'Restore' : 'Segregate';
@@ -3191,32 +3313,28 @@ function renderConnexionCanvas(cards) {
   segregateBtn.style.zIndex = '1000';
   segregateBtn.onclick = () => toggleSegregate(cards);
   canvas.appendChild(segregateBtn);
-
   const toggleViewBtn = document.createElement('button');
   toggleViewBtn.id = 'toggleViewBtn';
+  toggleViewBtn.className = 'mind-map-button';
   toggleViewBtn.textContent = 'Mind Map View';
   toggleViewBtn.style.position = 'absolute';
   toggleViewBtn.style.top = '10px';
-  toggleViewBtn.style.left = '150px';
-  toggleViewBtn.style.padding = '10px 20px';
-  toggleViewBtn.style.background = '#007bff';
-  toggleViewBtn.style.color = '#fff';
+  toggleViewBtn.style.left = '170px';
+  toggleViewBtn.style.padding = '10px 15px';
+
+  toggleViewBtn.style.color = ' linear-gradient(45deg, #2c3e50, #3498db)';
   toggleViewBtn.style.border = 'none';
   toggleViewBtn.style.borderRadius = '5px';
   toggleViewBtn.style.cursor = 'pointer';
   toggleViewBtn.style.zIndex = '1000';
   toggleViewBtn.onclick = toggleMindMapView;
   canvas.appendChild(toggleViewBtn);
-
-  // Create two view containers:
-  // Grid view (default) and Mind Map view (initially hidden)
   const gridView = document.createElement('div');
   gridView.id = 'gridView';
   gridView.style.position = 'relative';
   gridView.style.width = '100%';
   gridView.style.height = '100%';
   canvas.appendChild(gridView);
-
   const mindMapView = document.createElement('div');
   mindMapView.id = 'mindMapView';
   mindMapView.style.position = 'absolute';
@@ -3226,10 +3344,7 @@ function renderConnexionCanvas(cards) {
   mindMapView.style.height = '100%';
   mindMapView.style.display = 'none';
   canvas.appendChild(mindMapView);
-
-  // --- Render Grid View ---
-  // Only render individual cards that are not already connected.
-  const connectedCardIds = new Set(connections.flatMap(conn => [conn.card1, conn.card2]));
+  const connectedCardIds = new Set(connections.flatMap(conn => conn.cards));
   const unconnectedCards = cards.filter(card => !connectedCardIds.has(card.id));
   unconnectedCards.forEach(card => {
     const cardDiv = createConnexionCard(card, false);
@@ -3238,8 +3353,6 @@ function renderConnexionCanvas(cards) {
     gridView.appendChild(cardDiv);
     makeDraggable(cardDiv, card, cards);
   });
-
-  // Render connection panels in grid view.
   const panelWidth = 450;
   const panelHeight = 200;
   const margin = 20;
@@ -3247,24 +3360,29 @@ function renderConnexionCanvas(cards) {
   let panelY = 60;
   const canvasWidth = gridView.clientWidth || canvas.clientWidth;
   connections.forEach(conn => {
-    const card1 = cards.find(c => c.id === conn.card1);
-    const card2 = cards.find(c => c.id === conn.card2);
-    if (card1 && card2) {
+  if (!conn.cards || !Array.isArray(conn.cards)) {
+    console.warn('Connection missing cards array:', conn);
+    return;
+  }
+    const connCards = conn.cards.map(id => cards.find(c => c.id === id)).filter(Boolean);
+    if (connCards.length === conn.cards.length) {
       const panel = document.createElement('div');
       panel.className = 'connection-panel';
       panel.style.position = 'absolute';
       panel.style.left = `${panelX}px`;
       panel.style.top = `${panelY}px`;
-      // Use the connection color (if provided) for the panel border/background
       panel.style.border = `2px solid ${conn.color || '#000'}`;
       panel.innerHTML = `
-        <div class="connection-card">
-          <h4>${card1.category || 'General'}</h4>
-          <p>${card1.question}</p>
-        </div>
-        <div class="connection-card" style="margin-left: 10px;">
-          <h4>${card2.category || 'General'}</h4>
-          <p>${card2.question}</p>
+        <div class="connection-cards">
+          ${conn.cards.map(cardId => {
+            const card = cards.find(c => c.id === cardId);
+            return `
+              <div class="connection-card">
+                <h4>${card.category || 'General'}</h4>
+                <p>${card.question}</p>
+              </div>
+            `;
+          }).join('')}
         </div>
         <div class="connection-description">${conn.description}</div>
         <div class="connection-buttons">
@@ -3280,175 +3398,12 @@ function renderConnexionCanvas(cards) {
       panel.querySelector('.remove-connection').addEventListener('click', () => removeConnection(conn.id, cards));
       panelX += panelWidth + margin;
       if (panelX + panelWidth > canvasWidth) {
-        panelX = 0;
+        panelX = 20;
         panelY += panelHeight + margin;
       }
     }
   });
 }
-
-// ------------------------
-// Mind Map Rendering using D3.js
-// ------------------------
-
-function renderMindMap(cards, connections) {
-      const container = d3.select("#mindMapView");
-      if (container.empty()) {
-        console.error("No container found with id 'mindMapView'");
-        return;
-      }
-      container.selectAll("*").remove();
-      const width = container.node().clientWidth || 800;
-      const height = container.node().clientHeight || 600;
-      console.log("Rendering mind map with", cards.length, "cards and", connections.length, "connections");
-      
-      // Filter connections so that only valid nodes are linked.
-      const filteredConnections = connections.filter(conn =>
-        cards.some(c => c.id === conn.card1) && cards.some(c => c.id === conn.card2)
-      );
-      console.log("Filtered connections:", filteredConnections.length);
-      
-      const nodes = cards.map(card => ({
-        id: card.id,
-        question: card.question,
-        category: card.category,
-        color: card.color || "#ffffff",
-        tag: card.tag || ""
-      }));
-      
-      const links = filteredConnections.map(conn => ({
-        source: conn.card1,
-        target: conn.card2,
-        description: conn.description,
-        color: conn.color || "#666666",
-        tag: conn.tag || ""
-      }));
-      
-      const svg = container.append("svg")
-        .attr("width", width)
-        .attr("height", height)
-        .style("border", "1px solid white"); // For debugging
-      
-      // Create a force simulation to compute initial layout.
-      const simulation = d3.forceSimulation(nodes)
-        .force("link", d3.forceLink(links).id(d => d.id).distance(150))
-        .force("charge", d3.forceManyBody().strength(-300))
-        .force("center", d3.forceCenter(width / 2, height / 2));
-      
-      // Draw links (lines)
-      const link = svg.append("g")
-        .attr("stroke-opacity", 0.6)
-        .selectAll("line")
-        .data(links)
-        .enter().append("line")
-        .attr("stroke-width", 2)
-        .attr("stroke", d => d.color);
-      
-      // Create groups for each node (each group will hold a rectangle and its text)
-      const nodeGroup = svg.append("g")
-        .selectAll("g")
-        .data(nodes)
-        .enter().append("g")
-        .attr("class", "node-group");
-      
-      // Append a rectangle to each node group.
-      nodeGroup.append("rect")
-        .attr("rx", 5)
-        .attr("ry", 5)
-        .attr("fill", d => d.color)
-        .attr("stroke", "#333333")
-        .attr("stroke-width", 2);
-      
-      // Append text to each node group.
-      nodeGroup.append("text")
-        .text(d => d.question)
-        .attr("text-anchor", "middle")
-        .attr("alignment-baseline", "middle")
-        .style("fill", "#333333")
-        .style("font-size", "12px");
-      
-      // After appending text, adjust each rectangle’s size to nicely wrap its text.
-      const rectPadding = 10;
-      nodeGroup.each(function() {
-        const g = d3.select(this);
-        const text = g.select("text");
-        const bbox = text.node().getBBox();
-        g.select("rect")
-          .attr("x", bbox.x - rectPadding / 2)
-          .attr("y", bbox.y - rectPadding / 2)
-          .attr("width", bbox.width + rectPadding)
-          .attr("height", bbox.height + rectPadding);
-      });
-      
-      // Run the simulation for a fixed number of ticks to compute positions,
-      // then stop it so nodes don't continue moving.
-      for (let i = 0; i < 300; ++i) simulation.tick();
-      simulation.stop();
-      
-      // Freeze nodes at their computed positions.
-      nodes.forEach(n => { n.fx = n.x; n.fy = n.y; });
-      
-      // Function to update positions of nodes and links.
-      function updatePositions() {
-        link
-          .attr("x1", d => d.source.x)
-          .attr("y1", d => d.source.y)
-          .attr("x2", d => d.target.x)
-          .attr("y2", d => d.target.y);
-        nodeGroup.attr("transform", d => `translate(${d.x},${d.y})`);
-      }
-      
-      // Initial positions update.
-      updatePositions();
-      
-      // Drag behavior: When dragging, only update the dragged node.
-      nodeGroup.call(d3.drag()
-        .on("start", function(event, d) {
-          // No simulation restart; the node is already fixed.
-        })
-        .on("drag", function(event, d) {
-          d.x = event.x;
-          d.y = event.y;
-          // Keep the dragged node fixed.
-          d.fx = event.x;
-          d.fy = event.y;
-          updatePositions();
-        })
-        .on("end", function(event, d) {
-          // Optionally, you can keep the node fixed or release it.
-          // Here we keep it fixed.
-          d.fx = event.x;
-          d.fy = event.y;
-          updatePositions();
-        })
-      );
-    }
-// ------------------------
-// Toggle between Grid and Mind Map Views
-// ------------------------
-
-function toggleMindMapView() {
-  const gridView = document.getElementById('gridView');
-  const mindMapView = document.getElementById('mindMapView');
-  const toggleBtn = document.getElementById('toggleViewBtn');
-  
-  if (mindMapView.style.display === "none") {
-    // Switch to Mind Map view.
-    gridView.style.display = "none";
-    mindMapView.style.display = "block";
-    toggleBtn.textContent = "Grid View";
-    renderMindMap(currentFilteredCards, connections);
-  } else {
-    // Switch back to Grid view.
-    mindMapView.style.display = "none";
-    gridView.style.display = "block";
-    toggleBtn.textContent = "Mind Map View";
-  }
-}
-
-// ------------------------
-// Card and Panel Creation
-// ------------------------
 
 function createConnexionCard(card, inContainer) {
   const cardDiv = document.createElement('div');
@@ -3457,7 +3412,6 @@ function createConnexionCard(card, inContainer) {
   cardDiv.style.position = 'absolute';
   cardDiv.style.width = '200px';
   cardDiv.style.height = '150px';
-  // Use card.color (if set) as background; otherwise, default light gray.
   cardDiv.style.backgroundColor = card.color || '#f0f0f0';
   cardDiv.innerHTML = `
     <div class="connexion-card-inner">
@@ -3470,21 +3424,17 @@ function createConnexionCard(card, inContainer) {
       </div>
     </div>
   `;
-
-  // Double-click to flip the card.
   cardDiv.addEventListener('dblclick', (e) => {
     e.stopPropagation();
     cardDiv.classList.toggle('flipped');
     setTimeout(() => {
       if (window.MathJax) {
-        MathJax.typesetPromise([cardDiv.querySelector('.connexion-card-back')])
-          .catch(err => console.log(err.message));
+        MathJax.typesetPromise([cardDiv.querySelector('.connexion-card-back')]).catch(err => console.log(err.message));
       }
     }, 500);
   });
-
   if (!inContainer) {
-    makeDraggable(cardDiv, card, currentCards);
+    makeDraggable(cardDiv, card, currentFilteredCards);
   }
   return cardDiv;
 }
@@ -3492,7 +3442,6 @@ function createConnexionCard(card, inContainer) {
 function makeDraggable(element, card, allCards) {
   let isDragging = false;
   let startX, startY;
-
   element.addEventListener('mousedown', e => {
     isDragging = true;
     startX = e.clientX - element.offsetLeft;
@@ -3500,7 +3449,6 @@ function makeDraggable(element, card, allCards) {
     element.style.zIndex = '1000';
     activeDrag = { element, isDragging: true, startX, startY };
   });
-
   document.addEventListener('mousemove', e => {
     if (isDragging) {
       const newLeft = e.clientX - startX;
@@ -3509,8 +3457,6 @@ function makeDraggable(element, card, allCards) {
       element.style.top = `${newTop}px`;
       card.x = newLeft;
       card.y = newTop;
-
-      // Highlight nearby cards for potential connection.
       allCards.forEach(otherCard => {
         if (otherCard.id !== card.id) {
           const otherElem = document.querySelector(`.connexion-card[data-id="${otherCard.id}"]`);
@@ -3527,12 +3473,10 @@ function makeDraggable(element, card, allCards) {
       });
     }
   });
-
   document.addEventListener('mouseup', () => {
     if (isDragging) {
       isDragging = false;
       element.style.zIndex = '';
-      checkForNewConnection(card, allCards);
     }
   });
 }
@@ -3546,7 +3490,6 @@ function makePanelDraggable(element) {
     startY = e.clientY - element.offsetTop;
     element.style.zIndex = '1000';
   });
-
   document.addEventListener('mousemove', e => {
     if (isDragging) {
       const newLeft = e.clientX - startX;
@@ -3555,7 +3498,6 @@ function makePanelDraggable(element) {
       element.style.top = `${newTop}px`;
     }
   });
-
   document.addEventListener('mouseup', () => {
     if (isDragging) {
       isDragging = false;
@@ -3564,124 +3506,104 @@ function makePanelDraggable(element) {
   });
 }
 
-// ------------------------
-// Connection Handling
-// ------------------------
+function detectAndCreateConnections(draggedCard, allCards) {
+  const connectedCardIds = new Set(connections.flatMap(conn => conn.cards));
+  const unconnectedCards = allCards.filter(card => !connectedCardIds.has(card.id));
+  if (!unconnectedCards.some(card => card.id === draggedCard.id)) return;
 
-function checkForNewConnection(card, allCards) {
-  const cardElem = document.querySelector(`.connexion-card[data-id="${card.id}"]`);
-  
-  // Remove previous connection highlighting.
-  document.querySelectorAll('.connexion-card').forEach(elem => {
-    elem.classList.remove('can-connect');
-  });
+  const uf = new UnionFind(unconnectedCards.map(card => card.id));
+  const threshold = 100;
 
-  allCards.forEach(otherCard => {
-    if (otherCard.id !== card.id) {
-      const otherElem = document.querySelector(`.connexion-card[data-id="${otherCard.id}"]`);
-      if (cardElem && otherElem) {
-        const cardRect = cardElem.getBoundingClientRect();
-        const otherRect = otherElem.getBoundingClientRect();
-        const distanceX = Math.abs(cardRect.left - otherRect.left);
-        const distanceY = Math.abs(cardRect.top - otherRect.top);
-        const connectionThreshold = 100;
-        if (distanceX < connectionThreshold && distanceY < connectionThreshold) {
-          cardElem.classList.add('can-connect');
-          otherElem.classList.add('can-connect');
-          
-          // Check if a connection already exists.
-          const existingConn = connections.find(conn =>
-            (conn.card1 === card.id && conn.card2 === otherCard.id) ||
-            (conn.card1 === otherCard.id && conn.card2 === card.id)
-          );
-          
-          if (!existingConn) {
-            setTimeout(() => {
-              if (confirm('Create a connection between these cards?')) {
-                const description = prompt('Enter a description for this connection:') || 'New connection';
-                // Prompt for a tag and a color for the connection.
-                const connectionTag = prompt("Enter a tag for this connection (e.g., cause-effect, analogy):", "general");
-                const connectionColor = prompt("Enter a color for this connection (hex code, e.g., #FF0000):", "#000000");
-                const newConn = {
-                  id: `conn-${Date.now()}-${Math.random()}`,
-                  card1: card.id,
-                  card2: otherCard.id,
-                  description: description,
-                  tag: connectionTag,
-                  color: connectionColor
-                };
-                connections.push(newConn);
-  
-                // Create and display connection panel immediately.
-                const canvas = document.getElementById('connexionCanvas');
-                const panel = document.createElement('div');
-                panel.className = 'connection-panel';
-                panel.style.position = 'absolute';
-                panel.style.left = `${(cardRect.left + otherRect.left) / 2}px`;
-                panel.style.top = `${(cardRect.top + otherRect.top) / 2}px`;
-                panel.style.border = `2px solid ${connectionColor}`;
-                panel.innerHTML = `
-                  <div class="connection-card">
-                    <h4>${card.category || 'General'}</h4>
-                    <p>${card.question}</p>
-                  </div>
-                  <div class="connection-card" style="margin-left: 10px;">
-                    <h4>${otherCard.category || 'General'}</h4>
-                    <p>${otherCard.question}</p>
-                  </div>
-                  <div class="connection-description">${description}</div>
-                  <div class="connection-buttons">
-                    <button class="edit-connection">Edit</button>
-                    <button class="view-connection">View</button>
-                    <button class="remove-connection">Remove</button>
-                  </div>
-                `;
-                canvas.appendChild(panel);
-                makePanelDraggable(panel);
-                panel.querySelector('.edit-connection').addEventListener('click', () =>
-                  editConnection(newConn.id, allCards));
-                panel.querySelector('.view-connection').addEventListener('click', () =>
-                  viewConnection(newConn.id, allCards));
-                panel.querySelector('.remove-connection').addEventListener('click', () =>
-                  removeConnection(newConn.id, allCards));
-  
-                // Optional: fade out and remove connected cards.
-                cardElem.style.transition = 'opacity 0.3s ease';
-                otherElem.style.transition = 'opacity 0.3s ease';
-                cardElem.style.opacity = '0';
-                otherElem.style.opacity = '0';
-                setTimeout(() => {
-                  cardElem.remove();
-                  otherElem.remove();
-                }, 300);
-  
-                saveConnections();
-              }
-            }, 200);
-          }
-        }
+  unconnectedCards.forEach((card1, i) => {
+    unconnectedCards.slice(i + 1).forEach(card2 => {
+      if (Math.abs(card1.x - card2.x) < threshold && Math.abs(card1.y - card2.y) < threshold) {
+        uf.union(card1.id, card2.id);
       }
-    }
+    });
   });
+
+  const root = uf.find(draggedCard.id);
+  const componentIds = unconnectedCards.filter(card => uf.find(card.id) === root).map(card => card.id);
+
+  if (componentIds.length > 1) {
+    const componentCards = componentIds.map(id => allCards.find(c => c.id === id));
+    const cardQuestions = componentCards.map(c => c.question).join(', ');
+    if (confirm(`Create a connection between these cards: ${cardQuestions}?`)) {
+      const description = prompt('Enter a description for this connection:') || 'New connection';
+      const connectionTag = prompt("Enter a tag for this connection (e.g., cause-effect, analogy):", "general");
+      const connectionColor = prompt("Enter a color for this connection (hex code, e.g., #FF0000):", "#000000");
+      const newConn = {
+        id: `conn-${Date.now()}-${Math.random()}`,
+        cards: componentIds,
+        description: description,
+        tag: connectionTag,
+        color: connectionColor
+      };
+      connections.push(newConn);
+      saveConnections();
+
+      componentIds.forEach(id => {
+        const cardElem = document.querySelector(`.connexion-card[data-id="${id}"]`);
+        if (cardElem) {
+          cardElem.style.transition = 'opacity 0.3s ease';
+          cardElem.style.opacity = '0';
+          setTimeout(() => cardElem.remove(), 300);
+        }
+      });
+
+      const panel = document.createElement('div');
+      panel.className = 'connection-panel';
+      panel.style.position = 'absolute';
+      const avgX = componentCards.reduce((sum, c) => sum + c.x, 0) / componentCards.length;
+      const avgY = componentCards.reduce((sum, c) => sum + c.y, 0) / componentCards.length;
+      panel.style.left = `${avgX}px`;
+      panel.style.top = `${avgY}px`;
+      panel.style.border = `2px solid ${connectionColor}`;
+      panel.innerHTML = `
+        <div class="connection-cards">
+          ${componentIds.map(id => {
+            const card = allCards.find(c => c.id === id);
+            return `
+              <div class="connection-card">
+                <h4>${card.category || 'General'}</h4>
+                <p>${card.question}</p>
+              </div>
+            `;
+          }).join('')}
+        </div>
+        <div class="connection-description">${description}</div>
+        <div class="connection-buttons">
+          <button class="edit-connection">Edit</button>
+          <button class="view-connection">View</button>
+          <button class="remove-connection">Remove</button>
+        </div>
+      `;
+      document.getElementById('gridView').appendChild(panel);
+      makePanelDraggable(panel);
+      panel.querySelector('.edit-connection').addEventListener('click', () => editConnection(newConn.id, allCards));
+      panel.querySelector('.view-connection').addEventListener('click', () => viewConnection(newConn.id, allCards));
+      panel.querySelector('.remove-connection').addEventListener('click', () => removeConnection(newConn.id, allCards));
+    }
+  }
+}
+
+// Original checkForNewConnection (kept for reference but not used)
+function checkForNewConnection(card, allCards) {
+  // This function is replaced by detectAndCreateConnections
 }
 
 function toggleSegregate(cards) {
   const canvas = document.getElementById('connexionCanvas');
-  
   if (isSegregated) {
     Object.keys(originalPositions).forEach(id => {
-      const elem =
-        document.querySelector(`[data-id="${id}"]`) ||
-        document.querySelector(`.connection-panel[data-conn-id="${id}"]`);
+      const elem = document.querySelector(`[data-id="${id}"]`) || document.querySelector(`.connection-panel[data-conn-id="${id}"]`);
       if (elem) {
         elem.style.left = originalPositions[id].x + 'px';
         elem.style.top = originalPositions[id].y + 'px';
       }
     });
     const separator = document.getElementById('separatorLine');
-    if (separator) {
-      separator.remove();
-    }
+    if (separator) separator.remove();
     isSegregated = false;
     document.getElementById('segregateBtn').textContent = 'Segregate';
   } else {
@@ -3689,34 +3611,23 @@ function toggleSegregate(cards) {
     cards.forEach(card => {
       const elem = document.querySelector(`[data-id="${card.id}"]`);
       if (elem) {
-        originalPositions[card.id] = { 
-          x: parseFloat(elem.style.left || card.x), 
-          y: parseFloat(elem.style.top || card.y) 
-        };
+        originalPositions[card.id] = { x: parseFloat(elem.style.left || card.x), y: parseFloat(elem.style.top || card.y) };
       }
     });
     connections.forEach(conn => {
-      const panel = Array.from(document.querySelectorAll('.connection-panel')).find(p =>
-        p.querySelector('.connection-description')?.textContent === conn.description
-      );
+      const panel = Array.from(document.querySelectorAll('.connection-panel')).find(p => p.dataset.connId === conn.id);
       if (panel) {
-        originalPositions[conn.id] = { 
-          x: parseFloat(panel.style.left), 
-          y: parseFloat(panel.style.top) 
-        };
+        originalPositions[conn.id] = { x: parseFloat(panel.style.left), y: parseFloat(panel.style.top) };
         panel.dataset.connId = conn.id;
       }
     });
-
     const panelWidth = 450;
     const cardWidth = 200;
     const margin = 20;
     let panelX = 20;
     let panelY = 40;
     connections.forEach(conn => {
-      const panel = Array.from(document.querySelectorAll('.connection-panel')).find(p =>
-        p.dataset.connId === conn.id
-      );
+      const panel = Array.from(document.querySelectorAll('.connection-panel')).find(p => p.dataset.connId === conn.id);
       if (panel) {
         panel.style.left = `${panelX}px`;
         panel.style.top = `${panelY}px`;
@@ -3728,8 +3639,7 @@ function toggleSegregate(cards) {
         }
       }
     });
-
-    const connectedCardIds = new Set(connections.flatMap(conn => [conn.card1, conn.card2]));
+    const connectedCardIds = new Set(connections.flatMap(conn => conn.cards));
     const unconnectedCards = cards.filter(card => !connectedCardIds.has(card.id));
     const cardHeight = 170;
     const rightSideStart = canvas.clientWidth / 2 + margin;
@@ -3749,7 +3659,6 @@ function toggleSegregate(cards) {
         card.y = y;
       }
     });
-
     let separator = document.getElementById('separatorLine');
     if (!separator) {
       separator = document.createElement('div');
@@ -3762,15 +3671,138 @@ function toggleSegregate(cards) {
       canvas.appendChild(separator);
     }
     separator.style.left = canvas.clientWidth / 2 + 'px';
-
     isSegregated = true;
     document.getElementById('segregateBtn').textContent = 'Restore';
   }
 }
 
-// ------------------------
-// Connection Panel Actions
-// ------------------------
+function renderMindMap(cards, connections) {
+  const container = d3.select("#mindMapView");
+  if (container.empty()) {
+    console.error("No container found with id 'mindMapView'");
+    return;
+  }
+  container.selectAll("*").remove();
+  const width = container.node().clientWidth || 800;
+  const height = container.node().clientHeight || 600;
+  const nodes = cards.map(card => ({
+    id: card.id,
+    question: card.question,
+    category: card.category,
+    color: card.color || "#ffffff",
+    tag: card.tag || ""
+  }));
+  const links = [];
+  connections.forEach(conn => {
+    const cardIds = conn.cards;
+    for (let i = 0; i < cardIds.length; i++) {
+      for (let j = i + 1; j < cardIds.length; j++) {
+        links.push({
+          source: cardIds[i],
+          target: cardIds[j],
+          description: conn.description,
+          color: conn.color || "#666666",
+          tag: conn.tag || ""
+        });
+      }
+    }
+  });
+const nodeIds = new Set(nodes.map(node => node.id));
+const validLinks = links.filter(link => nodeIds.has(link.source) && nodeIds.has(link.target));
+
+  const svg = container.append("svg").attr("width", width).attr("height", height).style("border", "1px solid white");
+  const simulation = d3.forceSimulation(nodes)
+  .force("link", d3.forceLink(validLinks).id(d => d.id).distance(150))
+  .force("charge", d3.forceManyBody().strength(-300))
+  .force("center", d3.forceCenter(width / 2, height / 2));
+  const link = svg.append("g")
+  .attr("stroke-opacity", 0.6)
+  .selectAll("line")
+  .data(validLinks)
+  .enter().append("line")
+  .attr("stroke", d => d.color)
+  .attr("stroke-width", 2).attr("stroke", d => d.color).style("cursor", "pointer")
+    .on("click", function(event, d) {
+      d3.select("#connection-tooltip").remove();
+      const tooltip = svg.append("g").attr("id", "connection-tooltip").attr("transform", `translate(${(d.source.x + d.target.x) / 2},${(d.source.y + d.target.y) / 2})`);
+      const tooltipText = tooltip.append("text").attr("text-anchor", "middle").attr("dy", "0.35em").attr("fill", "white").text(d.description);
+      const textBBox = tooltipText.node().getBBox();
+      tooltip.insert("rect", "text").attr("x", textBBox.x - 10).attr("y", textBBox.y - 5).attr("width", textBBox.width + 20).attr("height", textBBox.height + 10).attr("fill", "rgba(0, 0, 0, 0.8)").attr("rx", 5);
+      setTimeout(() => tooltip.remove(), 3000);
+    });
+  const nodeGroup = svg.append("g").selectAll("g").data(nodes).enter().append("g").attr("class", "node-group");
+  nodeGroup.append("rect").attr("rx", 5).attr("ry", 5).attr("fill", d => d.color).attr("stroke", "#333333").attr("stroke-width", 2);
+  nodeGroup.append("text").text(d => d.question).attr("text-anchor", "middle").attr("alignment-baseline", "middle").style("fill", "#333333").style("font-size", "12px").each(function(d) {
+    const text = d3.select(this);
+    const words = d.question.split(/\s+/);
+    const lineHeight = 1.2;
+    const maxWidth = 120;
+    text.text('');
+    let line = [];
+    let lineNumber = 0;
+    let tspan = text.append("tspan").attr("x", 0).attr("dy", 0);
+    words.forEach(word => {
+      line.push(word);
+      tspan.text(line.join(" "));
+      if (tspan.node().getComputedTextLength() > maxWidth) {
+        line.pop();
+        tspan.text(line.join(" "));
+        line = [word];
+        tspan = text.append("tspan").attr("x", 0).attr("dy", `${lineHeight}em`).text(word);
+        lineNumber++;
+      }
+    });
+    const totalHeight = (lineNumber * lineHeight) / 2;
+    text.selectAll("tspan").attr("dy", (_, i) => `${i === 0 ? -totalHeight : lineHeight}em`);
+  });
+  const rectPadding = 20;
+  const minWidth = 40;
+  const minHeight = 40;
+  nodeGroup.each(function() {
+    const g = d3.select(this);
+    const text = g.select("text");
+    const bbox = text.node().getBBox();
+    g.select("rect").attr("x", bbox.x - rectPadding / 2).attr("y", bbox.y - rectPadding / 2).attr("width", Math.max(bbox.width + rectPadding, minWidth)).attr("height", Math.max(bbox.height + rectPadding, minHeight));
+  });
+  for (let i = 0; i < 300; ++i) simulation.tick();
+  simulation.stop();
+  nodes.forEach(n => { n.fx = n.x; n.fy = n.y; });
+  function updatePositions() {
+    link.attr("x1", d => d.source.x).attr("y1", d => d.source.y).attr("x2", d => d.target.x).attr("y2", d => d.target.y);
+    nodeGroup.attr("transform", d => `translate(${d.x},${d.y})`);
+  }
+  updatePositions();
+  nodeGroup.call(d3.drag().on("start", function(event, d) {})
+    .on("drag", function(event, d) {
+      d.x = event.x;
+      d.y = event.y;
+      d.fx = event.x;
+      d.fy = event.y;
+      updatePositions();
+    })
+    .on("end", function(event, d) {
+      d.fx = event.x;
+      d.fy = event.y;
+      updatePositions();
+    })
+  );
+}
+
+function toggleMindMapView() {
+  const gridView = document.getElementById('gridView');
+  const mindMapView = document.getElementById('mindMapView');
+  const toggleBtn = document.getElementById('toggleViewBtn');
+  if (mindMapView.style.display === "none") {
+    gridView.style.display = "none";
+    mindMapView.style.display = "block";
+    toggleBtn.textContent = "Grid View";
+    renderMindMap(currentFilteredCards, connections);
+  } else {
+    mindMapView.style.display = "none";
+    gridView.style.display = "block";
+    toggleBtn.textContent = "Mind Map View";
+  }
+}
 
 function editConnection(connId, cards) {
   const conn = connections.find(c => c.id === connId);
@@ -3787,11 +3819,11 @@ function editConnection(connId, cards) {
 function viewConnection(connId, cards) {
   const conn = connections.find(c => c.id === connId);
   if (conn) {
-    const card1 = cards.find(c => c.id === conn.card1);
-    const card2 = cards.find(c => c.id === conn.card2);
-    if (card1 && card2) {
-      alert(`Connection Details:\n\nCard 1: ${card1.question}\nCard 2: ${card2.question}\nDescription: ${conn.description}`);
-    }
+    const cardQuestions = conn.cards.map(id => {
+      const card = cards.find(c => c.id === id);
+      return card ? card.question : 'Unknown';
+    }).join(', ');
+    alert(`Connection Details:\n\nCards: ${cardQuestions}\nDescription: ${conn.description}`);
   }
 }
 
@@ -3803,234 +3835,155 @@ function removeConnection(connId, cards) {
   }
 }
 
-    /******************************
-     * Side Panel Functionality   *
-     ******************************/
-    document.getElementById('sidePanelToggle').onclick = function() {
-      document.getElementById('sidePanel').classList.add('open');
-    };
+/******************************
 
-    document.getElementById('closeSidePanel').onclick = function() {
-      document.getElementById('sidePanel').classList.remove('open');
-      document.querySelector('.side-panel-content').innerHTML = '<button id="inkToLatexBtn">Ink to LaTeX</button>';
-      attachInkToLatexListener();
-    };
+/******************************
+ * Practice Mode Functions    *
+ ******************************/
+let practiceCards = [];
+let currentCardIndex = 0;
+let isMobileMode = false;
 
-    function attachInkToLatexListener() {
-      document.getElementById('inkToLatexBtn').onclick = function() {
-        let fullscreenOverlay = document.getElementById('fullscreenOverlay');
-        if (!fullscreenOverlay) {
-          fullscreenOverlay = document.createElement('div');
-          fullscreenOverlay.id = 'fullscreenOverlay';
-          fullscreenOverlay.style.position = 'fixed';
-          fullscreenOverlay.style.top = '0';
-          fullscreenOverlay.style.left = '0';
-          fullscreenOverlay.style.width = '100%';
-          fullscreenOverlay.style.height = '100%';
-          fullscreenOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-          fullscreenOverlay.style.display = 'flex';
-          fullscreenOverlay.style.flexDirection = 'column';
-          fullscreenOverlay.style.alignItems = 'center';
-          fullscreenOverlay.style.justifyContent = 'center';
-          fullscreenOverlay.style.zIndex = '9999';
-          fullscreenOverlay.classList.add('fadeIn');
+function toggleMobileMode() {
+  isMobileMode = !isMobileMode;
+  const switchBtn = document.getElementById('modeSwitchBtn');
+  if (switchBtn) {
+    switchBtn.textContent = isMobileMode ? 'Switch to Desktop Mode' : 'Switch to Mobile Mode';
+  }
+  updatePracticeDeck();
+}
 
-          const backButton = document.createElement('button');
-          backButton.textContent = 'Back';
-          backButton.style.position = 'absolute';
-          backButton.style.top = '20px';
-          backButton.style.left = '20px';
-          backButton.style.padding = '10px 20px';
-          backButton.style.background = '#ff4d4d';
-          backButton.style.color = '#fff';
-          backButton.style.border = 'none';
-          backButton.style.borderRadius = '5px';
-          backButton.style.cursor = 'pointer';
-          backButton.style.fontSize = '16px';
-          backButton.onclick = function() {
-            fullscreenOverlay.classList.remove('fadeIn');
-            fullscreenOverlay.classList.add('fadeOut');
-            fullscreenOverlay.addEventListener('animationend', function handler() {
-              fullscreenOverlay.style.display = 'none';
-              fullscreenOverlay.classList.remove('fadeOut');
-              fullscreenOverlay.removeEventListener('animationend', handler);
-            });
-          };
+function startPracticeMode() {
+  const flashcards = currentCards.filter(card => card.type === "card");
+  if (flashcards.length === 0) return alert('No flashcards to practice!');
+  document.getElementById('practiceDeck').style.display = 'flex';
+  document.querySelector('.flashcard-container').style.display = 'none';
+  document.querySelector('.input-panel').style.display = 'none';
+  document.querySelector('.button-panel').style.display = 'none';
+  
 
-          const iframe = document.createElement('iframe');
-          iframe.src = 'ink-to-latex.html';
-          iframe.style.width = '100%';
-          iframe.style.height = '100%';
-          iframe.style.border = 'none';
+  if (!document.getElementById('modeSwitchBtn')) {
+    const modeSwitchBtn = document.createElement('button');
+    modeSwitchBtn.id = 'modeSwitchBtn';
+    modeSwitchBtn.style.marginBottom = '20px';
+    modeSwitchBtn.style.padding = '10px 15px';
+    modeSwitchBtn.style.background = '#28a745';
+    modeSwitchBtn.style.color = '#fff';
+    modeSwitchBtn.style.border = 'none';
+    modeSwitchBtn.style.borderRadius = '5px';
+    modeSwitchBtn.style.cursor = 'pointer';
+    modeSwitchBtn.textContent = 'Switch to Mobile Mode';
+    modeSwitchBtn.onclick = toggleMobileMode;
+    document.getElementById('practiceDeck').appendChild(modeSwitchBtn);
+  }
+  initializePracticeDeck(flashcards);
+}
 
-          fullscreenOverlay.appendChild(backButton);
-          fullscreenOverlay.appendChild(iframe);
-          document.body.appendChild(fullscreenOverlay);
-        }
-
-        fullscreenOverlay.style.display = 'flex';
-        fullscreenOverlay.classList.remove('fadeOut');
-        fullscreenOverlay.classList.add('fadeIn');
-      };
-    }
-
-    attachInkToLatexListener();
-
-    /******************************
-     * Practice Mode Functions    *
-     ******************************/
-    let practiceCards = [];
-    let currentCardIndex = 0;
-    let isMobileMode = false;
-
-    function toggleMobileMode() {
-      isMobileMode = !isMobileMode;
-      const switchBtn = document.getElementById('modeSwitchBtn');
-      if (switchBtn) {
-        switchBtn.textContent = isMobileMode ? 'Switch to Desktop Mode' : 'Switch to Mobile Mode';
-      }
-      updatePracticeDeck();
-    }
-
-    function startPracticeMode() {
-      const flashcards = currentCards.filter(card => card.type === "card");
-      if (flashcards.length === 0) return alert('No flashcards to practice!');
-
-      document.getElementById('practiceDeck').style.display = 'flex';
-      document.querySelector('.flashcard-container').style.display = 'none';
-      document.querySelector('.input-panel').style.display = 'none';
-      document.querySelector('.button-panel').style.display = 'none';
-      document.getElementById('sidePanelToggle').style.display = 'none';
-      document.getElementById('sidePanel').classList.remove('open');
-
-      if (!document.getElementById('modeSwitchBtn')) {
-        const modeSwitchBtn = document.createElement('button');
-        modeSwitchBtn.id = 'modeSwitchBtn';
-        modeSwitchBtn.style.marginBottom = '20px';
-        modeSwitchBtn.style.padding = '10px 15px';
-        modeSwitchBtn.style.background = '#28a745';
-        modeSwitchBtn.style.color = '#fff';
-        modeSwitchBtn.style.border = 'none';
-        modeSwitchBtn.style.borderRadius = '5px';
-        modeSwitchBtn.style.cursor = 'pointer';
-        modeSwitchBtn.textContent = 'Switch to Mobile Mode';
-        modeSwitchBtn.onclick = toggleMobileMode;
-        document.getElementById('practiceDeck').appendChild(modeSwitchBtn);
-      }
-
-      initializePracticeDeck(flashcards);
-    }
-
-    function exitPracticeMode() {
-      document.getElementById('practiceDeck').style.display = 'none';
-      document.querySelector('.flashcard-container').style.display = 'flex';
-      document.querySelector('.input-panel').style.display = 'flex';
-      document.querySelector('.button-panel').style.display = 'flex';
-      document.getElementById('sidePanelToggle').style.display = 'block';
-    }
-
-    function initializePracticeDeck(flashcards) {
-      const container = document.getElementById('practiceDeckContainer');
-      container.innerHTML = '';
-      practiceCards = [];
-
-      flashcards.forEach((card, index) => {
-        const cardElement = document.createElement('div');
-        cardElement.className = 'practice-card';
-        cardElement.innerHTML = `
-          <div class="practice-card-face practice-card-front">
-            <h2>${card.category || 'General'}</h2>
-            <p>${card.question}</p>
-          </div>
-          <div class="practice-card-face practice-card-back">
-            ${card.answer}
-          </div>
-        `;
-
-        cardElement.addEventListener('click', (e) => {
-          const rect = cardElement.getBoundingClientRect();
-          const clickX = e.clientX - rect.left;
-          const halfWidth = rect.width / 2;
-          cardElement.classList.remove('flip-left', 'flip-right');
-          if (clickX < halfWidth) {
-            cardElement.classList.add('flip-left');
-          } else {
-            cardElement.classList.add('flip-right');
-          }
-          cardElement.classList.toggle('flipped');
-          updatePracticeDeck();
-          setTimeout(() => {
-            if (window.MathJax) MathJax.typesetPromise();
-          }, 500);
-        });
-
-        practiceCards.push(cardElement);
-        container.appendChild(cardElement);
-      });
-
-      currentCardIndex = 0;
-      updatePracticeDeck();
-      if (window.MathJax) MathJax.typesetPromise();
-    }
-
-    function updatePracticeDeck() {
-      practiceCards.forEach((card, index) => {
-        const diffIndex = index - currentCardIndex;
-        const offset = isMobileMode ? diffIndex * 30 : diffIndex * 50;
-        const scale = isMobileMode ? 1 - Math.abs(diffIndex) * 0.05 : 1 - Math.abs(diffIndex) * 0.08;
-        let transformStr = `translateX(${offset}px) scale(${scale})`;
-        if (card.classList.contains('flipped')) {
-          if (card.classList.contains('flip-left')) {
-            transformStr += ' rotateY(-180deg) rotateX(-3deg)';
-          } else {
-            transformStr += ' rotateY(180deg) rotateX(3deg)';
-          }
-        }
-        card.style.transform = transformStr;
-        card.style.zIndex = practiceCards.length - Math.abs(diffIndex);
-        card.classList.toggle('active', index === currentCardIndex);
-
-        if (isMobileMode) {
-          card.style.width = '90%';
-          card.style.margin = '10px auto';
-          card.style.fontSize = '1.5em';
-        } else {
-          card.style.width = '50%';
-          card.style.height = '90%';
-          card.style.margin = '';
-          card.style.fontSize = '';
-        }
-      });
-    }
-
-    function showNextCard() {
-      currentCardIndex = (currentCardIndex + 1) % practiceCards.length;
-      updatePracticeDeck();
-    }
-
-    function showPrevCard() {
-      currentCardIndex = (currentCardIndex - 1 + practiceCards.length) % practiceCards.length;
-      updatePracticeDeck();
-    }
-
-    let touchStartX = 0;
-    document.getElementById('practiceDeckContainer').addEventListener('touchstart', e => {
-      touchStartX = e.touches[0].clientX;
-    });
-    document.getElementById('practiceDeckContainer').addEventListener('touchend', e => {
-      const touchEndX = e.changedTouches[0].clientX;
-      const diff = touchStartX - touchEndX;
-      if (Math.abs(diff) > 50) {
-        if (diff > 0) showNextCard();
-        else showPrevCard();
-      }
-    });
-
-    window.onload = function() {
-      loadCards();
-      loadConnections();
-    };
-  </script>
+function exitPracticeMode() {
+  document.getElementById('practiceDeck').style.display = 'none';
+  document.querySelector('.flashcard-container').style.display = 'flex';
+  document.querySelector('.input-panel').style.display = 'flex';
+  document.querySelector('.button-panel').style.display = 'flex';
  
+}
+
+function initializePracticeDeck(flashcards) {
+  const container = document.getElementById('practiceDeckContainer');
+  container.innerHTML = '';
+  practiceCards = [];
+  flashcards.forEach((card, index) => {
+    const cardElement = document.createElement('div');
+    cardElement.className = 'practice-card';
+    cardElement.innerHTML = `
+      <div class="practice-card-face practice-card-front">
+        <h2>${card.category || 'General'}</h2>
+        <p>${card.question}</p>
+      </div>
+      <div class="practice-card-face practice-card-back">
+        ${card.answer}
+      </div>
+    `;
+    cardElement.addEventListener('click', (e) => {
+      const rect = cardElement.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const halfWidth = rect.width / 2;
+      cardElement.classList.remove('flip-left', 'flip-right');
+      if (clickX < halfWidth) {
+        cardElement.classList.add('flip-left');
+      } else {
+        cardElement.classList.add('flip-right');
+      }
+      cardElement.classList.toggle('flipped');
+      updatePracticeDeck();
+      setTimeout(() => {
+        if (window.MathJax) MathJax.typesetPromise();
+      }, 500);
+    });
+    practiceCards.push(cardElement);
+    container.appendChild(cardElement);
+  });
+  currentCardIndex = 0;
+  updatePracticeDeck();
+  if (window.MathJax) MathJax.typesetPromise();
+}
+
+function updatePracticeDeck() {
+  practiceCards.forEach((card, index) => {
+    const diffIndex = index - currentCardIndex;
+    const offset = isMobileMode ? diffIndex * 30 : diffIndex * 50;
+    const scale = isMobileMode ? 1 - Math.abs(diffIndex) * 0.05 : 1 - Math.abs(diffIndex) * 0.08;
+    let transformStr = `translateX(${offset}px) scale(${scale})`;
+    if (card.classList.contains('flipped')) {
+      if (card.classList.contains('flip-left')) {
+        transformStr += ' rotateY(-180deg) rotateX(-3deg)';
+      } else {
+        transformStr += ' rotateY(180deg) rotateX(3deg)';
+      }
+    }
+    card.style.transform = transformStr;
+    card.style.zIndex = practiceCards.length - Math.abs(diffIndex);
+    card.classList.toggle('active', index === currentCardIndex);
+    if (isMobileMode) {
+      card.style.width = '90%';
+      card.style.margin = '10px auto';
+      card.style.fontSize = '1.5em';
+    } else {
+      card.style.width = '50%';
+      card.style.height = '90%';
+      card.style.margin = '';
+      card.style.fontSize = '';
+    }
+  });
+}
+
+function showNextCard() {
+  currentCardIndex = (currentCardIndex + 1) % practiceCards.length;
+  updatePracticeDeck();
+}
+
+function showPrevCard() {
+  currentCardIndex = (currentCardIndex - 1 + practiceCards.length) % practiceCards.length;
+  updatePracticeDeck();
+}
+
+let touchStartX = 0;
+document.getElementById('practiceDeckContainer').addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+});
+document.getElementById('practiceDeckContainer').addEventListener('touchend', e => {
+  const touchEndX = e.changedTouches[0].clientX;
+  const diff = touchStartX - touchEndX;
+  if (Math.abs(diff) > 50) {
+    if (diff > 0) showNextCard();
+    else showPrevCard();
+  }
+});
+
+window.onload = function() {
+  loadCards();
+  loadConnections();
+};
+</script> 
 </body>
 </html>
+
