@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -2022,25 +2022,39 @@ body {
   transform: scale(1.05);
 }
 
- .connection-panel {
-    position: absolute;
-    width: 450px;
-    min-height: 200px;
-    height: auto;
-    max-height: 80vh;
-    background: linear-gradient(135deg, #1a0033, #6902ef);
-    border: none;
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: 0 10px 30px rgba(105, 2, 239, 0.6), 
-                inset 0 0 100px rgba(255, 255, 255, 0.1);
-    cursor: move;
-    overflow-y: auto;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: white;
-    animation: glow 3s infinite alternate;
-    transition: all 0.3s ease-in-out;
-  }
+.connection-panel {
+  position: absolute;
+  width: 450px;
+  min-height: 200px;
+  height: auto;
+  max-height: 80vh;
+  background: linear-gradient(135deg, #1a0033, #6902ef);
+  border: none;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(105, 2, 239, 0.6), 
+              inset 0 0 100px rgba(255, 255, 255, 0.1);
+  cursor: move;
+  touch-action: none; /* Prevents default touch actions */
+  -webkit-user-select: none; /* Prevents text selection */
+  user-select: none;
+  z-index: 1000;
+}
+
+/* Add touch-friendly button sizes */
+.connection-buttons button {
+  min-height: 44px; /* Minimum touch target size */
+  min-width: 44px;
+  padding: 12px 25px;
+  margin: 8px;
+  font-size: 16px;
+}
+
+/* Add active states for touch feedback */
+.connection-buttons button:active {
+  transform: scale(0.95);
+  background: linear-gradient(45deg, #5701c3, #9340e0);
+}
   
   .connection-panel:hover {
     transform: translateY(-5px);
@@ -3855,7 +3869,78 @@ document.getElementById('practiceDeckContainer').addEventListener('touchend', e 
     else showPrevCard();
   }
 });
+function initializePanelInteractions(panel) {
+  let isDragging = false;
+  let currentX;
+  let currentY;
+  let initialX;
+  let initialY;
+  let xOffset = 0;
+  let yOffset = 0;
 
+  // Mouse Events
+  panel.addEventListener('mousedown', startDragging);
+  panel.addEventListener('mousemove', drag);
+  panel.addEventListener('mouseup', stopDragging);
+  panel.addEventListener('mouseleave', stopDragging);
+
+  // Touch Events
+  panel.addEventListener('touchstart', startDragging);
+  panel.addEventListener('touchmove', drag);
+  panel.addEventListener('touchend', stopDragging);
+  panel.addEventListener('touchcancel', stopDragging);
+
+  function startDragging(e) {
+    if (e.type === 'mousedown') {
+      initialX = e.clientX - xOffset;
+      initialY = e.clientY - yOffset;
+    } else if (e.type === 'touchstart') {
+      initialX = e.touches[0].clientX - xOffset;
+      initialY = e.touches[0].clientY - yOffset;
+    }
+
+    if (e.target === panel) {
+      isDragging = true;
+    }
+  }
+
+  function drag(e) {
+    if (isDragging) {
+      e.preventDefault();
+
+      if (e.type === 'mousemove') {
+        currentX = e.clientX - initialX;
+        currentY = e.clientY - initialY;
+      } else if (e.type === 'touchmove') {
+        currentX = e.touches[0].clientX - initialX;
+        currentY = e.touches[0].clientY - initialY;
+      }
+
+      xOffset = currentX;
+      yOffset = currentY;
+
+      setTranslate(currentX, currentY, panel);
+    }
+  }
+
+  function stopDragging() {
+    isDragging = false;
+  }
+
+  function setTranslate(xPos, yPos, el) {
+    el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+  }
+}
+
+// Call this when creating new connection panels
+function createConnectionPanel() {
+  const panel = document.createElement('div');
+  panel.className = 'connection-panel';
+  // ... your existing panel creation code ...
+  
+  initializePanelInteractions(panel);
+  return panel;
+}
 window.onload = function() {
   loadCards();
   loadConnections();
