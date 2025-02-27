@@ -2560,6 +2560,182 @@ body {
   transform: translateY(1px);
   box-shadow: 0 5px 15px rgba(105, 2, 239, 0.2);
 }
+/* Add these styles to your existing CSS */
+.fullscreen-controls {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  background: rgba(20, 30, 60, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  z-index: 10001;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.fs-control-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.fs-btn {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+/* Fullscreen dropdown menu */
+.fs-dropdown {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 10002;
+}
+
+.fs-dropdown-btn {
+  background: linear-gradient(135deg, #6902ef, #af5fff);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.fs-dropdown-btn:hover {
+  background: linear-gradient(135deg, #5b01d3, #9340e0);
+}
+
+.fs-dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 10px;
+  background: rgba(20, 30, 60, 0.95);
+  backdrop-filter: blur(10px);
+  min-width: 250px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  z-index: 10003;
+  overflow: hidden;
+  animation: fadeInScale 0.3s ease-out;
+}
+
+.fs-dropdown-content.show {
+  display: block;
+}
+
+.fs-dropdown-item {
+  padding: 12px 20px;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.fs-dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.fs-dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.fs-dropdown-item i {
+  font-size: 18px;
+  width: 24px;
+  text-align: center;
+}
+
+/* Category panels for animation */
+.category-panels-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  z-index: 10000;
+}
+
+.category-panel {
+  position: absolute;
+  background: rgba(20, 30, 60, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  overflow: auto;
+}
+
+.category-panel-header {
+  color: white;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-align: center;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 10px;
+}
+
+.category-panel .flashcard {
+  transform: scale(0);
+  opacity: 0;
+  transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-delay: calc(var(--card-index) * 0.1s);
+}
+
+.category-panel.active .flashcard {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* Back button for category view */
+.category-view-back {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: linear-gradient(135deg, #ff6b6b, #ff4757);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 10004;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  display: none;
+}
+
+.category-view-back:hover {
+  background: linear-gradient(135deg, #ff8787, #ff6565);
+}
   </style>
 </head>
 <body>
@@ -3699,85 +3875,268 @@ function renderMindMap(cards, connections) {
       }
     }
   });
-const nodeIds = new Set(nodes.map(node => node.id));
-const validLinks = links.filter(link => nodeIds.has(link.source) && nodeIds.has(link.target));
+  
+  // Add zoom and pan functionality
+  const svg = container.append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .style("border", "1px solid white")
+    .call(d3.zoom().on("zoom", (event) => {
+      g.attr("transform", event.transform);
+    }));
+    
+  // Create a group for all elements to enable zooming
+  const g = svg.append("g");
+  
+  // Rest of your code with g instead of svg for appending elements
+  const nodeIds = new Set(nodes.map(node => node.id));
+  const validLinks = links.filter(link => nodeIds.has(link.source) && nodeIds.has(link.target));
 
-  const svg = container.append("svg").attr("width", width).attr("height", height).style("border", "1px solid white");
-  const simulation = d3.forceSimulation(nodes)
-  .force("link", d3.forceLink(validLinks).id(d => d.id).distance(150))
-  .force("charge", d3.forceManyBody().strength(-300))
-  .force("center", d3.forceCenter(width / 2, height / 2));
-  const link = svg.append("g")
-  .attr("stroke-opacity", 0.6)
-  .selectAll("line")
-  .data(validLinks)
-  .enter().append("line")
-  .attr("stroke", d => d.color)
-  .attr("stroke-width", 2).attr("stroke", d => d.color).style("cursor", "pointer")
+  // Add links with improved styling
+  const link = g.append("g")
+    .attr("stroke-opacity", 0.6)
+    .selectAll("line")
+    .data(validLinks)
+    .enter().append("line")
+    .attr("stroke", d => d.color)
+    .attr("stroke-width", 2)
+    .style("cursor", "pointer")
+    .on("mouseover", function(event, d) {
+      d3.select(this)
+        .attr("stroke-width", 4)
+        .attr("stroke-opacity", 1);
+    })
+    .on("mouseout", function(event, d) {
+      d3.select(this)
+        .attr("stroke-width", 2)
+        .attr("stroke-opacity", 0.6);
+    })
     .on("click", function(event, d) {
+      // Show connection tooltip
       d3.select("#connection-tooltip").remove();
-      const tooltip = svg.append("g").attr("id", "connection-tooltip").attr("transform", `translate(${(d.source.x + d.target.x) / 2},${(d.source.y + d.target.y) / 2})`);
-      const tooltipText = tooltip.append("text").attr("text-anchor", "middle").attr("dy", "0.35em").attr("fill", "white").text(d.description);
+      const tooltip = g.append("g")
+        .attr("id", "connection-tooltip")
+        .attr("transform", `translate(${(d.source.x + d.target.x) / 2},${(d.source.y + d.target.y) / 2})`);
+      
+      const tooltipText = tooltip.append("text")
+        .attr("text-anchor", "middle")
+        .attr("dy", "0.35em")
+        .attr("fill", "white")
+        .text(d.description);
+      
       const textBBox = tooltipText.node().getBBox();
-      tooltip.insert("rect", "text").attr("x", textBBox.x - 10).attr("y", textBBox.y - 5).attr("width", textBBox.width + 20).attr("height", textBBox.height + 10).attr("fill", "rgba(0, 0, 0, 0.8)").attr("rx", 5);
+      tooltip.insert("rect", "text")
+        .attr("x", textBBox.x - 10)
+        .attr("y", textBBox.y - 5)
+        .attr("width", textBBox.width + 20)
+        .attr("height", textBBox.height + 10)
+        .attr("fill", "rgba(0, 0, 0, 0.8)")
+        .attr("rx", 5);
+      
       setTimeout(() => tooltip.remove(), 3000);
     });
-  const nodeGroup = svg.append("g").selectAll("g").data(nodes).enter().append("g").attr("class", "node-group");
-  nodeGroup.append("rect").attr("rx", 5).attr("ry", 5).attr("fill", d => d.color).attr("stroke", "#333333").attr("stroke-width", 2);
-  nodeGroup.append("text").text(d => d.question).attr("text-anchor", "middle").attr("alignment-baseline", "middle").style("fill", "#333333").style("font-size", "12px").each(function(d) {
-    const text = d3.select(this);
-    const words = d.question.split(/\s+/);
-    const lineHeight = 1.2;
-    const maxWidth = 120;
-    text.text('');
-    let line = [];
-    let lineNumber = 0;
-    let tspan = text.append("tspan").attr("x", 0).attr("dy", 0);
-    words.forEach(word => {
-      line.push(word);
-      tspan.text(line.join(" "));
-      if (tspan.node().getComputedTextLength() > maxWidth) {
-        line.pop();
-        tspan.text(line.join(" "));
-        line = [word];
-        tspan = text.append("tspan").attr("x", 0).attr("dy", `${lineHeight}em`).text(word);
-        lineNumber++;
-      }
+
+  // Add nodes with improved interaction
+  const nodeGroup = g.append("g")
+    .selectAll("g")
+    .data(nodes)
+    .enter().append("g")
+    .attr("class", "node-group")
+    .call(d3.drag()
+      .on("start", dragstarted)
+      .on("drag", dragged)
+      .on("end", dragended));
+
+  // Add node background rectangles
+  nodeGroup.append("rect")
+    .attr("rx", 5)
+    .attr("ry", 5)
+    .attr("fill", d => d.color)
+    .attr("stroke", "#333333")
+    .attr("stroke-width", 2)
+    .on("mouseover", function(event, d) {
+      d3.select(this)
+        .attr("stroke", "#ff7700")
+        .attr("stroke-width", 3);
+    })
+    .on("mouseout", function(event, d) {
+      d3.select(this)
+        .attr("stroke", "#333333")
+        .attr("stroke-width", 2);
     });
-    const totalHeight = (lineNumber * lineHeight) / 2;
-    text.selectAll("tspan").attr("dy", (_, i) => `${i === 0 ? -totalHeight : lineHeight}em`);
-  });
+
+  // Add node text with word wrapping
+  nodeGroup.append("text")
+    .text(d => d.question)
+    .attr("text-anchor", "middle")
+    .attr("alignment-baseline", "middle")
+    .style("fill", "#333333")
+    .style("font-size", "12px")
+    .each(function(d) {
+      const text = d3.select(this);
+      const words = d.question.split(/\s+/);
+      const lineHeight = 1.2;
+      const maxWidth = 120;
+      
+      text.text('');
+      let line = [];
+      let lineNumber = 0;
+      let tspan = text.append("tspan")
+        .attr("x", 0)
+        .attr("dy", 0);
+      
+      words.forEach(word => {
+        line.push(word);
+        tspan.text(line.join(" "));
+        
+        if (tspan.node().getComputedTextLength() > maxWidth) {
+          line.pop();
+          tspan.text(line.join(" "));
+          line = [word];
+          tspan = text.append("tspan")
+            .attr("x", 0)
+            .attr("dy", `${lineHeight}em`)
+            .text(word);
+          lineNumber++;
+        }
+      });
+      
+      const totalHeight = (lineNumber * lineHeight) / 2;
+      text.selectAll("tspan")
+        .attr("dy", (_, i) => `${i === 0 ? -totalHeight : lineHeight}em`);
+    });
+
+
+
+
+
+    
+  // Add padding to rectangles based on text size
   const rectPadding = 20;
   const minWidth = 40;
   const minHeight = 40;
+  
   nodeGroup.each(function() {
     const g = d3.select(this);
     const text = g.select("text");
     const bbox = text.node().getBBox();
-    g.select("rect").attr("x", bbox.x - rectPadding / 2).attr("y", bbox.y - rectPadding / 2).attr("width", Math.max(bbox.width + rectPadding, minWidth)).attr("height", Math.max(bbox.height + rectPadding, minHeight));
+    
+    g.select("rect")
+      .attr("x", bbox.x - rectPadding / 2)
+      .attr("y", bbox.y - rectPadding / 2)
+      .attr("width", Math.max(bbox.width + rectPadding, minWidth))
+      .attr("height", Math.max(bbox.height + rectPadding, minHeight));
   });
+
+  // Add category labels
+  nodeGroup.append("text")
+    .attr("class", "category")
+    .text(d => d.category || "")
+    .attr("text-anchor", "middle")
+    .attr("y", function(d) {
+      const rect = d3.select(this.parentNode).select("rect");
+      return parseFloat(rect.attr("y")) - 10;
+    })
+    .attr("fill", "#805ad5")
+    .style("font-size", "10px")
+    .style("font-weight", "bold");
+
+  // Force simulation setup
+  const simulation = d3.forceSimulation(nodes)
+    .force("link", d3.forceLink(validLinks).id(d => d.id).distance(150))
+    .force("charge", d3.forceManyBody().strength(-300))
+    .force("center", d3.forceCenter(width / 2, height / 2));
+
+  // Run simulation for a fixed number of ticks
   for (let i = 0; i < 300; ++i) simulation.tick();
   simulation.stop();
-  nodes.forEach(n => { n.fx = n.x; n.fy = n.y; });
+  
+  // Fix node positions after simulation
+  nodes.forEach(n => { 
+    n.fx = n.x; 
+    n.fy = n.y; 
+  });
+
+  // Update positions of all elements
   function updatePositions() {
-    link.attr("x1", d => d.source.x).attr("y1", d => d.source.y).attr("x2", d => d.target.x).attr("y2", d => d.target.y);
+    link
+      .attr("x1", d => d.source.x)
+      .attr("y1", d => d.source.y)
+      .attr("x2", d => d.target.x)
+      .attr("y2", d => d.target.y);
+    
     nodeGroup.attr("transform", d => `translate(${d.x},${d.y})`);
   }
+  
   updatePositions();
-  nodeGroup.call(d3.drag().on("start", function(event, d) {})
-    .on("drag", function(event, d) {
-      d.x = event.x;
-      d.y = event.y;
-      d.fx = event.x;
-      d.fy = event.y;
-      updatePositions();
-    })
-    .on("end", function(event, d) {
-      d.fx = event.x;
-      d.fy = event.y;
-      updatePositions();
-    })
-  );
+
+  // Drag functions
+  function dragstarted(event, d) {
+    if (!event.active) simulation.alphaTarget(0.3).restart();
+    d.fx = d.x;
+    d.fy = d.y;
+  }
+  
+  function dragged(event, d) {
+    d.fx = event.x;
+    d.fy = event.y;
+    updatePositions();
+  }
+  
+  function dragended(event, d) {
+    if (!event.active) simulation.alphaTarget(0);
+    d.fx = event.x;
+    d.fy = event.y;
+    updatePositions();
+  }
+
+
+
+
+  
+  // Add mind map controls
+  const controls = container.append("div")
+    .attr("class", "mind-map-controls")
+    .style("position", "absolute")
+    .style("bottom", "20px")
+    .style("left", "20px")
+    .style("z-index", "100");
+  
+  controls.append("button")
+    .attr("class", "mind-map-button")
+    .text("Reset View")
+    .on("click", function() {
+      svg.transition().duration(750).call(
+        d3.zoom().transform,
+        d3.zoomIdentity
+      );
+    });
+  
+  controls.append("button")
+    .attr("class", "mind-map-button")
+    .text("Auto Layout")
+    .on("click", function() {
+      // Release fixed positions
+      nodes.forEach(n => { 
+        n.fx = null; 
+        n.fy = null; 
+      });
+      
+      // Restart simulation
+      simulation.alpha(1).restart();
+      
+      // Update during simulation
+      simulation.on("tick", updatePositions);
+      
+      // Stop and fix positions after simulation
+      setTimeout(() => {
+        simulation.stop();
+        nodes.forEach(n => { 
+          n.fx = n.x; 
+          n.fy = n.y; 
+        });
+      }, 2000);
+    });
 }
 
 function toggleMindMapView() {
@@ -3789,6 +4148,8 @@ function toggleMindMapView() {
     mindMapView.style.display = "block";
     toggleBtn.textContent = "Grid View";
     renderMindMap(currentFilteredCards, connections);
+    // Initialize context menu after rendering the mind map
+    addMindMapContextMenu();
   } else {
     mindMapView.style.display = "none";
     gridView.style.display = "block";
@@ -4130,82 +4491,556 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
+// Add this function to toggle fullscreen view with enhanced features
 function toggleFullscreenView() {
-    const container = document.querySelector('.flashcard-container');
-    const isFullscreen = document.fullscreenElement;
+  const container = document.querySelector('.flashcard-container');
+  const isFullscreen = document.fullscreenElement;
+  
+  if (!isFullscreen) {
+    // Enter fullscreen
+    if (container.requestFullscreen) {
+      container.requestFullscreen();
+    } else if (container.webkitRequestFullscreen) {
+      container.webkitRequestFullscreen();
+    } else if (container.msRequestFullscreen) {
+      container.msRequestFullscreen();
+    }
     
-    if (!isFullscreen) {
-        // Enter fullscreen
-        if (container.requestFullscreen) {
-            container.requestFullscreen();
-        } else if (container.webkitRequestFullscreen) {
-            container.webkitRequestFullscreen();
-        } else if (container.msRequestFullscreen) {
-            container.msRequestFullscreen();
-        }
-        
-        container.classList.add('fullscreen-mode');
-        
-        // Create exit button if it doesn't exist
-        if (!container.querySelector('.exit-fullscreen-btn')) {
-            const exitBtn = document.createElement('button');
-            exitBtn.className = 'exit-fullscreen-btn';
-            exitBtn.innerHTML = 'Exit Fullscreen';
-            exitBtn.onclick = toggleFullscreenView;
-            container.appendChild(exitBtn);
-        }
+    container.classList.add('fullscreen-mode');
+    
+    // Create dropdown menu
+    const dropdown = document.createElement('div');
+    dropdown.className = 'fs-dropdown';
+    dropdown.innerHTML = `
+      <button class="fs-dropdown-btn">
+        <span>Menu</span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 5L8 11L14 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="fs-dropdown-content">
+        <div class="fs-dropdown-item" id="fs-nav-prev">
+          <i>⬅️</i> Previous Card
+        </div>
+        <div class="fs-dropdown-item" id="fs-nav-next">
+          <i>➡️</i> Next Card
+        </div>
+        <div class="fs-dropdown-item" id="fs-flip-all">
+          <i>🔄</i> Flip All Cards
+        </div>
+        <div class="fs-dropdown-item" id="fs-category-sort">
+          <i>📊</i> Sort by Category
+        </div>
+        <div class="fs-dropdown-item" id="fs-presentation">
+          <i>▶️</i> Presentation Mode
+        </div>
+        <div class="fs-dropdown-item" id="fs-theme-toggle">
+          <i>🌓</i> Toggle Dark Mode
+        </div>
+        <div class="fs-dropdown-item" id="fs-search">
+          <i>🔍</i> Search Cards
+        </div>
+        <div class="fs-dropdown-item" id="fs-exit">
+          <i>❌</i> Exit Fullscreen
+        </div>
+      </div>
+    `;
+    container.appendChild(dropdown);
+    
+    // Create category panels container (initially hidden)
+    const categoryPanelsContainer = document.createElement('div');
+    categoryPanelsContainer.className = 'category-panels-container';
+    container.appendChild(categoryPanelsContainer);
+    
+    // Create back button for category view
+    const backBtn = document.createElement('button');
+    backBtn.className = 'category-view-back';
+    backBtn.textContent = 'Back to All Cards';
+    backBtn.onclick = exitCategoryView;
+    container.appendChild(backBtn);
+    
+    // Create exit button
+    const exitBtn = document.createElement('button');
+    exitBtn.className = 'exit-fullscreen-btn';
+    exitBtn.innerHTML = 'Exit Fullscreen';
+    exitBtn.onclick = toggleFullscreenView;
+    container.appendChild(exitBtn);
 
-        // Ensure all cards are visible and properly styled
-        const cards = container.querySelectorAll('.flashcard');
-        cards.forEach(card => {
-            card.style.display = 'block';
-            card.style.opacity = '1';
-            card.style.position = 'relative';
-            card.style.left = 'auto';
-            card.style.top = 'auto';
-        });
+    // Initialize fullscreen controls
+    initFullscreenControls();
+
+    // Ensure all cards are visible and properly styled
+    const cards = container.querySelectorAll('.flashcard');
+    cards.forEach(card => {
+      card.style.display = 'block';
+      card.style.opacity = '1';
+      card.style.position = 'relative';
+      card.style.left = 'auto';
+      card.style.top = 'auto';
+    });
+    
+    // Add keyboard navigation
+    document.addEventListener('keydown', handleFullscreenKeyboard);
+  } else {
+    // Exit fullscreen
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    }
+    
+    container.classList.remove('fullscreen-mode');
+    
+    // Remove fullscreen controls and exit button
+    const dropdown = container.querySelector('.fs-dropdown');
+    if (dropdown) dropdown.remove();
+    
+    const exitBtn = container.querySelector('.exit-fullscreen-btn');
+    if (exitBtn) exitBtn.remove();
+    
+    const categoryPanelsContainer = container.querySelector('.category-panels-container');
+    if (categoryPanelsContainer) categoryPanelsContainer.remove();
+    
+    const backBtn = container.querySelector('.category-view-back');
+    if (backBtn) backBtn.remove();
+    
+    // Reset card styles
+    const cards = container.querySelectorAll('.flashcard');
+    cards.forEach(card => {
+      card.style.transform = '';
+      card.style.transition = '';
+      card.style.position = '';
+      card.style.left = '';
+      card.style.top = '';
+    });
+    
+    // Remove keyboard event listener
+    document.removeEventListener('keydown', handleFullscreenKeyboard);
+  }
+}
+
+// Initialize fullscreen controls
+function initFullscreenControls() {
+  const container = document.querySelector('.flashcard-container');
+  let currentIndex = 0;
+  let presentationMode = false;
+  let presentationTimer = null;
+  
+  // Toggle dropdown menu
+  const dropdownBtn = document.querySelector('.fs-dropdown-btn');
+  const dropdownContent = document.querySelector('.fs-dropdown-content');
+  
+  dropdownBtn.addEventListener('click', () => {
+    dropdownContent.classList.toggle('show');
+  });
+  
+  // Close dropdown when clicking outside
+  window.addEventListener('click', (e) => {
+    if (!e.target.matches('.fs-dropdown-btn') && !e.target.closest('.fs-dropdown-btn')) {
+      dropdownContent.classList.remove('show');
+    }
+  });
+  
+  // Navigation buttons
+  document.getElementById('fs-nav-prev').addEventListener('click', () => {
+    navigateCards(-1);
+    dropdownContent.classList.remove('show');
+  });
+  
+  document.getElementById('fs-nav-next').addEventListener('click', () => {
+    navigateCards(1);
+    dropdownContent.classList.remove('show');
+  });
+  
+  // Flip all cards
+  document.getElementById('fs-flip-all').addEventListener('click', () => {
+    const cards = container.querySelectorAll('.flashcard');
+    cards.forEach(card => {
+      card.classList.toggle('flipped');
+    });
+    
+    // Render LaTeX if needed
+    setTimeout(() => {
+      if (window.MathJax) {
+        MathJax.typesetPromise([container]).catch(err => console.log(err.message));
+      }
+    }, 500);
+    
+    dropdownContent.classList.remove('show');
+  });
+  
+  // Sort by category
+  document.getElementById('fs-category-sort').addEventListener('click', () => {
+    sortByCategory();
+    dropdownContent.classList.remove('show');
+  });
+  
+  // Presentation mode
+  document.getElementById('fs-presentation').addEventListener('click', (e) => {
+    presentationMode = !presentationMode;
+    e.target.innerHTML = presentationMode ? 
+      '<i>⏹️</i> Stop Presentation' : 
+      '<i>▶️</i> Presentation Mode';
+    
+    if (presentationMode) {
+      // Start auto-flipping cards every 5 seconds
+      presentationTimer = setInterval(() => {
+        const visibleCards = Array.from(container.querySelectorAll('.flashcard:not(.hidden)'));
+        if (currentIndex >= visibleCards.length) currentIndex = 0;
+        
+        // Flip current card if not already flipped
+        if (!visibleCards[currentIndex].classList.contains('flipped')) {
+          visibleCards[currentIndex].classList.add('flipped');
+          
+          // Render LaTeX if needed
+          setTimeout(() => {
+            if (window.MathJax) {
+              MathJax.typesetPromise([visibleCards[currentIndex]]).catch(err => console.log(err.message));
+            }
+          }, 500);
+          
+          // Wait 3 seconds before moving to next card
+          setTimeout(() => {
+            currentIndex++;
+          }, 3000);
+        } else {
+          // If already flipped, move to next card
+          visibleCards[currentIndex].classList.remove('flipped');
+          currentIndex++;
+        }
+      }, 5000);
     } else {
-        // Exit fullscreen
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) {
-            document.msExitFullscreen();
-        }
-        
-        container.classList.remove('fullscreen-mode');
-        
-        // Remove exit button
-        const exitBtn = container.querySelector('.exit-fullscreen-btn');
-        if (exitBtn) exitBtn.remove();
-        
-        // Reset card styles
-        const cards = container.querySelectorAll('.flashcard');
-        cards.forEach(card => {
-            card.style.transform = '';
-        });
+      // Stop auto-flipping
+      clearInterval(presentationTimer);
     }
+    
+    dropdownContent.classList.remove('show');
+  });
+  
+  // Theme toggle
+  document.getElementById('fs-theme-toggle').addEventListener('click', (e) => {
+    container.classList.toggle('dark-theme');
+    e.target.innerHTML = container.classList.contains('dark-theme') ? 
+      '<i>☀️</i> Light Mode' : 
+      '<i>🌓</i> Dark Mode';
+    
+    dropdownContent.classList.remove('show');
+  });
+  
+  // Search cards
+  document.getElementById('fs-search').addEventListener('click', () => {
+    const searchTerm = prompt('Enter search term:');
+    if (searchTerm) {
+      searchCards(searchTerm);
+    }
+    
+    dropdownContent.classList.remove('show');
+  });
+  
+  // Exit fullscreen
+  document.getElementById('fs-exit').addEventListener('click', () => {
+    toggleFullscreenView();
+    dropdownContent.classList.remove('show');
+  });
+  
+  function navigateCards(direction) {
+    const visibleCards = Array.from(container.querySelectorAll('.flashcard:not(.hidden)'));
+    if (visibleCards.length === 0) return;
+    
+    // Highlight current card
+    visibleCards.forEach(card => card.classList.remove('current-card'));
+    
+    currentIndex = (currentIndex + direction + visibleCards.length) % visibleCards.length;
+    visibleCards[currentIndex].classList.add('current-card');
+    
+    // Scroll to the card
+    visibleCards[currentIndex].scrollIntoView({
+      behavior: 'smooth',
+      block: 'center'
+    });
+  }
 }
 
-// Add fullscreen change event listener
-document.addEventListener('fullscreenchange', handleFullscreenChange);
-document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-document.addEventListener('mozfullscreenchange', handleFullscreenChange);
-document.addEventListener('MSFullscreenChange', handleFullscreenChange);
-
-function handleFullscreenChange() {
-    const container = document.querySelector('.flashcard-container');
-    if (!document.fullscreenElement && 
-        !document.webkitFullscreenElement && 
-        !document.mozFullscreenElement && 
-        !document.msFullscreenElement) {
-        container.classList.remove('fullscreen-mode');
-        const exitBtn = container.querySelector('.exit-fullscreen-btn');
-        if (exitBtn) exitBtn.remove();
-    }
+// Handle keyboard navigation in fullscreen mode
+function handleFullscreenKeyboard(e) {
+  if (!document.fullscreenElement) return;
+  
+  switch(e.key) {
+    case 'ArrowRight':
+    case 'ArrowDown':
+      document.getElementById('fs-nav-next').click();
+      break;
+    case 'ArrowLeft':
+    case 'ArrowUp':
+      document.getElementById('fs-nav-prev').click();
+      break;
+    case ' ':
+      // Space bar to flip current card
+      const currentCard = document.querySelector('.flashcard.current-card');
+      if (currentCard) {
+        currentCard.classList.toggle('flipped');
+        setTimeout(() => {
+          if (window.MathJax) {
+            MathJax.typesetPromise([currentCard]).catch(err => console.log(err.message));
+          }
+        }, 500);
+      }
+      break;
+    case 'Escape':
+      toggleFullscreenView();
+      break;
+  }
 }
 
+// Sort cards by category with animation
+function sortByCategory() {
+  const container = document.querySelector('.flashcard-container');
+  const categoryPanelsContainer = container.querySelector('.category-panels-container');
+  const backBtn = container.querySelector('.category-view-back');
+  
+  // Get all cards and their categories
+  const cards = Array.from(container.querySelectorAll('.flashcard'));
+  const categories = new Set();
+  
+  cards.forEach(card => {
+    const categoryElement = card.querySelector('.flashcard-front div:first-child');
+    const category = categoryElement ? categoryElement.textContent.trim() : 'Uncategorized';
+    categories.add(category);
+  });
+  
+  // Clear previous panels
+  categoryPanelsContainer.innerHTML = '';
+  
+  // Create panels for each category
+  const categoryArray = Array.from(categories);
+  const panelWidth = Math.floor(100 / Math.min(categoryArray.length, 3)); // Max 3 panels per row
+  const panelHeight = Math.floor(100 / Math.ceil(categoryArray.length / 3)); // Adjust height based on number of rows
+  
+  categoryArray.forEach((category, index) => {
+    const panel = document.createElement('div');
+    panel.className = 'category-panel';
+    panel.innerHTML = `<div class="category-panel-header">${category}</div>`;
+    
+    // Position panel
+    const row = Math.floor(index / 3);
+    const col = index % 3;
+    
+    panel.style.width = `${panelWidth}%`;
+    panel.style.height = `${panelHeight}%`;
+    panel.style.left = `${col * panelWidth}%`;
+    panel.style.top = `${row * panelHeight}%`;
+    
+    categoryPanelsContainer.appendChild(panel);
+  });
+  
+  // Show category panels container and back button
+  categoryPanelsContainer.style.display = 'block';
+  backBtn.style.display = 'block';
+  
+  // Hide original cards container content
+  cards.forEach(card => {
+    card.style.position = 'absolute';
+    card.style.transition = 'all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
+    
+    // Get card's category
+    const categoryElement = card.querySelector('.flashcard-front div:first-child');
+    const category = categoryElement ? categoryElement.textContent.trim() : 'Uncategorized';
+    
+    // Find target panel
+    const targetPanel = Array.from(categoryPanelsContainer.querySelectorAll('.category-panel'))
+      .find(panel => panel.querySelector('.category-panel-header').textContent === category);
+    
+    if (targetPanel) {
+      // Get current position
+      const cardRect = card.getBoundingClientRect();
+      const targetRect = targetPanel.getBoundingClientRect();
+      
+      // Store original position
+      card.dataset.originalLeft = card.style.left || '0px';
+      card.dataset.originalTop = card.style.top || '0px';
+      
+      // Calculate new position (center of the panel)
+      const newLeft = targetRect.left + (targetRect.width / 2) - (cardRect.width / 2);
+      const newTop = targetRect.top + (targetRect.height / 2) - (cardRect.height / 2);
+      
+      // Set card index for staggered animation
+      const categoryCards = cards.filter(c => {
+        const catElem = c.querySelector('.flashcard-front div:first-child');
+        return (catElem ? catElem.textContent.trim() : 'Uncategorized') === category;
+      });
+      const cardIndex = categoryCards.indexOf(card);
+      card.style.setProperty('--card-index', cardIndex);
+      
+      // Animate to new position
+      setTimeout(() => {
+        card.style.transform = 'scale(0.8)';
+        card.style.left = `${newLeft}px`;
+        card.style.top = `${newTop + 60}px`; // Add offset for the header
+        
+        // Add offset for the header
+        
+        // Add card to panel after animation
+        setTimeout(() => {
+          targetPanel.appendChild(card);
+          card.style.left = '0';
+          card.style.top = '0';
+          card.style.margin = '10px';
+          card.style.position = 'relative';
+          
+          // Add active class to panel to trigger card animations
+          targetPanel.classList.add('active');
+        }, 800);
+      }, cardIndex * 50); // Fixed: Added missing closing parenthesis here
+    } // Fixed: Added missing closing curly brace for the if(targetPanel) block
+  }); // This is the closing parenthesis for the cards.forEach
+  
+  // After all cards have been animated to their panels
+  setTimeout(() => {
+    // Hide any remaining cards in the main container
+    cards.filter(c => !c.parentElement || c.parentElement === container)
+      .forEach(c => c.style.display = 'none');
+  }, 1000);
+}
+
+// Exit category view and return to normal fullscreen view
+function exitCategoryView() {
+  const container = document.querySelector('.flashcard-container');
+  const categoryPanelsContainer = container.querySelector('.category-panels-container');
+  const backBtn = container.querySelector('.category-view-back');
+  
+  // Hide panels and back button
+  categoryPanelsContainer.style.display = 'none';
+  backBtn.style.display = 'none';
+  
+  // Get all cards from panels
+  const cards = Array.from(categoryPanelsContainer.querySelectorAll('.flashcard'));
+  
+  // Move cards back to main container with animation
+  cards.forEach((card, index) => {
+    // Get original position if available
+    const originalLeft = card.dataset.originalLeft || '0px';
+    const originalTop = card.dataset.originalTop || '0px';
+    
+    // Set transition for animation
+    card.style.transition = 'all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
+    card.style.position = 'absolute';
+    
+    // Animate back to original position
+    setTimeout(() => {
+      card.style.left = originalLeft;
+      card.style.top = originalTop;
+      card.style.transform = 'scale(1)';
+      
+      // After animation, reset styles and append to main container
+      setTimeout(() => {
+        container.appendChild(card);
+        card.style.position = 'relative';
+        card.style.left = 'auto';
+        card.style.top = 'auto';
+        card.style.margin = '';
+        card.style.transform = '';
+        card.style.transition = '';
+        card.style.opacity = '1';
+        card.style.display = 'block';
+      }, 800);
+    }, index * 50); // Stagger animation
+  });
+  
+  // Clear panels container after animations
+  setTimeout(() => {
+    categoryPanelsContainer.innerHTML = '';
+  }, cards.length * 50 + 1000);
+}
+
+// Search cards in fullscreen mode
+function searchCards(term) {
+  if (!term) {
+    // If no search term, show all cards
+    const cards = document.querySelectorAll('.flashcard-container .flashcard');
+    cards.forEach(card => {
+      card.style.display = 'block';
+      card.classList.remove('hidden');
+    });
+    return;
+  }
+  
+  const container = document.querySelector('.flashcard-container');
+  const cards = container.querySelectorAll('.flashcard');
+  const termLower = term.toLowerCase();
+  
+  // Search through cards
+  cards.forEach(card => {
+    const frontContent = card.querySelector('.flashcard-front').textContent.toLowerCase();
+    const backContent = card.querySelector('.flashcard-back').textContent.toLowerCase();
+    
+    if (frontContent.includes(termLower) || backContent.includes(termLower)) {
+      card.style.display = 'block';
+      card.classList.remove('hidden');
+      
+      // Highlight the card briefly
+      card.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.8)';
+      setTimeout(() => {
+        card.style.boxShadow = '';
+      }, 1500);
+    } else {
+      card.style.display = 'none';
+      card.classList.add('hidden');
+    }
+  });
+}
+
+// Add fadeInScale animation for dropdown menu
+document.head.insertAdjacentHTML('beforeend', `
+  <style>
+    @keyframes fadeInScale {
+      0% {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    /* Dark theme for fullscreen mode */
+    .fullscreen-mode.dark-theme {
+      background: linear-gradient(125deg, #000000, #121212, #1e1e1e);
+    }
+    
+    .fullscreen-mode.dark-theme .flashcard-front {
+      background: linear-gradient(135deg, #2d3436, #636e72);
+      color: #f5f5f5;
+    }
+    
+    .fullscreen-mode.dark-theme .flashcard-back {
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      color: #f5f5f5;
+    }
+    
+    /* Current card highlight */
+    .flashcard.current-card {
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+      transform: scale(1.05) !important;
+      z-index: 100;
+    }
+    
+    /* Hidden cards */
+    .flashcard.hidden {
+      display: none !important;
+    }
+  </style>
+`);
+
+// Initialize fullscreen button
+document.addEventListener('DOMContentLoaded', function() {
+  const fullscreenBtn = document.getElementById('fullscreenBtn');
+  if (fullscreenBtn) {
+    fullscreenBtn.addEventListener('click', toggleFullscreenView);
+  }
+});
 window.onload = function() {
   loadCards();
   loadConnections();
