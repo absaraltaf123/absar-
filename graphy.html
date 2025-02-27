@@ -20,14 +20,34 @@
         padding: 0;
       }
       body {
-        background: linear-gradient(160deg, #4c2c8c, #2c1f3a 60%);
+        background: linear-gradient(135deg, #2b1055, #7597de);
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
         color: #fff;
         height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
+        position: relative;
+        overflow: hidden;
       }
+      
+      /* Add animated background elements */
+      body::before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><circle cx="30" cy="30" r="20" fill="rgba(255,255,255,0.03)"/><circle cx="70" cy="70" r="30" fill="rgba(255,255,255,0.02)"/></svg>');
+        background-size: 100px 100px;
+        opacity: 0.5;
+        animation: backgroundMove 60s linear infinite;
+      }
+      
+      @keyframes backgroundMove {
+        0% { background-position: 0 0; }
+        100% { background-position: 100px 100px; }
+      }
+      
       .container {
         display: flex;
         width: 95%;
@@ -36,42 +56,128 @@
         border-radius: 24px;
         overflow: hidden;
         padding: 8px;
-        background: linear-gradient(135deg, #9e86ff, #4c2c8c, #2c1f3a);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
-                   inset 0 2px 8px rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(8px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: linear-gradient(135deg, #6a3093, #a044ff);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4),
+                   inset 0 2px 10px rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        position: relative;
+        z-index: 10;
+        animation: containerGlow 5s ease-in-out infinite alternate;
       }
+      
+      @keyframes containerGlow {
+        0% { box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), inset 0 2px 10px rgba(255, 255, 255, 0.2); }
+        100% { box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 20px rgba(160, 68, 255, 0.6), inset 0 2px 10px rgba(255, 255, 255, 0.2); }
+      }
+      
       .content-wrapper {
         display: flex;
         width: 100%;
         height: 100%;
-        background: linear-gradient(to right, #181818, #1f1f1f);
+        background: linear-gradient(to right, rgba(20, 20, 31, 0.95), rgba(30, 30, 45, 0.95));
         border-radius: 18px;
         overflow: hidden;
-        box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.3);
+        box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.4);
         backdrop-filter: blur(5px);
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        position: relative;
+      }
+      
+      /* Add subtle grid pattern to content-wrapper */
+      .content-wrapper::before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-image: 
+          linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 20px 20px;
+        z-index: -1;
       }
       .graph-panel {
         flex: 2.3;
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
-        background: #181818;
+        background: linear-gradient(145deg, #131313, #1d1d1d);
+        border-radius: 12px;
+        box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.5);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.05);
       }
+      
+      /* Add subtle animated glow to graph panel */
+      .graph-panel::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(160, 68, 255, 0.5), transparent);
+        animation: glowScan 4s ease-in-out infinite;
+      }
+      
+      @keyframes glowScan {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+      }
+      
       .graph-header {
-        padding: 17px;
+        padding: 17px 25px;
         font-weight: bold;
+        font-size: 1.1rem;
+        letter-spacing: 1px;
         backdrop-filter: blur(10px);
-        background: rgba(255, 255, 255, 0.08);
+        background: linear-gradient(90deg, rgba(106, 48, 147, 0.2), rgba(160, 68, 255, 0.2));
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        border-top-left-radius: 17px;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+        display: flex;
+        align-items: center;
+        text-transform: uppercase;
+        color: #fff;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
       }
+      
+      /* Add icon to graph header */
+      .graph-header::before {
+        content: "📊";
+        margin-right: 10px;
+        font-size: 1.2rem;
+      }
+      
       .graph-content {
         flex: 1;
-        padding: 16px;
+        padding: 20px;
         overflow-y: auto;
+        background: rgba(24, 24, 24, 0.7);
+        border-radius: 0 0 12px 12px;
+        position: relative;
+        transition: all 0.3s ease;
+      }
+      
+      .graph-content:hover {
+        box-shadow: inset 0 0 20px rgba(160, 68, 255, 0.1);
+      }
+      
+      /* Add subtle grid to graph content */
+      .graph-content::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+          radial-gradient(circle, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 20px 20px;
+        opacity: 0.5;
+        pointer-events: none;
+        z-index: 0;
       }
       .input-panel {
         flex: 1;
@@ -506,15 +612,16 @@
                       </select>
                     </div>
                     <div class="mb-3 chart-type-wrapper">
-                        <label for="chartType" class="form-label chart-type-label">Chart Type</label>
-                        <select id="chartType" class="form-control chart-type-select">
+                      <label for="chartType" class="form-label chart-type-label">Chart Type</label>
+                      <select id="chartType" class="form-control chart-type-select">
                           <option value="line" selected>📈 Line Chart</option>
                           <option value="bar">📊 Bar Chart</option>
                           <option value="scatter">🔵 Scatter Plot</option>
                           <option value="area">📉 Area Chart</option>
                           <option value="horizontalBar">📊 Horizontal Bar</option>
-                        </select>
-                      </div>
+                          <option value="pie">🥧 Pie Chart</option>
+                      </select>
+                  </div>
                     <div class="mb-3">
                       <label for="chartTitle" class="form-label">Chart Title:</label>
                       <input type="text" id="chartTitle" class="form-control" placeholder="Enter Chart Title" />
@@ -636,6 +743,8 @@
               pass
 
       # Build chart configuration
+      # Build chart configuration
+      # Build chart configuration
       def build_chart_config(data_points, dataset_label):
           chart_type = document["chartType"].value
           chart_title = document["chartTitle"].value.strip()
@@ -645,18 +754,52 @@
           border_color = document["borderColor"].value
           x_axis_type = document["xAxisType"].value
           y_axis_type = document["yAxisType"].value
-
           x_scale_type = "linear" if x_axis_type == "Numeric" else "category"
           y_scale_type = "linear" if y_axis_type == "Numeric" else "category"
-
+          
+          # For pie charts, we need to handle colors differently
+          if chart_type == "pie":
+              # Generate an array of visually distinct colors
+              num_segments = len(data_points)
+              background_colors = [
+                  f"hsl({(i * 360 / num_segments)}, 70%, 50%)"
+                  for i in range(num_segments)
+              ]
+              border_colors = ["rgba(255, 255, 255, 0.8)"] * num_segments  # White borders
+              
+              config = {
+                  "type": "pie",
+                  "data": {
+                      "labels": [str(point["x"]) for point in data_points],
+                      "datasets": [{
+                          "data": [point["y"] for point in data_points],
+                          "backgroundColor": background_colors,
+                          "borderColor": border_colors,
+                          "borderWidth": 2
+                      }]
+                  },
+                  "options": {
+                      "responsive": True,
+                      "plugins": {
+                          "legend": {"display": True},
+                          "title": {"display": bool(chart_title), "text": chart_title}
+                      }
+                  }
+              }
+              return config
+          else:
+              # For other chart types, use the provided color
+              background_colors = dataset_color
+              border_colors = border_color
+          
           config = {
               "type": chart_type,
               "data": {
                   "datasets": [{
                       "label": dataset_label,
                       "data": data_points,
-                      "backgroundColor": dataset_color,
-                      "borderColor": border_color,
+                      "backgroundColor": background_colors,
+                      "borderColor": border_colors,
                       "borderWidth": 2,
                       "pointRadius": 4 if dataset_label == "Data Points" else 0,
                       "fill": False,
@@ -676,25 +819,36 @@
                   }
               }
           }
-
-          # Handle new chart types
+          
+          # Handle special chart types
           if chart_type == "area":
               config["type"] = "line"
               config["data"]["datasets"][0]["fill"] = True
           elif chart_type == "horizontalBar":
               config["type"] = "bar"
               config["options"]["indexAxis"] = "y"
+          elif chart_type == "pie" or chart_type == "doughnut":
+              # For pie and doughnut charts, we don't need scales
+              config["options"]["scales"] = {}
+              
+              # Add labels to data if they exist
+              if "labels" in document and hasattr(document["labels"], "value"):
+                  config["data"]["labels"] = document["labels"].value
+              elif isinstance(data_points, list) and all(isinstance(item, dict) and "x" in item for item in data_points):
+                  # Extract labels from data points if they're in {x, y} format
+                  config["data"]["labels"] = [point["x"] for point in data_points]
+                  config["data"]["datasets"][0]["data"] = [point["y"] for point in data_points]
           else:
               config["type"] = chart_type
-
+          
           if "enableAnimation" in document and document["enableAnimation"].checked:
               config["options"]["animation"] = {"duration": 1000}
           else:
               config["options"]["animation"] = {"duration": 0}
-
-          if y_axis_type == "Alphabetic" and x_axis_type == "Numeric" and chart_type not in ["horizontalBar"]:
+          
+          if y_axis_type == "Alphabetic" and x_axis_type == "Numeric" and chart_type not in ["horizontalBar", "pie", "doughnut"]:
               config["options"]["indexAxis"] = "y"
-
+          
           return config
 
       # Apply transformation animation
@@ -709,6 +863,7 @@
               pass
 
       # Create graph from data input
+      # Create graph from data input
       def create_graph_data(event):
           x_input = document["xValues"].value
           y_input = document["yValues"].value
@@ -716,27 +871,38 @@
           y_axis_type = document["yAxisType"].value
           chart_type = document["chartType"].value
 
-          if chart_type == "horizontalBar" and (y_axis_type != "Alphabetic" or x_axis_type != "Numeric"):
-              alert("For Horizontal Bar chart, set Y-axis to Alphabetic and X-axis to Numeric.")
-              return
-
-          if x_axis_type == "Numeric":
-              try:
-                  x_values = [float(x.strip()) for x in x_input.split(',') if x.strip()]
-              except Exception:
-                  alert("Invalid X-axis input. Enter comma-separated numbers.")
-                  return
-          else:
-              x_values = [x.strip() for x in x_input.split(',') if x.strip()]
-
-          if y_axis_type == "Numeric":
+          if chart_type == "pie":
               try:
                   y_values = [float(y.strip()) for y in y_input.split(',') if y.strip()]
+                  if any(y < 0 for y in y_values):
+                      alert("Pie charts require positive values only.")
+                      return
               except Exception:
-                  alert("Invalid Y-axis input. Enter comma-separated numbers.")
+                  alert("Invalid Y-axis input. Enter comma-separated positive numbers for pie chart.")
                   return
+              x_values = [x.strip() for x in x_input.split(',') if x.strip()]
           else:
-              y_values = [y.strip() for y in y_input.split(',') if y.strip()]
+              if chart_type == "horizontalBar" and (y_axis_type != "Alphabetic" or x_axis_type != "Numeric"):
+                  alert("For Horizontal Bar chart, set Y-axis to Alphabetic and X-axis to Numeric.")
+                  return
+
+              if x_axis_type == "Numeric":
+                  try:
+                      x_values = [float(x.strip()) for x in x_input.split(',') if x.strip()]
+                  except Exception:
+                      alert("Invalid X-axis input. Enter comma-separated numbers.")
+                      return
+              else:
+                  x_values = [x.strip() for x in x_input.split(',') if x.strip()]
+
+              if y_axis_type == "Numeric":
+                  try:
+                      y_values = [float(y.strip()) for y in y_input.split(',') if y.strip()]
+                  except Exception:
+                      alert("Invalid Y-axis input. Enter comma-separated numbers.")
+                      return
+              else:
+                  y_values = [y.strip() for y in y_input.split(',') if y.strip()]
 
           if len(x_values) != len(y_values):
               alert("X and Y value counts must match.")
