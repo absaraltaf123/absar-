@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -2000,19 +2000,44 @@ body {
   z-index: 1000;      /* Added to ensure it stays on top */
 }
 
-    .connexion-card {
-      position: absolute;
-      width: 200px;
-      height: 250px;
-      background: linear-gradient(135deg, #ffffff, #f5f5f5);
-      border: 1px solid #666;
-      border-radius: 8px;
-      padding: 15px;
-      cursor: move;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      transition: transform 0.2s ease;
-    }
+.connexion-card {
+  position: absolute;
+  width: 200px;
+  height: 250px;
+  background: linear-gradient(135deg, #ffffff, #f5f5f5);
+  border: 1px solid #666;
+  border-radius: 8px;
+  padding: 15px;
+  cursor: move;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  touch-action: none;
+  user-select: none;
+  z-index: 1;
+}
+.connexion-card.can-connect {
+  border: 2px solid #4CAF50;
+  box-shadow: 0 0 20px rgba(76, 175, 80, 0.6);
+  transform: scale(1.05);
+}
+.connexion-card.selected {
+  border: 2px solid #4CAF50;
+  box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+  transform: scale(1.05);
+  z-index: 2;
+}
 
+/* Add active state for touch feedback */
+.connexion-card:active {
+  transform: scale(0.98);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Ensure text remains readable */
+.connexion-card h4,
+.connexion-card p {
+  pointer-events: none;
+}
     .connexion-card:hover {
       transform: scale(1.02);
     }
@@ -3400,80 +3425,64 @@ function makePanelDraggable(element) {
 function detectAndCreateConnections(draggedCard, allCards) {
   const connectedCardIds = new Set(connections.flatMap(conn => conn.cards));
   const unconnectedCards = allCards.filter(card => !connectedCardIds.has(card.id));
+  
+  // If dragged card is already connected, return
   if (!unconnectedCards.some(card => card.id === draggedCard.id)) return;
 
-  const uf = new UnionFind(unconnectedCards.map(card => card.id));
-  const threshold = 100;
+  // Find nearby cards
+  const nearbyCards = unconnectedCards.filter(card => {
+    if (card.id === draggedCard.id) return false;
+    
+    // Calculate center points of cards
+    const draggedElem = document.querySelector(`.connexion-card[data-id="${draggedCard.id}"]`);
+    const cardElem = document.querySelector(`.connexion-card[data-id="${card.id}"]`);
+    
+    if (!draggedElem || !cardElem) return false;
 
-  unconnectedCards.forEach((card1, i) => {
-    unconnectedCards.slice(i + 1).forEach(card2 => {
-      if (Math.abs(card1.x - card2.x) < threshold && Math.abs(card1.y - card2.y) < threshold) {
-        uf.union(card1.id, card2.id);
-      }
-    });
+    const draggedRect = draggedElem.getBoundingClientRect();
+    const cardRect = cardElem.getBoundingClientRect();
+
+    // Calculate centers
+    const draggedCenter = {
+      x: draggedRect.left + draggedRect.width / 2,
+      y: draggedRect.top + draggedRect.height / 2
+    };
+    const cardCenter = {
+      x: cardRect.left + cardRect.width / 2,
+      y: cardRect.top + cardRect.height / 2
+    };
+
+    // Calculate distance between centers
+    const distance = Math.sqrt(
+      Math.pow(draggedCenter.x - cardCenter.x, 2) + 
+      Math.pow(draggedCenter.y - cardCenter.y, 2)
+    );
+
+    // Return true if cards are close enough (150px threshold)
+    return distance < 150;
   });
 
-  const root = uf.find(draggedCard.id);
-  const componentIds = unconnectedCards.filter(card => uf.find(card.id) === root).map(card => card.id);
-
-  if (componentIds.length > 1) {
-    const componentCards = componentIds.map(id => allCards.find(c => c.id === id));
-    const cardQuestions = componentCards.map(c => c.question).join(', ');
+  // If we found nearby cards, create a connection
+  if (nearbyCards.length > 0) {
+    const cardsToConnect = [draggedCard, ...nearbyCards];
+    const cardQuestions = cardsToConnect.map(c => c.question).join(', ');
+    
     if (confirm(`Create a connection between these cards: ${cardQuestions}?`)) {
       const description = prompt('Enter a description for this connection:') || 'New connection';
       const connectionTag = prompt("Enter a tag for this connection (e.g., cause-effect, analogy):", "general");
       const connectionColor = prompt("Enter a color for this connection (hex code, e.g., #FF0000):", "#000000");
+      
       const newConn = {
         id: `conn-${Date.now()}-${Math.random()}`,
-        cards: componentIds,
-        description: description,
+        cards: cardsToConnect.map(c => c.id),
+        description,
         tag: connectionTag,
         color: connectionColor
       };
+
       connections.push(newConn);
       saveConnections();
-
-      componentIds.forEach(id => {
-        const cardElem = document.querySelector(`.connexion-card[data-id="${id}"]`);
-        if (cardElem) {
-          cardElem.style.transition = 'opacity 0.3s ease';
-          cardElem.style.opacity = '0';
-          setTimeout(() => cardElem.remove(), 300);
-        }
-      });
-
-      const panel = document.createElement('div');
-      panel.className = 'connection-panel';
-      panel.style.position = 'absolute';
-      const avgX = componentCards.reduce((sum, c) => sum + c.x, 0) / componentCards.length;
-      const avgY = componentCards.reduce((sum, c) => sum + c.y, 0) / componentCards.length;
-      panel.style.left = `${avgX}px`;
-      panel.style.top = `${avgY}px`;
-      panel.style.border = `2px solid ${connectionColor}`;
-      panel.innerHTML = `
-        <div class="connection-cards">
-          ${componentIds.map(id => {
-            const card = allCards.find(c => c.id === id);
-            return `
-              <div class="connection-card">
-                <h4>${card.category || 'General'}</h4>
-                <p>${card.question}</p>
-              </div>
-            `;
-          }).join('')}
-        </div>
-        <div class="connection-description">${description}</div>
-        <div class="connection-buttons">
-          <button class="edit-connection">Edit</button>
-          <button class="view-connection">View</button>
-          <button class="remove-connection">Remove</button>
-        </div>
-      `;
-      document.getElementById('gridView').appendChild(panel);
-      makePanelDraggable(panel);
-      panel.querySelector('.edit-connection').addEventListener('click', () => editConnection(newConn.id, allCards));
-      panel.querySelector('.view-connection').addEventListener('click', () => viewConnection(newConn.id, allCards));
-      panel.querySelector('.remove-connection').addEventListener('click', () => removeConnection(newConn.id, allCards));
+      renderConnexionCanvas(allCards);
     }
   }
 }
@@ -3869,7 +3878,7 @@ document.getElementById('practiceDeckContainer').addEventListener('touchend', e 
     else showPrevCard();
   }
 });
-function initializePanelInteractions(panel) {
+function initializePanelInteractions(element) {
   let isDragging = false;
   let currentX;
   let currentY;
@@ -3878,17 +3887,17 @@ function initializePanelInteractions(panel) {
   let xOffset = 0;
   let yOffset = 0;
 
-  // Mouse Events
-  panel.addEventListener('mousedown', startDragging);
-  panel.addEventListener('mousemove', drag);
-  panel.addEventListener('mouseup', stopDragging);
-  panel.addEventListener('mouseleave', stopDragging);
+  // Touch Events for all draggable elements
+  element.addEventListener('touchstart', startDragging);
+  element.addEventListener('touchmove', drag);
+  element.addEventListener('touchend', stopDragging);
+  element.addEventListener('touchcancel', stopDragging);
 
-  // Touch Events
-  panel.addEventListener('touchstart', startDragging);
-  panel.addEventListener('touchmove', drag);
-  panel.addEventListener('touchend', stopDragging);
-  panel.addEventListener('touchcancel', stopDragging);
+  // Mouse Events for desktop compatibility
+  element.addEventListener('mousedown', startDragging);
+  element.addEventListener('mousemove', drag);
+  element.addEventListener('mouseup', stopDragging);
+  element.addEventListener('mouseleave', stopDragging);
 
   function startDragging(e) {
     if (e.type === 'mousedown') {
@@ -3899,7 +3908,7 @@ function initializePanelInteractions(panel) {
       initialY = e.touches[0].clientY - yOffset;
     }
 
-    if (e.target === panel) {
+    if (e.target === element || e.target.parentElement === element) {
       isDragging = true;
     }
   }
@@ -3919,7 +3928,7 @@ function initializePanelInteractions(panel) {
       xOffset = currentX;
       yOffset = currentY;
 
-      setTranslate(currentX, currentY, panel);
+      setTranslate(currentX, currentY, element);
     }
   }
 
@@ -3932,15 +3941,95 @@ function initializePanelInteractions(panel) {
   }
 }
 
-// Call this when creating new connection panels
-function createConnectionPanel() {
-  const panel = document.createElement('div');
-  panel.className = 'connection-panel';
-  // ... your existing panel creation code ...
+function createConnexionCard(card) {
+  const cardElement = document.createElement('div');
+  cardElement.className = 'connexion-card';
+  cardElement.dataset.id = card.id; // Changed from cardId to id to match detection logic
   
-  initializePanelInteractions(panel);
-  return panel;
+  cardElement.innerHTML = `
+    <h4>${card.question}</h4>
+    <p>${card.category || ''}</p>
+  `;
+
+  // Make the card draggable
+  let isDragging = false;
+  let startX, startY;
+
+  cardElement.addEventListener('mousedown', startDrag);
+  cardElement.addEventListener('touchstart', startDrag);
+  
+  function startDrag(e) {
+    isDragging = true;
+    if (e.type === 'mousedown') {
+      startX = e.clientX - cardElement.offsetLeft;
+      startY = e.clientY - cardElement.offsetTop;
+    } else if (e.type === 'touchstart') {
+      startX = e.touches[0].clientX - cardElement.offsetLeft;
+      startY = e.touches[0].clientY - cardElement.offsetTop;
+    }
+    cardElement.style.zIndex = '1000';
+  }
+
+  cardElement.addEventListener('mousemove', drag);
+  cardElement.addEventListener('touchmove', drag);
+
+  function drag(e) {
+    if (!isDragging) return;
+    e.preventDefault();
+    
+    let currentX, currentY;
+    if (e.type === 'mousemove') {
+      currentX = e.clientX - startX;
+      currentY = e.clientY - startY;
+    } else if (e.type === 'touchmove') {
+      currentX = e.touches[0].clientX - startX;
+      currentY = e.touches[0].clientY - startY;
+    }
+
+    cardElement.style.left = `${currentX}px`;
+    cardElement.style.top = `${currentY}px`;
+    
+    // Check for nearby cards while dragging
+    highlightNearbyCards(card, currentX, currentY);
+  }
+
+  cardElement.addEventListener('mouseup', endDrag);
+  cardElement.addEventListener('touchend', endDrag);
+
+  function endDrag() {
+    if (isDragging) {
+      isDragging = false;
+      cardElement.style.zIndex = '1';
+      detectAndCreateConnections(card, currentFilteredCards);
+    }
+  }
+
+  return cardElement;
 }
+
+function highlightNearbyCards(draggedCard, x, y) {
+  const draggedElem = document.querySelector(`.connexion-card[data-id="${draggedCard.id}"]`);
+  if (!draggedElem) return;
+
+  const draggedRect = draggedElem.getBoundingClientRect();
+  
+  document.querySelectorAll('.connexion-card').forEach(cardElem => {
+    if (cardElem.dataset.id === draggedCard.id) return;
+    
+    const cardRect = cardElem.getBoundingClientRect();
+    const distance = Math.sqrt(
+      Math.pow((draggedRect.left + draggedRect.width/2) - (cardRect.left + cardRect.width/2), 2) +
+      Math.pow((draggedRect.top + draggedRect.height/2) - (cardRect.top + cardRect.height/2), 2)
+    );
+
+    if (distance < 150) {
+      cardElem.classList.add('can-connect');
+    } else {
+      cardElem.classList.remove('can-connect');
+    }
+  });
+}
+
 window.onload = function() {
   loadCards();
   loadConnections();
