@@ -2468,10 +2468,98 @@ body {
     overflow: hidden;
   }
 
+  .fullscreen-mode {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: linear-gradient(125deg, #0a0c1f, #1a1f35, #0f2242);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  z-index: 10000;
+  padding: 3rem;
+  display: flex !important;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: flex-start;
+  gap: 2.5rem;
+  overflow-y: auto;
+  margin: 0 !important;
+  box-sizing: border-box;
+  box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.4);
+}
+
+.fullscreen-mode .flashcard {
+  position: relative !important;
+  width: calc(25% - 2rem) !important; /* 4 cards per row with gap */
+  min-width: 250px !important;
+  height: 300px !important;
+  margin: 0 !important;
+  transform: none !important;
+  transition: all 0.3s ease;
+  flex: 1 1 250px;
+  max-width: 350px;
+}
+
+.fullscreen-mode .flashcard-inner {
+  height: 100%;
+  width: 100%;
+}
+
+.exit-fullscreen-btn {
+  position: fixed;
+  top: 25px;
+  right: 25px;
+  background: rgba(20, 30, 60, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.95);
+  padding: 14px 32px;
+  border-radius: 40px;
+  cursor: pointer;
+  z-index: 10001;
+  backdrop-filter: blur(15px);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2), 0 3px 10px rgba(0, 0, 0, 0.1);
+  text-transform: uppercase;
+}
 
 
+.fullscreen-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
 
+.fullscreen-button {
+  background: linear-gradient(45deg, #6902ef, #af5fff);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 14px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
 
+.fullscreen-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(105, 2, 239, 0.3);
+  background: linear-gradient(45deg, #5b01d3, #9340e0);
+}
+
+.fullscreen-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 5px 15px rgba(105, 2, 239, 0.2);
+}
   </style>
 </head>
 <body>
@@ -2498,6 +2586,10 @@ body {
       </select>
     </div>
   </div>
+<div class="fullscreen-wrapper">
+  <button id="fullscreenBtn" class="fullscreen-button">Fullscreen View</button>
+</div>
+
   <div class="flashcard-container" id="cardContainer"></div>
   <div id="connexionCanvas"></div>
   
@@ -4028,6 +4120,90 @@ function highlightNearbyCards(draggedCard, x, y) {
       cardElem.classList.remove('can-connect');
     }
   });
+}
+document.addEventListener('DOMContentLoaded', function() {
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    if (fullscreenBtn) {
+        fullscreenBtn.addEventListener('click', toggleFullscreenView);
+    }
+});
+
+
+
+function toggleFullscreenView() {
+    const container = document.querySelector('.flashcard-container');
+    const isFullscreen = document.fullscreenElement;
+    
+    if (!isFullscreen) {
+        // Enter fullscreen
+        if (container.requestFullscreen) {
+            container.requestFullscreen();
+        } else if (container.webkitRequestFullscreen) {
+            container.webkitRequestFullscreen();
+        } else if (container.msRequestFullscreen) {
+            container.msRequestFullscreen();
+        }
+        
+        container.classList.add('fullscreen-mode');
+        
+        // Create exit button if it doesn't exist
+        if (!container.querySelector('.exit-fullscreen-btn')) {
+            const exitBtn = document.createElement('button');
+            exitBtn.className = 'exit-fullscreen-btn';
+            exitBtn.innerHTML = 'Exit Fullscreen';
+            exitBtn.onclick = toggleFullscreenView;
+            container.appendChild(exitBtn);
+        }
+
+        // Ensure all cards are visible and properly styled
+        const cards = container.querySelectorAll('.flashcard');
+        cards.forEach(card => {
+            card.style.display = 'block';
+            card.style.opacity = '1';
+            card.style.position = 'relative';
+            card.style.left = 'auto';
+            card.style.top = 'auto';
+        });
+    } else {
+        // Exit fullscreen
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+        
+        container.classList.remove('fullscreen-mode');
+        
+        // Remove exit button
+        const exitBtn = container.querySelector('.exit-fullscreen-btn');
+        if (exitBtn) exitBtn.remove();
+        
+        // Reset card styles
+        const cards = container.querySelectorAll('.flashcard');
+        cards.forEach(card => {
+            card.style.transform = '';
+        });
+    }
+}
+
+// Add fullscreen change event listener
+document.addEventListener('fullscreenchange', handleFullscreenChange);
+document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+function handleFullscreenChange() {
+    const container = document.querySelector('.flashcard-container');
+    if (!document.fullscreenElement && 
+        !document.webkitFullscreenElement && 
+        !document.mozFullscreenElement && 
+        !document.msFullscreenElement) {
+        container.classList.remove('fullscreen-mode');
+        const exitBtn = container.querySelector('.exit-fullscreen-btn');
+        if (exitBtn) exitBtn.remove();
+    }
 }
 
 window.onload = function() {
