@@ -1,0 +1,3265 @@
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Memory Palace Builder</title>
+    <style>
+:root {
+    /* Refined color palette with subtle gradients */
+    --color-canvas-default: #fff5e6; /* Cream background color */
+    --color-canvas-subtle: #fff8ee;
+    --color-border-default: #e1e4e8;
+    --color-border-muted: #ebeef2;
+    --color-neutral-muted: rgba(175, 184, 193, 0.15);
+    --color-accent-fg: #0366d6;
+    --color-accent-emphasis: #0366d6;
+    --color-danger-fg: #d73a49;
+    --color-success-fg: #22863a;
+    --color-attention-fg: #b08800;
+    --color-fg-default: #24292e;
+    --color-fg-muted: #586069;
+    --color-fg-subtle: #6a737d;
+    --color-primer-shadow-inset: inset 0 1px 0 rgba(225, 228, 232, 0.2);
+    --color-primer-shadow-focus: 0 0 0 3px rgba(3, 102, 214, 0.2);
+    --color-btn-primary-bg: #0366d6;
+    --color-btn-primary-hover-bg: #0256b9;
+    
+    /* Typography settings */
+    --font-family-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", "Roboto", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    --font-size-base: 14px;
+    --line-height-base: 1.6;
+    
+    /* Spacing variables */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+    
+    /* Premium shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+    
+    /* Border radius */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 10px;
+    
+    /* Transitions */
+    --transition-base: all 0.2s ease;
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--font-family-sans);
+}
+
+body {
+    background-color: var(--color-canvas-default);
+    color: var(--color-fg-default);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 120vh;
+}
+
+body.dark-mode {
+    --color-canvas-default: #0d1117;
+    --color-canvas-subtle: #161b22;
+    --color-border-default: #30363d;
+    --color-border-muted: #21262d;
+    --color-neutral-muted: rgba(110, 118, 129, 0.3);
+    --color-accent-fg: #58a6ff;
+    --color-accent-emphasis: #1f6feb;
+    --color-danger-fg: #f85149;
+    --color-success-fg: #2ea043;
+    --color-attention-fg: #d29922;
+    --color-fg-default: #c9d1d9;
+    --color-fg-muted: #8b949e;
+    --color-fg-subtle: #6e7681;
+    --color-btn-primary-bg: #238636;
+    --color-btn-primary-hover-bg: #2ea043;
+}
+
+header {
+    background-color: #ffffff;
+    color: var(--color-fg-default);
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid var(--color-border-default);
+    display: flex;
+    align-items: center;
+    height: 64px;
+    box-shadow: var(--shadow-sm);
+    position: absolute;
+    top: 0;
+    z-index: 100;
+    border-top-left-radius: var(--radius-lg);
+    border-top-right-radius: var(--radius-lg);
+    transform: translateY(-800%),translateX(5)
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 100px);
+    background-color: var(--color-canvas-default);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    transform: translateX(-1%)
+}
+
+.app-container {
+    display: flex;
+    flex: 2;
+    gap: var(--space-lg);
+    padding: var(--space-md);
+    background-color: #ffffff;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    
+}
+
+.sidebar {
+    width: 240px;
+    background-color: var(--color-canvas-default);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-md);
+    height: fit-content;
+}
+
+.content {
+    flex: 2;
+    background-color: var(--color-canvas-default);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+}
+
+.palace-container.split-layout {
+    flex: 1;
+    display: flex;
+    gap: var(--space-lg);
+}
+
+.left-panel {
+    width: 320px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    overflow-y: auto;
+}
+
+.right-panel {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.right-panel .palace-view {
+    margin-top: 0;
+    height: 100%;
+}
+
+.right-panel .tab-content {
+    height: calc(100% - 50px);
+    overflow-y: auto;
+}
+
+.tab-navigation {
+    display: flex;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+    background-color: var(--color-canvas-subtle);
+    border-bottom: 1px solid var(--color-border-muted);
+}
+
+.tab-item {
+    padding: var(--space-sm) var(--space-md);
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    transition: var(--transition-base);
+    font-weight: 500;
+    color: var(--color-fg-muted);
+}
+
+.tab-item:hover {
+    background-color: var(--color-neutral-muted);
+    color: var(--color-fg-default);
+}
+
+.tab-item.active {
+    background-color: var(--color-accent-fg);
+    color: white;
+}
+
+.palace-view {
+    flex: 1;
+    margin-top: var(--space-md);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-md);
+    background-color: var(--color-canvas-subtle);
+    position: relative;
+    overflow: auto;
+    box-shadow: var(--shadow-sm);
+    min-height: 600px;
+}
+
+.canvas-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
+
+.controls {
+    padding: var(--space-md);
+    background-color: var(--color-canvas-subtle);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-md);
+}
+
+.form-group {
+    margin-bottom: var(--space-md);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--space-sm);
+    font-weight: 500;
+    color: var(--color-fg-default);
+    font-size: 13px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 14px;
+    line-height: 20px;
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-md);
+    background-color: var(--color-canvas-default);
+    color: var(--color-fg-default);
+    transition: var(--transition-base);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--color-accent-fg);
+    box-shadow: var(--color-primer-shadow-focus);
+}
+
+ .btn {
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    border: 1px solid rgba(27, 31, 36, 0.15);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: var(--transition-smooth);
+    background-color: var(--color-canvas-default);
+    color: var(--color-fg-default);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn:hover {
+    background-color: var(--color-canvas-subtle);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-primary {
+    background-color: var(--color-btn-primary-bg);
+    color: #ffffff;
+    border-color: transparent;
+}
+
+.btn-primary:hover {
+    background-color: var(--color-btn-primary-hover-bg);
+    color: #ffffff;
+    box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+    background-color: var(--color-canvas-default);
+    border-color: var(--color-border-default);
+    color: var(--color-fg-default);
+}
+
+.btn-secondary:hover {
+    background-color: var(--color-canvas-subtle);
+}
+
+.btn-danger {
+    color: var(--color-danger-fg);
+    background-color: var(--color-canvas-default);
+    border-color: var(--color-border-default);
+}
+
+.btn-danger:hover {
+    color: #ffffff;
+    background-color: var(--color-danger-fg);
+}
+
+.btn-success {
+    color: #ffffff;
+    background-color: var(--color-success-fg);
+    border-color: transparent;
+}
+
+.btn-success:hover {
+    background-color: #2c974b;
+    box-shadow: var(--shadow-md);
+}
+
+.btn-warning {
+    color: var(--color-attention-fg);
+    background-color: var(--color-canvas-default);
+    border-color: var(--color-border-default);
+}
+
+.btn-warning:hover {
+    color: #ffffff;
+    background-color: var(--color-attention-fg);
+}
+
+.btn-group {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.list-group {
+    list-style: none;
+    margin-bottom: var(--space-md);
+}
+
+.list-item {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--color-border-muted);
+    cursor: pointer;
+    transition: var(--transition-base);
+    font-size: 14px;
+}
+
+.list-item:first-child {
+    border-top-left-radius: var(--radius-md);
+    border-top-right-radius: var(--radius-md);
+}
+
+.list-item:last-child {
+    border-bottom: none;
+    border-bottom-left-radius: var(--radius-md);
+    border-bottom-right-radius: var(--radius-md);
+}
+
+.list-item:hover {
+    background-color: var(--color-canvas-subtle);
+}
+
+.list-item.active {
+    background-color: var(--color-neutral-muted);
+    font-weight: 500;
+    border-left: 3px solid var(--color-accent-emphasis);
+    padding-left: 13px;
+}
+
+.card {
+    background-color: var(--color-canvas-default);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+    transition: var(--transition-base);
+}
+
+/* Removed hover effect for cards */
+ .card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+} 
+
+/* Room panel styling */
+.room-panel {
+    background-color: var(--color-canvas-default);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-md);
+    overflow: hidden;
+}
+
+.room-header {
+    background-color: var(--color-canvas-subtle);
+    padding: var(--space-sm) var(--space-md);
+    border-bottom: 1px solid var(--color-border-muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.room-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-fg-default);
+}
+
+.items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: var(--space-md);
+    padding: var(--space-md);
+}
+
+.empty-room-message, .empty-message {
+    color: var(--color-fg-muted);
+    text-align: center;
+    padding: var(--space-md);
+    font-style: italic;
+}
+
+/* Palace list item styling */
+.list-item-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.palace-name {
+    flex: 1;
+    cursor: pointer;
+}
+
+.palace-delete-btn {
+    color: var(--color-fg-muted);
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: var(--transition-base);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.palace-delete-btn:hover {
+    color: var(--color-danger-fg);
+    opacity: 1;
+    background-color: rgba(215, 58, 73, 0.1);
+}
+
+.list-item.active .palace-delete-btn {
+    opacity: 1;
+}
+
+.card-title {
+    font-weight: 600;
+    margin-bottom: var(--space-sm);
+    color: var(--color-fg-default);
+    font-size: 16px;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: var(--space-sm);
+}
+
+.tag {
+    background-color: var(--color-neutral-muted);
+    color: var(--color-fg-default);
+    padding: 0 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    line-height: 22px;
+    font-weight: 500;
+    transition: var(--transition-base);
+}
+
+.tag:hover {
+    background-color: var(--color-accent-fg);
+    color: white;
+}
+
+.toolbar {
+    display: flex;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+    flex-wrap: wrap;
+    padding: var(--space-lg);
+    background: linear-gradient(to right, var(--color-canvas-subtle), var(--color-canvas-default));
+    border-bottom: 1px solid var(--color-border-muted);
+    border-top-left-radius: var(--radius-lg);
+    border-top-right-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    position: relative;
+    z-index: 5;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltip-text {
+    visibility: hidden;
+    width: 120px;
+    background-color: var(--color-fg-default);
+    color: var(--color-canvas-default);
+    text-align: center;
+    border-radius: var(--radius-md);
+    padding: 6px 8px;
+    position: absolute;
+    z-index: 100;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    transform: translateY(10px);
+    font-size: 12px;
+    font-weight: 400;
+    box-shadow: var(--shadow-md);
+}
+
+.tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(3px);
+}
+
+.modal-content {
+    background-color: var(--color-canvas-default);
+    border-radius: var(--radius-lg);
+    width: 480px;
+    max-width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    transform: scale(0.95);
+    transition: transform 0.2s ease;
+}
+
+.modal.show .modal-content {
+    transform: scale(1);
+}
+
+.modal-header {
+    padding: var(--space-md);
+    border-bottom: 1px solid var(--color-border-muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-title {
+    font-weight: 600;
+    color: var(--color-fg-default);
+    font-size: 16px;
+}
+
+.modal-body {
+    padding: var(--space-md);
+}
+
+.modal-footer {
+    padding: var(--space-md);
+    border-top: 1px solid var(--color-border-muted);
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-sm);
+}
+
+.close {
+    font-size: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--color-fg-muted);
+    transition: var(--transition-base);
+}
+
+.close:hover {
+    color: var(--color-danger-fg);
+    transform: scale(1.1);
+}
+
+.notification {
+    position: fixed;
+    top: var(--space-md);
+    right: var(--space-md);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    background-color: var(--color-accent-fg);
+    color: white;
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    max-width: 450px;
+    display: none;
+    animation: slideIn 0.3s forwards;
+    font-size: 14px;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%) translateY(-10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0) translateY(0);
+        opacity: 1;
+    }
+}
+
+.notification.success {
+    background-color: var(--color-success-fg);
+}
+
+.notification.error {
+    background-color: var(--color-danger-fg);
+}
+
+.notification.warning {
+    background-color: var(--color-attention-fg);
+}
+
+.settings-toggle {
+    position: fixed;
+    bottom: var(--space-md);
+    right: var(--space-md);
+    background-color: var(--color-canvas-default);
+    color: var(--color-fg-default);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    z-index: 99;
+    border: 1px solid var(--color-border-default);
+    transition: var(--transition-smooth);
+}
+
+.settings-toggle:hover {
+    background-color: var(--color-canvas-subtle);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.settings-panel {
+    position: fixed;
+    bottom: 64px;
+    right: var(--space-md);
+    background-color: var(--color-canvas-default);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: var(--space-md);
+    z-index: 99;
+    width: 280px;
+    display: none;
+    border: 1px solid var(--color-border-default);
+    transform: translateY(10px);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+}
+
+.settings-panel.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.settings-panel h3 {
+    margin-bottom: var(--space-md);
+    color: var(--color-fg-default);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.help-icon {
+    display: inline-flex;
+    width: 16px;
+    height: 16px;
+    background-color: var(--color-fg-muted);
+    color: var(--color-canvas-default);
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    margin-left: 4px;
+    cursor: help;
+    transition: var(--transition-base);
+}
+
+.help-icon:hover {
+    background-color: var(--color-accent-fg);
+    transform: scale(1.1);
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: var(--color-canvas-default);
+    min-width: 180px;
+    box-shadow: var(--shadow-lg);
+    z-index: 20;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border-default);
+    margin-top: 6px;
+    transform: translateY(-5px);
+    opacity: 0;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    overflow: hidden;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.dropdown-item {
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: var(--transition-base);
+}
+
+.dropdown-item:hover {
+    background-color: var(--color-canvas-subtle);
+    padding-left: 20px;
+}
+
+.tab-container {
+    margin-bottom: var(--space-md);
+}
+
+.tab-buttons {
+    display: flex;
+    border-bottom: 1px solid var(--color-border-muted);
+    margin-bottom: var(--space-md);
+}
+
+.tab-button {
+    padding: 12px 16px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    position: relative;
+    color: var(--color-fg-muted);
+    font-size: 14px;
+    transition: var(--transition-base);
+    font-weight: 500;
+}
+
+.tab-button:hover {
+    color: var(--color-accent-fg);
+}
+
+.tab-button.active {
+    color: var(--color-accent-fg);
+    font-weight: 600;
+}
+
+.tab-button.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--color-accent-emphasis);
+    border-radius: 2px 2px 0 0;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.progress-container {
+    width: 100%;
+    height: 8px;
+    background-color: var(--color-neutral-muted);
+    border-radius: 10px;
+    margin-bottom: var(--space-md);
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: var(--color-accent-emphasis);
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: 10px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 36px;
+    height: 20px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--color-neutral-muted);
+    transition: .2s;
+    border-radius: 20px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .2s;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+input:checked + .slider {
+    background-color: var(--color-accent-emphasis);
+}
+
+input:focus + .slider {
+    box-shadow: var(--color-primer-shadow-focus);
+}
+
+input:checked + .slider:before {
+    transform: translateX(16px);
+}
+
+@media (max-width: 768px) {
+    .app-container {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: var(--space-md);
+    }
+    
+    .container {
+        padding: var(--space-md);
+    }
+    
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .btn-group {
+        flex-wrap: wrap;
+    }
+
+    .modal-content {
+        width: 95%;
+    }
+    
+    .palace-container.split-layout {
+        flex-direction: column;
+    }
+    
+    .left-panel {
+        width: 100%;
+        margin-bottom: var(--space-md);
+    }
+    
+    .right-panel {
+        width: 100%;
+    }
+}
+
+/* Additional premium styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-canvas-subtle);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-border-default);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-fg-muted);
+}
+
+/* Subtle animations for interactive elements */
+.btn, .card, .list-item, .tag {
+    will-change: transform;
+}
+
+/* Glass morphism elements for premium look */
+.notification, .settings-panel, .tooltip .tooltip-text {
+    backdrop-filter: blur(10px);
+}
+
+/* Subtle hover animations */
+.btn:hover, .settings-toggle:hover {
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}  
+.palace-view {
+    flex: 1;
+    margin-top: var(--space-md);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-md);
+    background-color: var(--color-canvas-subtle);
+    position: relative;
+    overflow: auto;
+    box-shadow: var(--shadow-sm);
+    min-height: 600px;
+    transition: var(--transition-smooth);
+}
+
+.expand-view-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 20;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    opacity: 0.8;
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    background-color: var(--color-canvas-default);
+    border: 1px solid var(--color-border-muted);
+    border-radius: 50%;
+    box-shadow: var(--shadow-sm);
+    color: var(--color-accent-fg);
+}
+
+.expand-view-btn:hover {
+    opacity: 1;
+    transform: scale(1.15);
+    box-shadow: var(--shadow-md);
+    background-color: var(--color-accent-fg);
+    color: white;
+    border-color: transparent;
+}
+
+.fullscreen-view {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+    background-color: var(--color-canvas-subtle);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.fullscreen-view .canvas-container {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: var(--transition-smooth);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    background: linear-gradient(to bottom right, var(--color-canvas-default), var(--color-canvas-subtle));
+    border: 1px solid var(--color-border-muted);
+}
+
+.fullscreen-view .expand-view-btn i {
+    transform: rotate(180deg);
+}
+
+.fullscreen-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px 15px;
+    background-color: var(--color-canvas-default);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--color-border-muted);
+}
+
+.fullscreen-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--color-fg-default);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    letter-spacing: 0.3px;
+}
+
+.fullscreen-title::before {
+    content: '🧠';
+    font-size: 22px;
+}
+.palace-view {
+        position: relative;
+    }
+
+    .expand-view-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 20;
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        opacity: 0.7;
+        transition: opacity 0.2s ease;
+    }
+
+    .expand-view-btn:hover {
+        opacity: 1;
+    }
+
+    .fullscreen-view {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 1000;
+        background-color: var(--color-canvas-subtle);
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        animation: fadeScale 0.3s ease-out;
+        backdrop-filter: blur(5px);
+        box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.05);
+    }
+    
+    @keyframes fadeScale {
+        from { opacity: 0; transform: scale(0.98); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
+    .fullscreen-controls {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .fullscreen-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--color-fg-default);
+    }
+    .exit-fullscreen-btn {
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background-color: var(--color-canvas-default);
+    border: 1px solid var(--color-border-muted);
+    border-radius: var(--radius-md);
+    padding: 10px 16px;
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    font-weight: 500;
+    color: var(--color-accent-fg);
+    box-shadow: var(--shadow-sm);
+}
+
+.exit-fullscreen-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    background-color: var(--color-accent-fg);
+    color: white;
+    border-color: transparent;
+}
+
+/* Additional premium styling for fullscreen mode */
+.fullscreen-view canvas {
+    box-shadow: var(--shadow-md);
+    border-radius: var(--radius-md);
+    background-color: var(--color-canvas-default);
+    border: 1px solid var(--color-border-muted);
+}
+
+/* Responsive adjustments for fullscreen mode */
+@media (max-width: 768px) {
+    .fullscreen-controls {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .exit-fullscreen-btn {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+
+.fullscreen-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 12px 18px;
+    background-color: var(--color-canvas-default);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--color-border-muted);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.fullscreen-controls:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+  </style>
+</head>
+<body>
+    <header>
+        <h1>Advanced Memory Palace Builder</h1>
+    </header>
+    
+    <div class="container">
+        <div class="app-container">
+            <div class="sidebar">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search memory palaces..." id="searchPalace">
+                </div>
+                
+                <h3>My Memory Palaces</h3>
+                <ul class="list-group" id="palaceList">
+                    <!-- Memory palaces will be loaded here -->
+                </ul>
+                
+                <button class="btn btn-success" id="newPalaceBtn">Create New</button>
+            </div>
+            
+            <div class="content">
+                <div class="toolbar">
+                    <button id="newPalaceToolbarBtn" class="btn">New Palace</button>
+                    <button id="saveBtn" class="btn">Save</button>
+                    <button id="addRoomBtn" class="btn">Add Room</button>
+                    <button id="addItemBtn" class="btn">Add Item</button>
+                    <button id="practiceBtn" class="btn btn-success">Practice</button>
+                    <button id="toolbarExpandBtn" class="btn btn-secondary">Expand View <i>⤢</i></button>
+                    <button id="techniqueGuideBtn" class="btn btn-secondary">Memory Techniques</button>
+                    <button id="exportBtn" class="btn btn-secondary">Export</button>
+                    <button id="importBtn" class="btn btn-secondary">Import</button>
+                </div>
+                
+                <div class="palace-container split-layout">
+                    <div class="left-panel">
+                        <div class="controls">
+                            <div class="form-group">
+                                <label for="palaceName">Memory Palace Name</label>
+                                <input type="text" class="form-control" id="palaceName" placeholder="My Memory Palace">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="palaceDescription">Description</label>
+                                <textarea class="form-control" id="palaceDescription" rows="2" placeholder="What is this memory palace for?"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="palaceTags">Tags</label>
+                                <input type="text" class="form-control" id="palaceTags" placeholder="Separate tags with commas">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="right-panel">
+                        <div class="tab-buttons">
+                            <button class="tab-button active" data-tab="visualTab">Visual</button>
+                            <button class="tab-button" data-tab="structureTab">Structure</button>
+                            <button class="tab-button" data-tab="itemsTab">Memory Items</button>
+                            <button class="tab-button" data-tab="statsTab">Statistics</button>
+                        </div>
+                        
+                        <div class="tab-content active" id="visualTab">
+                            <div class="palace-view">
+                                <button id="expandViewBtn" class="btn btn-secondary expand-view-btn" title="Expand View">
+                                    <i>⤢</i>
+                                </button>
+                                <div class="canvas-container" id="canvasContainer"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="structureTab">
+                            <div class="card">
+                                <div class="card-title">Palace Structure</div>
+                                <div id="structureTree"></div>
+                                <div class="btn-group" style="margin-top: 1rem;">
+                                    <button class="btn btn-secondary" id="addStructureBtn">Add</button>
+                                    <button class="btn btn-secondary" id="editStructureBtn">Edit</button>
+                                    <button class="btn btn-secondary" id="removeStructureBtn">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="itemsTab">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Search items..." id="searchItems">
+                            </div>
+                            <div id="itemsList"></div>
+                        </div>
+                        
+                        <div class="tab-content" id="statsTab">
+                            <div class="card">
+                                <div class="card-title">Memory Statistics</div>
+                                <div id="memoryStats"></div>
+                            </div>
+                            <div class="card">
+                                <div class="card-title">Learning Progress</div>
+                                <div class="progress-container">
+                                    <div class="progress-bar" id="learningProgress" style="width: 0%;"></div>
+                                </div>
+                                <div id="progressStats"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="roomModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add Room</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="roomName">Room Name</label>
+                    <input type="text" class="form-control" id="roomName" placeholder="Enter room name">
+                </div>
+                <div class="form-group">
+                    <label for="roomDescription">Description</label>
+                    <textarea class="form-control" id="roomDescription" rows="3" placeholder="Describe this room"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary close-btn">Cancel</button>
+                <button class="btn btn-success" id="saveRoomBtn">Save Room</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Memory Item Modal -->
+    <div class="modal" id="addItemModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add Memory Item</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="itemName">Item Name</label>
+                    <input type="text" class="form-control" id="itemName" placeholder="Chair">
+                </div>
+                <div class="form-group">
+                    <label for="itemLocation">Location</label>
+                    <select class="form-control" id="itemLocation">
+                        <!-- Room options will be loaded here -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="itemDescription">Description</label>
+                    <textarea class="form-control" id="itemDescription" rows="3" placeholder="Describe this item"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="memoryAssociation">Memory Association</label>
+                    <textarea class="form-control" id="memoryAssociation" rows="4" placeholder="What do you want to remember with this item?"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="associationTechnique">Association Technique</label>
+                    <select class="form-control" id="associationTechnique">
+                        <option value="visual">Visual Association</option>
+                        <option value="story">Story Link</option>
+                        <option value="acronym">Acronym</option>
+                        <option value="rhyme">Rhyme/Song</option>
+                        <option value="absurd">Absurd/Bizarre Image</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="itemPosition">Position in Room</label>
+                    <select class="form-control" id="itemPosition">
+                        <option value="center">Center</option>
+                        <option value="north">North Wall</option>
+                        <option value="east">East Wall</option>
+                        <option value="south">South Wall</option>
+                        <option value="west">West Wall</option>
+                        <option value="northeast">Northeast Corner</option>
+                        <option value="southeast">Southeast Corner</option>
+                        <option value="southwest">Southwest Corner</option>
+                        <option value="northwest">Northwest Corner</option>
+                        <option value="ceiling">Ceiling</option>
+                        <option value="floor">Floor</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="itemColor">Color</label>
+                    <input type="color" class="form-control" id="itemColor" value="#4caf50">
+                </div>
+                <div class="form-group">
+                    <label for="itemTags">Tags</label>
+                    <input type="text" class="form-control" id="itemTags" placeholder="Separate tags with commas">
+                </div>
+                <div class="form-group">
+                    <label for="itemPriority">Priority</label>
+                    <select class="form-control" id="itemPriority">
+                        <option value="high">High</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary close-btn">Cancel</button>
+                <button class="btn btn-success" id="saveItemBtn">Save Item</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Practice Mode Modal -->
+    <div class="modal" id="practiceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Practice Mode</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="practiceType">Practice Type</label>
+                    <select class="form-control" id="practiceType">
+                        <option value="recall">Free Recall</option>
+                        <option value="cued">Cued Recall</option>
+                        <option value="spaced">Spaced Repetition</option>
+                        <option value="reverse">Reverse Association</option>
+                        <option value="timed">Timed Challenge</option>
+                        <option value="path">Path Traversal</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="practiceRooms">Select Rooms to Practice</label>
+                    <select class="form-control" id="practiceRooms" multiple>
+                        <!-- Room options will be loaded here -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="practiceDifficulty">Difficulty</label>
+                    <select class="form-control" id="practiceDifficulty">
+                        <option value="easy">Easy</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="hard">Hard</option>
+                        <option value="expert">Expert</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="practiceTimeLimitEnabled">Enable Time Limit</label>
+                    <div style="display: flex; align-items: center;">
+                        <label class="switch">
+                            <input type="checkbox" id="practiceTimeLimitEnabled">
+                            <span class="slider"></span>
+                        </label>
+                        <div id="timeLimitContainer" style="margin-left: 1rem; display: none;">
+                            <input type="number" class="form-control" id="practiceTimeLimit" min="1" max="60" value="5" style="width: 60px; display: inline-block;"> minutes
+                        </div>
+                    </div>
+                </div>
+                <div class="card" style="margin-top: 1rem;">
+                    <div class="card-title">Practice History</div>
+                    <div id="practiceHistory"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary close-btn">Cancel</button>
+                <button class="btn btn-success" id="startPracticeBtn">Start Practice</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Practice Session Modal -->
+    <div class="modal" id="practiceSessionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="practiceSessionTitle">Practice Session</h3>
+                <div id="practiceTimer"></div>
+            </div>
+            <div class="modal-body">
+                <div id="practiceQuestion"></div>
+                <div class="form-group" id="practiceAnswerContainer">
+                    <label for="practiceAnswer">Your Answer</label>
+                    <textarea class="form-control" id="practiceAnswer" rows="3"></textarea>
+                </div>
+                <div id="practiceFeedback" style="margin-top: 1rem; display: none;"></div>
+                <div class="progress-container" style="margin-top: 1rem;">
+                    <div class="progress-bar" id="practiceProgress" style="width: 0%;"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="endPracticeBtn">End Practice</button>
+                <button class="btn" id="skipQuestionBtn">Skip</button>
+                <button class="btn btn-success" id="checkAnswerBtn">Check Answer</button>
+                <button class="btn btn-success" id="nextQuestionBtn" style="display: none;">Next Question</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Practice Results Modal -->
+    <div class="modal" id="practiceResultsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Practice Results</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-title">Performance Summary</div>
+                    <div id="practiceResultsSummary"></div>
+                </div>
+                <div class="card" style="margin-top: 1rem;">
+                    <div class="card-title">Questions</div>
+                    <div id="practiceResultsQuestions"></div>
+                </div>
+                <div class="card" style="margin-top: 1rem;">
+                    <div class="card-title">Recommendations</div>
+                    <div id="practiceRecommendations"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary close-btn">Close</button>
+                <button class="btn" id="exportResultsBtn">Export Results</button>
+                <button class="btn btn-success" id="startNewPracticeBtn">Start New Practice</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Export Modal -->
+    <div class="modal" id="exportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Export Memory Palace</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="exportFormat">Export Format</label>
+                    <select class="form-control" id="exportFormat">
+                        <option value="json">JSON</option>
+                        <option value="csv">CSV</option>
+                        <option value="markdown">Markdown</option>
+                        <option value="pdf">PDF</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="exportOptions">Export Options</label>
+                    <div>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="exportStructure" checked>
+                            <span>Structure</span>
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="exportItems" checked>
+                            <span>Memory Items</span>
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="exportStats" checked>
+                            <span>Statistics</span>
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="exportHistory" checked>
+                            <span>Practice History</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="exportData">Export Data</label>
+                    <textarea class="form-control" id="exportData" rows="10" readonly></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary close-btn">Cancel</button>
+                <button class="btn" id="copyExportBtn">Copy to Clipboard</button>
+                <button class="btn btn-success" id="downloadExportBtn">Download</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Import Modal -->
+    <div class="modal" id="importModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Import Memory Palace</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="importFormat">Import Format</label>
+                    <select class="form-control" id="importFormat">
+                        <option value="json">JSON</option>
+                        <option value="csv">CSV</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="importData">Import Data</label>
+                    <textarea class="form-control" id="importData" rows="10" placeholder="Paste your data here or drag and drop a file"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="importFile">Or upload a file</label>
+                    <input type="file" class="form-control" id="importFile">
+                </div>
+                <div id="importPreview" style="margin-top: 1rem; display: none;">
+                    <h4>Preview</h4>
+                    <div id="importPreviewContent"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary close-btn">Cancel</button>
+                <button class="btn btn-success" id="confirmImportBtn">Import</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Memory Technique Guide Modal -->
+    <div class="modal" id="techniqueGuideModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Memory Techniques Guide</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- Technique content will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary close-btn">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Settings Panel -->
+    <div class="settings-panel" id="settingsPanel">
+        <h3>Settings</h3>
+        <div class="form-group">
+            <label for="darkModeToggle">Dark Mode</label>
+            <div style="display: flex; align-items: center;">
+                <label class="switch">
+                    <input type="checkbox" id="darkModeToggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="autoSaveToggle">Auto Save</label>
+            <div style="display: flex; align-items: center;">
+                <label class="switch">
+                    <input type="checkbox" id="autoSaveToggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="notificationsToggle">Notifications</label>
+            <div style="display: flex; align-items: center;">
+                <label class="switch">
+                    <input type="checkbox" id="notificationsToggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="reminderToggle">Practice Reminders</label>
+            <div style="display: flex; align-items: center;">
+                <label class="switch">
+                    <input type="checkbox" id="reminderToggle">
+                    <span class="slider"></span>
+                </label>
+                <div id="reminderFrequencyContainer" style="margin-left: 1rem; display: none;">
+                    <select class="form-control" id="reminderFrequency">
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="defaultViewSelect">Default View</label>
+            <select class="form-control" id="defaultViewSelect">
+                <option value="2d">2D View</option>
+                <option value="3d">3D View</option>
+                <option value="list">List View</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-secondary" id="clearDataBtn">Clear All Data</button>
+        </div>
+    </div>
+    
+    <div class="settings-toggle" id="settingsToggle">
+        <i>⚙️</i>
+    </div>
+    
+    <div class="notification" id="notification"></div>
+    
+    <script type="text/javascript">
+        class MemoryPalaceApp {
+            constructor() {
+                this.palaces = [];
+                this.current_palace = null;
+                this.current_view = "2d";
+                this.dark_mode = false;
+                this.auto_save = true;
+                this.notifications_enabled = true;
+                this.practice_reminders = false;
+                this.reminder_frequency = "daily";
+                this.default_view = "2d";
+                this.is_fullscreen = false;
+        
+        this.load_data();
+        this.init_ui();
+        this.render_palace_list();
+        if (this.current_palace) {
+            this.display_palace(this.current_palace);
+        }
+    }
+        
+    init_ui() {
+    const bindings = {
+        "newPalaceBtn": this.create_new_palace.bind(this),
+        "newPalaceToolbarBtn": this.create_new_palace.bind(this),
+        "saveBtn": this.save_current_palace.bind(this),
+        "addRoomBtn": this.show_add_room_modal.bind(this),
+        "addItemBtn": this.show_add_item_modal.bind(this),
+        "practiceBtn": this.show_practice_modal.bind(this),
+        "exportBtn": this.show_export_modal.bind(this),
+        "importBtn": this.show_import_modal.bind(this),
+        "techniqueGuideBtn": this.show_technique_guide_modal.bind(this),
+        "saveRoomBtn": this.save_room.bind(this),
+        "startPracticeBtn": this.start_practice.bind(this),
+        "endPracticeBtn": this.end_practice.bind(this),
+        "skipQuestionBtn": this.skip_question.bind(this),
+        "checkAnswerBtn": this.check_answer.bind(this),
+        "nextQuestionBtn": this.next_question.bind(this),
+        "copyExportBtn": this.copy_export.bind(this),
+        "downloadExportBtn": this.download_export.bind(this),
+        "confirmImportBtn": this.confirm_import.bind(this),
+        "addStructureBtn": this.add_structure.bind(this),
+        "editStructureBtn": this.edit_structure.bind(this),
+        "removeStructureBtn": this.remove_structure.bind(this),
+        "expandViewBtn": this.toggle_fullscreen_view.bind(this),
+        "expandStructureBtn": this.toggle_fullscreen_view.bind(this),
+        "expandItemsBtn": this.toggle_fullscreen_view.bind(this),
+        "toolbarExpandBtn": this.toggle_fullscreen_from_toolbar.bind(this),
+    };
+        
+                for (const [id, handler] of Object.entries(bindings)) {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.addEventListener("click", handler);
+                    } else {
+                        console.log(`Warning: '${id}' not found`);
+                    }
+                }
+        
+                const saveItemBtns = document.querySelectorAll("#saveItemBtn");
+                saveItemBtns.forEach(btn => btn.addEventListener("click", this.save_item.bind(this)));
+        
+                const searchPalace = document.getElementById("searchPalace");
+                if (searchPalace) searchPalace.addEventListener("input", this.filter_palace_list.bind(this));
+        
+                const searchItems = document.getElementById("searchItems");
+                if (searchItems) searchItems.addEventListener("input", this.filter_items_list.bind(this));
+        
+                const practiceTimeLimitEnabled = document.getElementById("practiceTimeLimitEnabled");
+                if (practiceTimeLimitEnabled) practiceTimeLimitEnabled.addEventListener("change", this.toggle_time_limit.bind(this));
+        
+                const darkModeToggle = document.getElementById("darkModeToggle");
+                if (darkModeToggle) darkModeToggle.addEventListener("change", this.toggle_dark_mode.bind(this));
+        
+                const autoSaveToggle = document.getElementById("autoSaveToggle");
+                if (autoSaveToggle) autoSaveToggle.addEventListener("change", this.toggle_auto_save.bind(this));
+        
+                const notificationsToggle = document.getElementById("notificationsToggle");
+                if (notificationsToggle) notificationsToggle.addEventListener("change", this.toggle_notifications.bind(this));
+        
+                const reminderToggle = document.getElementById("reminderToggle");
+                if (reminderToggle) reminderToggle.addEventListener("change", this.toggle_practice_reminders.bind(this));
+        
+                const defaultViewSelect = document.getElementById("defaultViewSelect");
+                if (defaultViewSelect) defaultViewSelect.addEventListener("change", this.set_default_view.bind(this));
+        
+                document.querySelectorAll(".close, .close-btn").forEach(btn => {
+                    btn.addEventListener("click", this.hide_modal.bind(this));
+                });
+        
+                document.querySelectorAll(".tab-button").forEach(button => {
+                    button.addEventListener("click", this.switch_tab.bind(this));
+                });
+        
+                const settingsToggle = document.getElementById("settingsToggle");
+                if (settingsToggle) settingsToggle.addEventListener("click", this.toggle_settings_panel.bind(this));
+        
+                if (this.dark_mode) {
+                    document.body.classList.add("dark-mode");
+                    if (darkModeToggle) darkModeToggle.checked = true;
+                }
+                if (autoSaveToggle) autoSaveToggle.checked = this.auto_save;
+                if (notificationsToggle) notificationsToggle.checked = this.notifications_enabled;
+                if (reminderToggle) reminderToggle.checked = this.practice_reminders;
+                if (this.practice_reminders && document.getElementById("reminderFrequencyContainer")) {
+                    document.getElementById("reminderFrequencyContainer").style.display = "block";
+                    document.getElementById("reminderFrequency").value = this.reminder_frequency;
+                }
+                if (defaultViewSelect) defaultViewSelect.value = this.default_view;
+            }
+        
+            load_data() {
+                try {
+                    if (localStorage.getItem("memory_palace_settings")) {
+                        const settings = JSON.parse(localStorage.getItem("memory_palace_settings"));
+                        this.dark_mode = settings.dark_mode || false;
+                        this.auto_save = settings.auto_save !== undefined ? settings.auto_save : true;
+                        this.notifications_enabled = settings.notifications_enabled !== undefined ? settings.notifications_enabled : true;
+                        this.practice_reminders = settings.practice_reminders || false;
+                        this.reminder_frequency = settings.reminder_frequency || "daily";
+                        this.default_view = settings.default_view || "2d";
+                    }
+                    if (localStorage.getItem("memory_palaces")) {
+                        this.palaces = JSON.parse(localStorage.getItem("memory_palaces"));
+                    }
+                    if (localStorage.getItem("current_palace_id")) {
+                        const current_id = localStorage.getItem("current_palace_id");
+                        this.current_palace = this.palaces.find(palace => palace.id === current_id) || null;
+                    }
+                } catch (e) {
+                    console.log(`Error loading data: ${e}`);
+                    this.show_notification("Error loading data. Starting fresh.", "error");
+                    this.palaces = [];
+                    this.current_palace = null;
+                }
+            }
+        
+            save_data() {
+                try {
+                    const settings = {
+                        dark_mode: this.dark_mode,
+                        auto_save: this.auto_save,
+                        notifications_enabled: this.notifications_enabled,
+                        practice_reminders: this.practice_reminders,
+                        reminder_frequency: this.reminder_frequency,
+                        default_view: this.default_view
+                    };
+                    localStorage.setItem("memory_palace_settings", JSON.stringify(settings));
+                    localStorage.setItem("memory_palaces", JSON.stringify(this.palaces));
+                    if (this.current_palace) {
+                        localStorage.setItem("current_palace_id", this.current_palace.id);
+                    }
+                    if (this.notifications_enabled) {
+                        this.show_notification("Data saved", "success");
+                    }
+                } catch (e) {
+                    console.log(`Error saving data: ${e}`);
+                    this.show_notification("Error saving data", "error");
+                }
+            }
+        
+            render_palace_list() {
+                const palaceList = document.getElementById("palaceList");
+                if (!palaceList) return;
+                palaceList.innerHTML = "";
+                this.palaces.forEach(palace => {
+                     const item = document.createElement("li");
+                    item.classList.add("list-item");
+                    item.setAttribute("data-id", palace.id);
+                    
+                    // Create a container for the palace name and delete button
+                    const itemContent = document.createElement("div");
+                    itemContent.classList.add("list-item-content");
+                    
+                    // Add palace name
+                    const palaceName = document.createElement("span");
+                    palaceName.textContent = palace.name;
+                    palaceName.classList.add("palace-name");
+                    palaceName.addEventListener("click", () => this.select_palace(palace));
+                    itemContent.appendChild(palaceName);
+                    
+                    // Add delete button
+                    const deleteBtn = document.createElement("span");
+                    deleteBtn.innerHTML = "&times;";
+                    deleteBtn.classList.add("palace-delete-btn");
+                    deleteBtn.title = "Delete this memory palace";
+                    deleteBtn.addEventListener("click", (e) => {
+                        e.stopPropagation();
+                        this.delete_palace(palace.id);
+                    });
+                    itemContent.appendChild(deleteBtn);
+                    
+                    item.appendChild(itemContent);
+                    
+                    if (this.current_palace && palace.id === this.current_palace.id) {
+                        item.classList.add("active");
+                    }
+                    palaceList.appendChild(item);
+                });
+                if (this.palaces.length === 0) {
+                    const item = document.createElement("li");
+                    item.textContent = "No memory palaces yet";
+                    item.classList.add("list-item", "disabled");
+                    palaceList.appendChild(item);
+                }
+            }
+        
+            filter_palace_list(event) {
+                const searchTerm = event.target.value.toLowerCase();
+                const palaceList = document.getElementById("palaceList");
+                if (!palaceList) return;
+                palaceList.querySelectorAll("li").forEach(item => {
+                    item.style.display = item.textContent.toLowerCase().includes(searchTerm) ? "block" : "none";
+                });
+            }
+        
+            filter_items_list(event) {
+                if (!this.current_palace) return;
+                const searchTerm = event.target.value.toLowerCase();
+                const itemsList = document.getElementById("itemsList");
+                if (!itemsList) return;
+                itemsList.querySelectorAll(".item-card").forEach(card => {
+                    const name = card.querySelector(".card-title").textContent.toLowerCase();
+                    const desc = card.querySelector("p").textContent.toLowerCase();
+                    card.style.display = (name.includes(searchTerm) || desc.includes(searchTerm)) ? "block" : "none";
+                });
+            }
+        
+            create_new_palace(event = null) {
+                const newId = `palace_${Math.floor(Date.now() / 1000)}`;
+                const newPalace = {
+                    id: newId,
+                    name: "New Memory Palace",
+                    description: "",
+                    tags: [],
+                    rooms: [],
+                    items: [],
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString(),
+                    practice_history: []
+                };
+                this.palaces.push(newPalace);
+                this.current_palace = newPalace;
+                this.save_data();
+                this.render_palace_list();
+                this.display_palace(newPalace);
+                this.show_notification("New palace created", "success");
+            }
+        
+            show_technique_guide_modal(event = null) {
+                const modal = document.getElementById("techniqueGuideModal");
+                if (!modal) return;
+                const modalBody = modal.querySelector(".modal-body");
+                modalBody.innerHTML = `
+                    <h3>Method of Loci</h3>
+                    <p><strong>Description:</strong> Associate items with locations in a familiar place.</p>
+                    <p><strong>Example:</strong> Milk by the door, bread on the couch.</p>
+                    <p><strong>Best For:</strong> Lists, speeches.</p>
+                `;
+                modal.style.display = "flex";
+            }
+        
+            display_palace(palace) {
+                this.current_palace = palace;
+                const palaceName = document.getElementById("palaceName");
+                if (palaceName) palaceName.value = palace.name || "";
+                const palaceDescription = document.getElementById("palaceDescription");
+                if (palaceDescription) palaceDescription.value = palace.description || "";
+                const palaceTags = document.getElementById("palaceTags");
+                if (palaceTags) palaceTags.value = palace.tags ? palace.tags.join(", ") : "";
+                const canvasContainer = document.getElementById("canvasContainer");
+                if (canvasContainer) {
+                    canvasContainer.innerHTML = "";
+                    if (this.current_view === "2d") {
+                        this.render_2d_view();
+                    } else if (this.current_view === "3d") {
+                        this.render_3d_view();
+                    } else {
+                        this.render_list_view();
+                    }
+                }
+                this.render_structure_tree();
+                this.render_items_list();
+            }
+        
+            render_structure_tree() {
+                if (!this.current_palace) return;
+                const tree = document.getElementById("structureTree");
+                if (!tree) return;
+                tree.innerHTML = "";
+                this.current_palace.rooms.forEach(room => {
+                    const roomDiv = document.createElement("div");
+                    roomDiv.classList.add("tree-item");
+                    roomDiv.textContent = `📍 ${room.name}`;
+                    roomDiv.dataset.roomId = room.id;
+                    
+                    // Make room selectable
+                    roomDiv.addEventListener('click', (e) => {
+                        // Remove selection from all items
+                        document.querySelectorAll('#structureTree .tree-item').forEach(item => {
+                            item.classList.remove('selected');
+                        });
+                        // Add selection to clicked item
+                        roomDiv.classList.add('selected');
+                        e.stopPropagation();
+                    });
+                    
+                    const itemsDiv = document.createElement("div");
+                    itemsDiv.classList.add("tree-items");
+                    this.current_palace.items.forEach(item => {
+                        if (item.room_id === room.id) {
+                            const itemDiv = document.createElement("div");
+                            itemDiv.classList.add("tree-item");
+                            itemDiv.textContent = `📦 ${item.name}`;
+                            itemsDiv.appendChild(itemDiv);
+                        }
+                    });
+                    roomDiv.appendChild(itemsDiv);
+                    tree.appendChild(roomDiv);
+                });
+                
+                // Add some CSS for selected items
+                const style = document.createElement('style');
+                if (!document.querySelector('style#tree-styles')) {
+                    style.id = 'tree-styles';
+                    style.textContent = `
+                        .tree-item {
+                            padding: 8px;
+                            cursor: pointer;
+                            border-radius: var(--radius-sm);
+                            margin-bottom: 4px;
+                        }
+                        .tree-item:hover {
+                            background-color: var(--color-neutral-muted);
+                        }
+                        .tree-item.selected {
+                            background-color: var(--color-accent-fg);
+                            color: white;
+                        }
+                        .tree-items {
+                            margin-left: 20px;
+                            margin-top: 4px;
+                        }
+                    `;
+                    document.head.appendChild(style);
+                }
+            }
+        
+            render_items_list() {
+                if (!this.current_palace) return;
+                const itemsContainer = document.getElementById("itemsList");
+                if (!itemsContainer) return;
+                itemsContainer.innerHTML = "";
+                
+                // Group items by room
+                const itemsByRoom = {};
+                this.current_palace.rooms.forEach(room => {
+                    itemsByRoom[room.id] = {
+                        room: room,
+                        items: []
+                    };
+                });
+                
+                this.current_palace.items.forEach(item => {
+                    if (item.room_id && itemsByRoom[item.room_id]) {
+                        itemsByRoom[item.room_id].items.push(item);
+                    }
+                });
+                
+                // Create room panels with their items
+                Object.values(itemsByRoom).forEach(roomData => {
+                    const roomPanel = document.createElement("div");
+                    roomPanel.classList.add("room-panel");
+                    
+                    // Room header
+                    const roomHeader = document.createElement("div");
+                    roomHeader.classList.add("room-header");
+                    roomHeader.innerHTML = `<h3>${roomData.room.name}</h3>`;
+                    roomPanel.appendChild(roomHeader);
+                    
+                    // Items container with grid layout
+                    const itemsGrid = document.createElement("div");
+                    itemsGrid.classList.add("items-grid");
+                    
+                    if (roomData.items.length === 0) {
+                        const emptyMessage = document.createElement("p");
+                        emptyMessage.classList.add("empty-room-message");
+                        emptyMessage.textContent = "No items in this room";
+                        itemsGrid.appendChild(emptyMessage);
+                    } else {
+                        roomData.items.forEach(item => {
+                            const card = document.createElement("div");
+                            card.classList.add("card", "item-card");
+                            card.innerHTML = `
+                                <div class="card-title">${item.name}</div>
+                                <p>${item.description}</p>
+                                <div class="card-footer">
+                                    <button class="btn btn-sm" onclick="window.app.edit_item('${item.id}')">Edit</button>
+                                    <button class="btn btn-sm btn-danger" onclick="window.app.delete_item('${item.id}')">Delete</button>
+                                </div>
+                            `;
+                            itemsGrid.appendChild(card);
+                        });
+                    }
+                    
+                    roomPanel.appendChild(itemsGrid);
+                    itemsContainer.appendChild(roomPanel);
+                });
+                
+                // Add CSS for room panels if no items exist
+                if (Object.keys(itemsByRoom).length === 0) {
+                    const emptyMessage = document.createElement("p");
+                    emptyMessage.classList.add("empty-message");
+                    emptyMessage.textContent = "No rooms or items in this memory palace";
+                    itemsContainer.appendChild(emptyMessage);
+                }
+            }
+
+        toggle_fullscreen_from_toolbar(event = null) {
+                // Find which tab is currently active
+                const activeTab = document.querySelector('.tab-content.active');
+                if (!activeTab) return;
+                
+                // Find the expand button in the active tab
+                const expandBtn = activeTab.querySelector('.expand-view-btn');
+                if (expandBtn) {
+                    // Trigger the click on that button
+                    expandBtn.click();
+                } else {
+                    // If no expand button in the active tab, show notification
+                    this.show_notification("Fullscreen not available for this view", "warning");
+                }
+            }
+            
+    toggle_fullscreen_view(event = null) {
+    // Get the button that was clicked
+    const clickedButton = event ? event.currentTarget : document.getElementById('expandViewBtn');
+    
+    // Find the closest palace-view container
+    const palaceView = clickedButton.closest('.palace-view');
+    if (!palaceView && !this.is_fullscreen) return;
+    
+    if (!this.is_fullscreen) {
+        // Save current position to restore later
+        this.original_parent = palaceView.parentNode;
+        this.original_position = Array.from(this.original_parent.children).indexOf(palaceView);
+        
+        // Get the content container (could be canvas or other content)
+        const contentContainer = palaceView.querySelector('.canvas-container') || 
+                                palaceView.querySelector('.card') || 
+                                palaceView.querySelector('#itemsList');
+        if (!contentContainer) return;
+        
+        this.original_content = contentContainer;
+        
+        // Create fullscreen container
+        const fullscreenView = document.createElement('div');
+        fullscreenView.className = 'fullscreen-view';
+        
+        // Create controls for fullscreen mode
+        const controls = document.createElement('div');
+        controls.className = 'fullscreen-controls';
+        
+        const title = document.createElement('div');
+        title.className = 'fullscreen-title';
+        title.textContent = this.current_palace ? this.current_palace.name : 'Memory Palace Visualization';
+        
+        // Create exit fullscreen button with improved styling
+        const exitButton = document.createElement('button');
+        exitButton.className = 'btn btn-secondary exit-fullscreen-btn';
+        exitButton.innerHTML = 'Exit Fullscreen <i>⤢</i>';
+        exitButton.addEventListener('click', this.toggle_fullscreen_view.bind(this));
+        
+        controls.appendChild(title);
+        controls.appendChild(exitButton);
+        
+        // Add elements to fullscreen view
+        fullscreenView.appendChild(controls);
+        
+        // Add a slight delay before moving content to allow for smooth transition
+        setTimeout(() => {
+            fullscreenView.appendChild(contentContainer);
+            
+            // Re-render the view with more space if it's the canvas view
+            if (contentContainer.id === 'canvasContainer' && this.current_view === "2d") {
+                this.render_2d_view();
+            } else if (contentContainer.id === 'canvasContainer' && this.current_view === "3d") {
+                this.render_3d_view();
+            }
+        }, 50);
+        
+        // Add to body
+        document.body.appendChild(fullscreenView);
+        
+        this.is_fullscreen = true;
+    } else {
+        // Get the fullscreen view
+        const fullscreenView = document.querySelector('.fullscreen-view');
+        if (!fullscreenView) return;
+        
+        // Get the content container
+        const fsContentContainer = fullscreenView.querySelector('.canvas-container') || 
+                                  fullscreenView.querySelector('.card') || 
+                                  fullscreenView.querySelector('#itemsList');
+        
+        if (!fsContentContainer) return;
+        
+        // Find the original palace view to restore content to
+        const palaceViews = document.querySelectorAll('.palace-view');
+        let targetPalaceView = null;
+        
+        // Find the appropriate palace view based on the active tab
+        const activeTab = document.querySelector('.tab-content.active');
+        if (activeTab) {
+            targetPalaceView = activeTab.querySelector('.palace-view');
+        }
+        
+        if (!targetPalaceView && this.original_parent) {
+            // Try to find the original palace view
+            const children = Array.from(this.original_parent.children);
+            if (this.original_position >= 0 && this.original_position < children.length) {
+                targetPalaceView = children[this.original_position];
+            }
+        }
+        
+        if (!targetPalaceView && palaceViews.length > 0) {
+            // Fallback to the first palace view
+            targetPalaceView = palaceViews[0];
+        }
+        
+        if (targetPalaceView) {
+            // Add a fade-out animation class
+            fullscreenView.style.opacity = '0';
+            fullscreenView.style.transition = 'opacity 0.3s ease-out';
+            
+            // Wait for animation to complete before removing
+            setTimeout(() => {
+                // Restore original structure
+                targetPalaceView.appendChild(fsContentContainer);
+                
+                // Recreate the expand button if needed
+                if (!targetPalaceView.querySelector('.expand-view-btn')) {
+                    const expandBtn = document.createElement('button');
+                    expandBtn.className = 'btn btn-secondary expand-view-btn';
+                    expandBtn.title = 'Expand View';
+                    expandBtn.innerHTML = '<i>⤢</i>';
+                    expandBtn.addEventListener('click', this.toggle_fullscreen_view.bind(this));
+                    targetPalaceView.appendChild(expandBtn);
+                }
+                
+                // Remove fullscreen view
+                document.body.removeChild(fullscreenView);
+                
+                this.is_fullscreen = false;
+                
+                // Re-render the view if it's the canvas view
+                if (fsContentContainer.id === 'canvasContainer' && this.current_view === "2d") {
+                    this.render_2d_view();
+                } else if (fsContentContainer.id === 'canvasContainer' && this.current_view === "3d") {
+                    this.render_3d_view();
+                }
+            }, 300);
+        }
+    }
+}
+
+    render_2d_view() {
+        const canvasContainer = document.getElementById("canvasContainer");
+        if (!canvasContainer) return;
+        canvasContainer.innerHTML = "";
+        
+        // Adjust canvas size based on fullscreen state
+        const canvasWidth = this.is_fullscreen ? 
+            window.innerWidth - 60 : // 60px for padding
+            (canvasContainer.clientWidth || 800);
+        const canvasHeight = this.is_fullscreen ?
+            window.innerHeight - 100 : // 100px for controls and padding
+            Math.max(600, 150 * Math.ceil((this.current_palace?.rooms?.length || 0) / 3));
+            
+        const canvas = document.createElement("canvas");
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
+        canvas.style.borderRadius = "var(--radius-md)";
+        canvas.style.transition = "var(--transition-smooth)";
+        
+        // Add a subtle shadow to the canvas
+        if (this.is_fullscreen) {
+            canvas.style.boxShadow = "var(--shadow-lg)";
+        } else {
+            canvas.style.boxShadow = "var(--shadow-md)";
+        }
+        
+        canvasContainer.appendChild(canvas);
+        const ctx = canvas.getContext("2d");
+        
+        // Store canvas reference for dragging operations
+        this.canvas = canvas;
+        this.ctx = ctx;
+        this.canvasWidth = canvasWidth;
+        this.canvasHeight = canvasHeight;
+        
+        // Initialize dragging state
+        this.isDragging = false;
+        this.draggedItem = null;
+        this.dragStartX = 0;
+        this.dragStartY = 0;
+        this.itemPositions = {}; // Store item positions for dragging
+                
+        // Clear the canvas with background color and add a subtle gradient
+        const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--color-canvas-subtle');
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+        
+        // Add subtle grid pattern for better visual orientation
+        ctx.strokeStyle = this.dark_mode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)';
+        ctx.lineWidth = 1;
+        
+        // Draw vertical grid lines
+        for (let x = 0; x < canvasWidth; x += 50) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, canvasHeight);
+            ctx.stroke();
+        }
+        
+        // Draw horizontal grid lines
+        for (let y = 0; y < canvasHeight; y += 50) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(canvasWidth, y);
+            ctx.stroke();
+        }
+
+        if (!this.current_palace || !this.current_palace.rooms.length) {
+            ctx.font = "18px var(--font-family-sans)";
+            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-fg-default');
+            ctx.textAlign = "center";
+            ctx.fillText("No rooms to visualize. Add rooms to your memory palace.", canvasWidth/2, canvasHeight/2);
+            return;
+        }
+
+        const roomWidth = this.is_fullscreen ? 220 : 180;
+        const roomHeight = this.is_fullscreen ? 180 : 150;
+        const margin = this.is_fullscreen ? 40 : 30;
+        let x = margin;
+        let y = margin;
+        const maxPerRow = Math.floor((canvasWidth - margin) / (roomWidth + margin));
+        
+        // Store room layout information for hit detection
+        this.roomLayout = [];
+        
+        // Draw each room
+        this.current_palace.rooms.forEach((room, i) => {
+            // Calculate position for the room
+            x = margin + (i % maxPerRow) * (roomWidth + margin);
+            y = margin + Math.floor(i / maxPerRow) * (roomHeight + margin);
+            
+            // Store room layout information
+            this.roomLayout.push({
+                room: room,
+                x: x,
+                y: y,
+                width: roomWidth,
+                height: roomHeight
+            });
+            
+            // Draw room background
+            ctx.fillStyle = "#2ea44f";
+            ctx.fillRect(x, y, roomWidth, roomHeight);
+            
+            // Draw room name
+            ctx.fillStyle = "white";
+            ctx.font = "14px Arial";
+            ctx.fillText(room.name, x + 10, y + 25);
+            
+            // Draw room border
+            ctx.strokeStyle = "#1b7f3b";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x, y, roomWidth, roomHeight);
+
+            // Define positions for items within the room
+            const positionStart = {
+                "northwest": [x + 5, y + 40],
+                "north": [x + roomWidth / 3 + 5, y + 40],
+                "northeast": [x + 2 * roomWidth / 3 + 5, y + 40],
+                "west": [x + 5, y + 70],
+                "center": [x + roomWidth / 3 + 5, y + 70],
+                "east": [x + 2 * roomWidth / 3 + 5, y + 70],
+                "southwest": [x + 5, y + 100],
+                "south": [x + roomWidth / 3 + 5, y + 100],
+                "southeast": [x + 2 * roomWidth / 3 + 5, y + 100],
+                "ceiling": [x + 5, y + 130],
+                "floor": [x + roomWidth / 2, y + 130],
+            };
+
+            // Group items by position
+            const itemsByPosition = {};
+            this.current_palace.items.forEach(item => {
+                if (item.room_id === room.id) {
+                    const pos = item.position || "center";
+                    if (!itemsByPosition[pos]) itemsByPosition[pos] = [];
+                    itemsByPosition[pos].push(item);
+                }
+            });
+
+            // Draw items in each position
+            ctx.font = "10px Arial";
+            ctx.fillStyle = "white";
+            
+            // First, draw items with exact coordinates
+            this.current_palace.items.forEach(item => {
+                if (item.room_id === room.id && item.exact_x !== undefined && item.exact_y !== undefined) {
+                    // Calculate absolute position from relative coordinates
+                    const itemX = x + item.exact_x;
+                    const itemY = y + item.exact_y;
+                    
+                    // Store item position for dragging
+                    this.itemPositions[item.id] = {
+                        x: itemX,
+                        y: itemY,
+                        room: room,
+                        position: item.position,
+                        item: item
+                    };
+                    
+                    // Draw item indicator
+                    ctx.fillStyle = item.color || "#ffffff";
+                    ctx.beginPath();
+                    ctx.arc(itemX, itemY, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Draw item name
+                    ctx.fillStyle = "white";
+                    ctx.fillText(item.name, itemX + 5, itemY + 4);
+                }
+            });
+            
+            // Then draw items without exact coordinates using the old method
+            for (const [pos, start] of Object.entries(positionStart)) {
+                if (itemsByPosition[pos]) {
+                    const [posX, posY] = start;
+                    // Filter out items that have exact coordinates
+                    const itemsWithoutExactCoords = itemsByPosition[pos].filter(item => 
+                        item.exact_x === undefined || item.exact_y === undefined
+                    );
+                    
+                    itemsWithoutExactCoords.slice(0, 3).forEach((item, j) => {
+                        // Store item position for dragging
+                        const itemX = posX - 5;
+                        const itemY = posY + j * 12 - 4;
+                        this.itemPositions[item.id] = {
+                            x: itemX,
+                            y: itemY,
+                            room: room,
+                            position: pos,
+                            item: item
+                        };
+                        
+                        // Draw item indicator
+                        ctx.fillStyle = item.color || "#ffffff";
+                        ctx.beginPath();
+                        ctx.arc(itemX, itemY, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Draw item name
+                        ctx.fillStyle = "white";
+                        ctx.fillText(item.name, posX, posY + j * 12);
+                    });
+                    if (itemsWithoutExactCoords.length > 3) {
+                        ctx.fillText("...", posX, posY + 36);
+                    }
+                }
+            }
+        });
+
+        // Add event listeners for canvas interactions
+        canvas.addEventListener("click", this.handle_canvas_click.bind(this));
+        canvas.addEventListener("mousedown", this.handle_mouse_down.bind(this));
+        canvas.addEventListener("mousemove", this.handle_mouse_move.bind(this));
+        canvas.addEventListener("mouseup", this.handle_mouse_up.bind(this));
+        canvas.style.cursor = "default";
+    }
+        
+            handle_canvas_click(event) {
+                // Skip if we just finished dragging an item
+                if (this.justDragged) {
+                    this.justDragged = false;
+                    return;
+                }
+                
+                if (!this.current_palace || !this.current_palace.rooms.length) return;
+                
+                const canvas = event.target;
+                const rect = canvas.getBoundingClientRect();
+                // Calculate the scaling factor for responsive canvas
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                
+                // Get the actual position in the canvas coordinates
+                const x = (event.clientX - rect.left) * scaleX;
+                const y = (event.clientY - rect.top) * scaleY;
+                
+                // Check if we clicked on an item
+                let clickedOnItem = false;
+                for (const itemId in this.itemPositions) {
+                    const itemPos = this.itemPositions[itemId];
+                    const distance = Math.sqrt(Math.pow(x - itemPos.x, 2) + Math.pow(y - itemPos.y, 2));
+                    
+                    // If clicked within 10px of an item center, consider it a click on the item
+                    if (distance <= 10) {
+                        clickedOnItem = true;
+                        
+                        // Check if this is a double click on the item
+                        const now = new Date().getTime();
+                        const lastClickTime = this.lastItemClickTime || 0;
+                        const lastClickedItem = this.lastClickedItem || null;
+                        
+                        // Store current click info for potential double-click detection
+                        this.lastItemClickTime = now;
+                        this.lastClickedItem = itemId;
+                        
+                        // If double-clicked on the same item within 300ms, edit it
+                        if (lastClickedItem === itemId && now - lastClickTime < 300) {
+                            this.edit_item(itemId);
+                        }
+                        
+                        break;
+                    }
+                }
+                
+                // If not clicked on an item, check if clicked on a room
+                if (!clickedOnItem) {
+                    for (const roomLayout of this.roomLayout) {
+                        if (x >= roomLayout.x && x <= roomLayout.x + roomLayout.width && 
+                            y >= roomLayout.y && y <= roomLayout.y + roomLayout.height) {
+                            // Check if this is a double click on the room
+                            const now = new Date().getTime();
+                            const lastClickTime = this.lastRoomClickTime || 0;
+                            const lastClickedRoom = this.lastClickedRoom || null;
+                            
+                            // Store current click info for potential double-click detection
+                            this.lastRoomClickTime = now;
+                            this.lastClickedRoom = roomLayout.room.id;
+                            
+                            // If double-clicked on the same room within 300ms, edit it
+                            if (lastClickedRoom === roomLayout.room.id && now - lastClickTime < 300) {
+                                this.edit_room(roomLayout.room);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        
+            handle_mouse_down(event) {
+                if (!this.current_palace || !this.current_palace.rooms.length) return;
+                
+                const rect = this.canvas.getBoundingClientRect();
+                const scaleX = this.canvas.width / rect.width;
+                const scaleY = this.canvas.height / rect.height;
+                
+                const x = (event.clientX - rect.left) * scaleX;
+                const y = (event.clientY - rect.top) * scaleY;
+                
+                // Check if we're clicking on an item
+                for (const itemId in this.itemPositions) {
+                    const itemPos = this.itemPositions[itemId];
+                    const distance = Math.sqrt(Math.pow(x - itemPos.x, 2) + Math.pow(y - itemPos.y, 2));
+                    
+                    // If clicked within 10px of an item center, start dragging
+                    if (distance <= 10) {
+                        this.isDragging = true;
+                        this.draggedItem = itemId;
+                        this.dragStartX = x;
+                        this.dragStartY = y;
+                        this.canvas.style.cursor = "grabbing";
+                        break;
+                    }
+                }
+            }
+            
+            handle_mouse_move(event) {
+                if (!this.isDragging || !this.draggedItem) return;
+                
+                const rect = this.canvas.getBoundingClientRect();
+                const scaleX = this.canvas.width / rect.width;
+                const scaleY = this.canvas.height / rect.height;
+                
+                const x = (event.clientX - rect.left) * scaleX;
+                const y = (event.clientY - rect.top) * scaleY;
+                
+                // Clear and redraw the canvas
+                this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+                this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-canvas-subtle');
+                this.ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
+                
+                // Redraw rooms and items
+                this.roomLayout.forEach(roomLayout => {
+                    const { room, x: roomX, y: roomY, width: roomWidth, height: roomHeight } = roomLayout;
+                    
+                    // Draw room background
+                    this.ctx.fillStyle = "#2ea44f";
+                    this.ctx.fillRect(roomX, roomY, roomWidth, roomHeight);
+                    
+                    // Draw room name
+                    this.ctx.fillStyle = "white";
+                    this.ctx.font = "14px Arial";
+                    this.ctx.fillText(room.name, roomX + 10, roomY + 25);
+                    
+                    // Draw room border
+                    this.ctx.strokeStyle = "#1b7f3b";
+                    this.ctx.lineWidth = 2;
+                    this.ctx.strokeRect(roomX, roomY, roomWidth, roomHeight);
+                });
+                
+                // Redraw all items except the dragged one
+                for (const itemId in this.itemPositions) {
+                    if (itemId === this.draggedItem) continue;
+                    
+                    const itemPos = this.itemPositions[itemId];
+                    const item = itemPos.item;
+                    
+                    // Draw item indicator
+                    this.ctx.fillStyle = item.color || "#ffffff";
+                    this.ctx.beginPath();
+                    this.ctx.arc(itemPos.x, itemPos.y, 3, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    
+                    // Draw item name
+                    this.ctx.fillStyle = "white";
+                    this.ctx.font = "10px Arial";
+                    this.ctx.fillText(item.name, itemPos.x + 5, itemPos.y + 4);
+                }
+                
+                // Draw the dragged item at the new position
+                const draggedItemPos = this.itemPositions[this.draggedItem];
+                const draggedItem = draggedItemPos.item;
+                
+                this.ctx.fillStyle = draggedItem.color || "#ffffff";
+                this.ctx.beginPath();
+                this.ctx.arc(x, y, 5, 0, Math.PI * 2); // Make dragged item slightly larger
+                this.ctx.fill();
+                
+                this.ctx.fillStyle = "white";
+                this.ctx.font = "10px Arial";
+                this.ctx.fillText(draggedItem.name, x + 5, y + 4);
+            }
+            
+            handle_mouse_up(event) {
+                if (!this.isDragging || !this.draggedItem) {
+                    this.isDragging = false;
+                    this.draggedItem = null;
+                    this.canvas.style.cursor = "default";
+                    return;
+                }
+                
+                const rect = this.canvas.getBoundingClientRect();
+                const scaleX = this.canvas.width / rect.width;
+                const scaleY = this.canvas.height / rect.height;
+                
+                const x = (event.clientX - rect.left) * scaleX;
+                const y = (event.clientY - rect.top) * scaleY;
+                
+                // Find which room the item was dropped in
+                let targetRoom = null;
+                let targetPosition = "center"; // Default position
+                
+                for (const roomLayout of this.roomLayout) {
+                    if (x >= roomLayout.x && x <= roomLayout.x + roomLayout.width && 
+                        y >= roomLayout.y && y <= roomLayout.y + roomLayout.height) {
+                        targetRoom = roomLayout.room;
+                        
+                        // Determine position within the room based on where the item was dropped
+                        const roomX = roomLayout.x;
+                        const roomY = roomLayout.y;
+                        const roomWidth = roomLayout.width;
+                        const roomHeight = roomLayout.height;
+                        
+                        // Divide room into a 3x3 grid plus ceiling and floor
+                        const thirdWidth = roomWidth / 3;
+                        const thirdHeight = (roomHeight - 40) / 3; // Subtract 40px for the header
+                        
+                        const relX = x - roomX;
+                        const relY = y - roomY - 30; // Subtract 30px for the header
+                        
+                        if (relY < 0) {
+                            // In the header area, do nothing
+                        } else if (relY < thirdHeight) {
+                            // Top row
+                            if (relX < thirdWidth) targetPosition = "northwest";
+                            else if (relX < 2 * thirdWidth) targetPosition = "north";
+                            else targetPosition = "northeast";
+                        } else if (relY < 2 * thirdHeight) {
+                            // Middle row
+                            if (relX < thirdWidth) targetPosition = "west";
+                            else if (relX < 2 * thirdWidth) targetPosition = "center";
+                            else targetPosition = "east";
+                        } else if (relY < 3 * thirdHeight) {
+                            // Bottom row
+                            if (relX < thirdWidth) targetPosition = "southwest";
+                            else if (relX < 2 * thirdWidth) targetPosition = "south";
+                            else targetPosition = "southeast";
+                        } else {
+                            // Floor/ceiling area
+                            if (relX < roomWidth / 2) targetPosition = "ceiling";
+                            else targetPosition = "floor";
+                        }
+                        
+                        break;
+                    }
+                }
+                
+                if (targetRoom) {
+                    // Update the item's room and position
+                    const draggedItem = this.itemPositions[this.draggedItem].item;
+                    draggedItem.room_id = targetRoom.id;
+                    
+                    // Find the current room layout to get its coordinates
+                    const currentRoomLayout = this.roomLayout.find(layout => layout.room.id === targetRoom.id);
+                    
+                    // Store exact coordinates instead of predefined positions
+                    const roomX = currentRoomLayout.x;
+                    const roomY = currentRoomLayout.y;
+                    const relX = x - roomX;
+                    const relY = y - roomY;
+                    
+                    // Save both the position name and exact coordinates
+                    draggedItem.position = targetPosition;
+                    draggedItem.exact_x = relX;
+                    draggedItem.exact_y = relY;
+                    draggedItem.updated_at = new Date().toISOString();
+                    
+                    // Save the changes
+                    this.save_data();
+                    this.show_notification(`Moved "${draggedItem.name}" to exact position in ${targetRoom.name}`, "success");
+                }
+                
+                // Reset dragging state
+                this.isDragging = false;
+                this.draggedItem = null;
+                this.canvas.style.cursor = "default";
+                
+                // Set flag to prevent edit panel from showing on mouseup after drag
+                this.justDragged = true;
+                
+                // Use setTimeout to reset the justDragged flag after the current event cycle
+                // This ensures the click handler won't trigger the edit panel
+                setTimeout(() => {
+                    this.justDragged = false;
+                }, 10);
+                
+                // Redraw the view with updated positions
+                this.render_2d_view();
+            }
+            
+            edit_room(room) {
+                const modal = document.getElementById("roomModal");
+                if (!modal) return;
+                modal.querySelector(".modal-title").textContent = "Edit Room";
+                document.getElementById("roomName").value = room.name;
+                document.getElementById("roomDescription").value = room.description || "";
+                modal.setAttribute("data-room-id", room.id);
+                modal.style.display = "flex";
+            }
+        
+            show_notification(message, type = "info") {
+                const notification = document.getElementById("notification");
+                if (!notification) return;
+                notification.innerHTML = message;
+                notification.className = `notification ${type}`;
+                notification.style.display = "block";
+                setTimeout(() => notification.style.display = "none", 3000);
+            }
+        
+            hide_modal(event = null) {
+                document.querySelectorAll(".modal").forEach(modal => modal.style.display = "none");
+            }
+        
+            toggle_settings_panel(event = null) {
+                const panel = document.getElementById("settingsPanel");
+                if (!panel) return;
+                panel.style.display = panel.style.display === "none" ? "block" : "none";
+            }
+        
+            toggle_dark_mode(event) {
+                this.dark_mode = event.target.checked;
+                document.body.classList.toggle("dark-mode", this.dark_mode);
+                this.save_data();
+            }
+        
+            toggle_auto_save(event) {
+                this.auto_save = event.target.checked;
+                this.save_data();
+            }
+        
+            toggle_notifications(event) {
+                this.notifications_enabled = event.target.checked;
+                this.save_data();
+            }
+        
+            toggle_practice_reminders(event) {
+                this.practice_reminders = event.target.checked;
+                const container = document.getElementById("reminderFrequencyContainer");
+                if (container) container.style.display = this.practice_reminders ? "block" : "none";
+                this.save_data();
+            }
+        
+            set_default_view(event) {
+                this.default_view = event.target.value;
+                this.save_data();
+            }
+        
+            confirm_clear_data(event) {
+                if (confirm("Clear all data? This cannot be undone.")) {
+                    localStorage.clear();
+                    this.palaces = [];
+                    this.current_palace = null;
+                    this.render_palace_list();
+                    this.show_notification("All data cleared", "success");
+                }
+            }
+        
+            populate_room_dropdown() {
+                if (!this.current_palace) return;
+                const roomSelect = document.getElementById("itemLocation");
+                if (!roomSelect) return;
+                roomSelect.innerHTML = "<option value=''>Select a room</option>";
+                this.current_palace.rooms.forEach(room => {
+                    const option = document.createElement("option");
+                    option.value = room.id;
+                    option.textContent = room.name;
+                    roomSelect.appendChild(option);
+                });
+            }
+        
+            show_add_room_modal(event = null) {
+                const modal = document.getElementById("roomModal");
+                if (!modal) return;
+                modal.removeAttribute("data-room-id");
+                document.getElementById("roomName").value = "";
+                document.getElementById("roomDescription").value = "";
+                modal.style.display = "flex";
+            }
+        
+            show_add_item_modal(event = null) {
+                const modal = document.getElementById("addItemModal");
+                if (!modal) {
+                    console.log("Error: 'addItemModal' not found");
+                    return;
+                }
+                this.populate_room_dropdown();
+                document.getElementById("itemName").value = "";
+                document.getElementById("itemDescription").value = "";
+                document.getElementById("itemLocation").value = "";
+                document.getElementById("itemPosition").value = "center";
+                modal.removeAttribute("data-item-id");
+                modal.style.display = "flex";
+                this.show_notification("Add Item modal opened", "info");
+            }
+        
+            save_room(event) {
+                if (!this.current_palace) return;
+                const roomName = document.getElementById("roomName").value.trim();
+                const roomDesc = document.getElementById("roomDescription").value.trim();
+                const roomModal = document.getElementById("roomModal");
+                const roomId = roomModal.getAttribute("data-room-id");
+                if (!roomName) {
+                    this.show_notification("Room name required", "error");
+                    return;
+                }
+                if (roomId) {
+                    const room = this.current_palace.rooms.find(r => r.id === roomId);
+                    if (room) {
+                        room.name = roomName;
+                        room.description = roomDesc;
+                        room.updated_at = new Date().toISOString();
+                    }
+                } else {
+                    const newRoom = {
+                        id: `room_${Math.floor(Date.now() / 1000)}`,
+                        name: roomName,
+                        description: roomDesc,
+                        position: this.current_palace.rooms.length,
+                        created_at: new Date().toISOString()
+                    };
+                    this.current_palace.rooms.push(newRoom);
+                }
+                this.save_data();
+                this.render_structure_tree();
+                this.render_2d_view();
+                this.hide_modal();
+                this.show_notification("Room saved", "success");
+            }
+        
+            save_item(event) {
+                if (!this.current_palace) return;
+                const modal = event.target.closest(".modal");
+                const itemName = modal.querySelector("#itemName").value.trim();
+                const itemDesc = modal.querySelector("#itemDescription").value.trim();
+                const roomId = modal.querySelector("#itemLocation").value;
+                const itemPosition = modal.querySelector("#itemPosition").value;
+                const itemId = modal.getAttribute("data-item-id");
+        
+                if (!itemName || !roomId) {
+                    this.show_notification("Item name and room required", "error");
+                    return;
+                }
+        
+                const itemData = {
+                    name: itemName,
+                    description: itemDesc,
+                    room_id: roomId,
+                    position: itemPosition,
+                };
+        
+                if (itemId) {
+                    const item = this.current_palace.items.find(i => i.id === itemId);
+                    if (item) {
+                        Object.assign(item, itemData);
+                        item.updated_at = new Date().toISOString();
+                    }
+                } else {
+                    itemData.id = `item_${Math.floor(Date.now() / 1000)}`;
+                    itemData.created_at = new Date().toISOString();
+                    this.current_palace.items.push(itemData);
+                }
+        
+                this.save_data();
+                this.render_items_list();
+                this.render_structure_tree();
+                this.render_2d_view();
+                this.hide_modal();
+                this.show_notification("Item saved", "success");
+            }
+        
+            edit_item(item_id) {
+                if (!this.current_palace) return;
+                const item = this.current_palace.items.find(i => i.id === item_id);
+                if (!item || !document.getElementById("addItemModal")) return;
+                this.populate_room_dropdown();
+                document.getElementById("itemName").value = item.name;
+                document.getElementById("itemDescription").value = item.description;
+                document.getElementById("itemLocation").value = item.room_id;
+                document.getElementById("itemPosition").value = item.position || "center";
+                document.getElementById("addItemModal").setAttribute("data-item-id", item_id);
+                document.getElementById("addItemModal").style.display = "flex";
+            }
+        
+            delete_item(item_id) {
+                if (!this.current_palace || !confirm("Delete this item?")) return;
+                this.current_palace.items = this.current_palace.items.filter(item => item.id !== item_id);
+                this.save_data();
+                this.render_items_list();
+                this.render_structure_tree();
+                this.render_2d_view();
+                this.show_notification("Item deleted", "success");
+            }
+        
+            render_3d_view() {
+                const canvasContainer = document.getElementById("canvasContainer");
+                if (!canvasContainer) return;
+                canvasContainer.innerHTML = "<div class='placeholder'>3D view not implemented</div>";
+            }
+        
+            render_list_view() {
+                const container = document.getElementById("canvasContainer");
+                if (!container) return;
+                container.innerHTML = "";
+                this.current_palace.rooms.forEach(room => {
+                    const roomDiv = document.createElement("div");
+                    roomDiv.classList.add("list-view-room");
+                    roomDiv.innerHTML = `<h3>${room.name}</h3><p>${room.description}</p>`;
+                    const itemsDiv = document.createElement("div");
+                    itemsDiv.classList.add("list-view-items");
+                    this.current_palace.items.forEach(item => {
+                        if (item.room_id === room.id) {
+                            const itemDiv = document.createElement("div");
+                            itemDiv.classList.add("list-view-item");
+                            itemDiv.innerHTML = `<strong>${item.name}</strong><p>${item.description}</p>`;
+                            itemsDiv.appendChild(itemDiv);
+                        }
+                    });
+                    roomDiv.appendChild(itemsDiv);
+                    container.appendChild(roomDiv);
+                });
+            }
+        
+            start_practice(event) {
+                if (!this.current_palace || !this.current_palace.items.length) {
+                    this.show_notification("No items to practice", "error");
+                    return;
+                }
+                this.practice_items = [...this.current_palace.items];
+                this.practice_items.sort(() => Math.random() - 0.5);
+                this.current_practice_item = 0;
+                this.practice_score = 0;
+                document.getElementById("practiceModal").style.display = "none";
+                document.getElementById("practiceSessionModal").style.display = "flex";
+                this.show_next_practice_item();
+            }
+        
+            show_next_practice_item() {
+                if (this.current_practice_item >= this.practice_items.length) {
+                    this.end_practice();
+                    return;
+                }
+                const item = this.practice_items[this.current_practice_item];
+                document.getElementById("practiceQuestion").innerHTML = `What is the item in ${this.get_room_name(item.room_id)}?`;
+                document.getElementById("practiceAnswer").value = "";
+                document.getElementById("practiceFeedback").style.display = "none";
+                document.getElementById("checkAnswerBtn").style.display = "block";
+                document.getElementById("nextQuestionBtn").style.display = "none";
+            }
+        
+            check_answer(event) {
+                if (this.current_practice_item >= this.practice_items.length) return;
+                const item = this.practice_items[this.current_practice_item];
+                const userAnswer = document.getElementById("practiceAnswer").value.trim().toLowerCase();
+                const correctAnswer = item.name.toLowerCase();
+                const feedbackDiv = document.getElementById("practiceFeedback");
+                if (userAnswer === correctAnswer) {
+                    feedbackDiv.innerHTML = "<div class='alert alert-success'>Correct!</div>";
+                    this.practice_score += 1;
+                } else {
+                    feedbackDiv.innerHTML = `<div class='alert alert-danger'>Incorrect. Answer: ${item.name}</div>`;
+                }
+                feedbackDiv.style.display = "block";
+                document.getElementById("checkAnswerBtn").style.display = "none";
+                document.getElementById("nextQuestionBtn").style.display = "block";
+            }
+        
+            end_practice(event = null) {
+                document.getElementById("practiceSessionModal").style.display = "none";
+                document.getElementById("practiceResultsModal").style.display = "flex";
+                const percentage = (this.practice_score / this.practice_items.length) * 100;
+                document.getElementById("practiceResultsSummary").innerHTML = `
+                    <p>Score: ${this.practice_score}/${this.practice_items.length} (${percentage.toFixed(1)}%)</p>
+                `;
+                if (this.current_palace) {
+                    this.current_palace.practice_history.push({
+                        date: new Date().toISOString(),
+                        score: this.practice_score,
+                        total: this.practice_items.length
+                    });
+                    this.save_data();
+                }
+                this.show_notification(`Practice complete! Score: ${this.practice_score}/${this.practice_items.length}`, "success");
+            }
+        
+            get_room_name(room_id) {
+                const room = this.current_palace.rooms.find(r => r.id === room_id);
+                return room ? room.name : "Unknown Room";
+            }
+        
+            select_palace(palace) {
+                this.current_palace = palace;
+                this.display_palace(palace);
+                document.querySelectorAll("#palaceList .list-item").forEach(item => {
+                    item.classList.toggle("active", item.getAttribute("data-id") === palace.id);
+                });
+            }
+            
+            delete_palace(palace_id) {
+                if (!confirm("Are you sure you want to delete this memory palace? This action cannot be undone.")) return;
+                
+                this.palaces = this.palaces.filter(palace => palace.id !== palace_id);
+                
+                // If the deleted palace was the current one, reset current_palace
+                if (this.current_palace && this.current_palace.id === palace_id) {
+                    this.current_palace = this.palaces.length > 0 ? this.palaces[0] : null;
+                }
+                
+                this.save_data();
+                this.render_palace_list();
+                
+                if (this.current_palace) {
+                    this.display_palace(this.current_palace);
+                } else {
+                    // Clear the display if no palaces left
+                    document.getElementById("palaceName").value = "";
+                    document.getElementById("palaceDescription").value = "";
+                    document.getElementById("palaceTags").value = "";
+                    document.getElementById("canvasContainer").innerHTML = "";
+                    document.getElementById("structureTree").innerHTML = "";
+                    document.getElementById("itemsList").innerHTML = "";
+                }
+                
+                this.show_notification("Memory palace deleted", "success");
+            }
+        
+            save_current_palace(event = null) {
+                if (!this.current_palace) return;
+                this.current_palace.name = document.getElementById("palaceName").value.trim();
+                this.current_palace.description = document.getElementById("palaceDescription").value.trim();
+                const tagsText = document.getElementById("palaceTags").value.trim();
+                this.current_palace.tags = tagsText ? tagsText.split(",").map(tag => tag.trim()) : [];
+                this.current_palace.updated_at = new Date().toISOString();
+                this.save_data();
+                this.render_palace_list();
+                this.show_notification("Palace saved", "success");
+            }
+        
+            show_practice_modal(event = null) {
+                if (!this.current_palace || !this.current_palace.items.length) {
+                    this.show_notification("Add items before practicing", "warning");
+                    return;
+                }
+                const roomSelect = document.getElementById("practiceRooms");
+                roomSelect.innerHTML = "<option value='all'>All Rooms</option>";
+                this.current_palace.rooms.forEach(room => {
+                    const option = document.createElement("option");
+                    option.value = room.id;
+                    option.textContent = room.name;
+                    roomSelect.appendChild(option);
+                });
+                document.getElementById("practiceModal").style.display = "flex";
+            }
+        
+            skip_question(event = null) {
+                if (this.current_practice_item >= this.practice_items.length) return;
+                this.show_notification(`Answer was: ${this.practice_items[this.current_practice_item].name}`, "info");
+                this.current_practice_item += 1;
+                this.show_next_practice_item();
+            }
+        
+            next_question(event = null) {
+                this.current_practice_item += 1;
+                this.show_next_practice_item();
+            }
+        
+            toggle_time_limit(event) {
+                document.getElementById("timeLimitContainer").style.display = event.target.checked ? "block" : "none";
+            }
+        
+            show_export_modal(event = null) {
+                if (!this.current_palace) {
+                    this.show_notification("No palace to export", "error");
+                    return;
+                }
+                document.getElementById("exportData").value = JSON.stringify(this.current_palace, null, 2);
+                document.getElementById("exportModal").style.display = "flex";
+            }
+        
+            copy_export(event = null) {
+                const exportData = document.getElementById("exportData");
+                exportData.select();
+                document.execCommand("copy");
+                this.show_notification("Copied to clipboard", "success");
+            }
+        
+            download_export(event = null) {
+                if (!this.current_palace) return;
+                const exportData = JSON.stringify(this.current_palace);
+                const link = document.createElement("a");
+                link.href = `data:text/json;charset=utf-8,${encodeURIComponent(exportData)}`;
+                link.download = `${this.current_palace.name.replace(/\s/g, '_')}_export.json`;
+                link.style.display = "none";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                this.show_notification("Export downloaded", "success");
+            }
+        
+            show_import_modal(event = null) {
+                document.getElementById("importModal").style.display = "flex";
+            }
+        
+            confirm_import(event = null) {
+                const importData = document.getElementById("importData").value.trim();
+                if (!importData) {
+                    this.show_notification("No import data", "error");
+                    return;
+                }
+                try {
+                    const palaceData = JSON.parse(importData);
+                    for (const field of ["name", "rooms", "items"]) {
+                        if (!(field in palaceData)) throw new Error(`Missing field: ${field}`);
+                    }
+                    palaceData.id = `palace_${Math.floor(Date.now() / 1000)}`;
+                    this.palaces.push(palaceData);
+                    this.current_palace = palaceData;
+                    this.save_data();
+                    this.render_palace_list();
+                    this.display_palace(palaceData);
+                    this.hide_modal();
+                    this.show_notification("Palace imported", "success");
+                } catch (e) {
+                    this.show_notification(`Import error: ${e.message}`, "error");
+                }
+            }
+        
+            add_structure(event = null) {
+                this.show_add_room_modal();
+            }
+        
+            edit_structure(event = null) {
+                if (!this.current_palace || !this.current_palace.rooms.length) {
+                    this.show_notification("No rooms to edit", "warning");
+                    return;
+                }
+                
+                // Get the selected room from the structure tree
+                const selectedRoom = this.get_selected_room_from_structure();
+                
+                if (selectedRoom) {
+                    this.edit_room(selectedRoom);
+                } else {
+                    this.show_notification("Please select a room first", "warning");
+                }
+            }
+        
+            remove_structure(event = null) {
+                if (!this.current_palace || !this.current_palace.rooms.length) {
+                    this.show_notification("No rooms to remove", "warning");
+                    return;
+                }
+                
+                // Get the selected room from the structure tree
+                const selectedRoom = this.get_selected_room_from_structure();
+                
+                if (selectedRoom) {
+                    if (confirm(`Remove room "${selectedRoom.name}" and all its items?`)) {
+                        this.current_palace.rooms = this.current_palace.rooms.filter(r => r.id !== selectedRoom.id);
+                        this.current_palace.items = this.current_palace.items.filter(i => i.room_id !== selectedRoom.id);
+                        this.save_data();
+                        this.render_structure_tree();
+                        this.render_items_list();
+                        this.render_2d_view();
+                        this.show_notification(`Room "${selectedRoom.name}" removed`, "success");
+                    }
+                } else {
+                    this.show_notification("Please select a room first", "warning");
+                }
+            }
+            
+            // Add a new method to get the selected room from the structure tree
+            get_selected_room_from_structure() {
+                const selectedTreeItem = document.querySelector('#structureTree .tree-item.selected');
+                if (selectedTreeItem && selectedTreeItem.dataset.roomId) {
+                    return this.current_palace.rooms.find(room => room.id === selectedTreeItem.dataset.roomId);
+                }
+                return null;
+            }
+        
+            switch_tab(event) {
+                const tabId = event.target.getAttribute("data-tab");
+                if (!tabId) return;
+                document.querySelectorAll(".tab-button").forEach(button => button.classList.remove("active"));
+                document.querySelectorAll(".tab-content").forEach(content => content.classList.remove("active"));
+                event.target.classList.add("active");
+                document.getElementById(tabId).classList.add("active");
+            }
+        }
+        
+        const app = new MemoryPalaceApp();
+        window.app = app;
+        </script>
+        
+        <!-- Bootstrap JS -->
+  </body>
+</html>
