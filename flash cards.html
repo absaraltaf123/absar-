@@ -130,10 +130,7 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .flashcard:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-    }
+    
 
     .flashcard-inner {
       position: relative;
@@ -4491,7 +4488,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-// Add this function to toggle fullscreen view with enhanced features
 function toggleFullscreenView() {
   const container = document.querySelector('.flashcard-container');
   const isFullscreen = document.fullscreenElement;
@@ -4577,6 +4573,12 @@ function toggleFullscreenView() {
       card.style.position = 'relative';
       card.style.left = 'auto';
       card.style.top = 'auto';
+      
+      // Hide expand button in fullscreen mode
+      const expandBtn = card.querySelector('.expand-btn');
+      if (expandBtn) {
+        expandBtn.style.display = 'none';
+      }
     });
     
     // Add keyboard navigation
@@ -4614,12 +4616,19 @@ function toggleFullscreenView() {
       card.style.position = '';
       card.style.left = '';
       card.style.top = '';
+      
+      // Show expand button again when exiting fullscreen
+      const expandBtn = card.querySelector('.expand-btn');
+      if (expandBtn) {
+        expandBtn.style.display = '';
+      }
     });
     
     // Remove keyboard event listener
     document.removeEventListener('keydown', handleFullscreenKeyboard);
   }
 }
+
 
 // Initialize fullscreen controls
 function initFullscreenControls() {
@@ -4794,6 +4803,8 @@ function handleFullscreenKeyboard(e) {
   }
 }
 
+
+
 // Sort cards by category with animation
 function sortByCategory() {
   const container = document.querySelector('.flashcard-container');
@@ -4813,24 +4824,36 @@ function sortByCategory() {
   // Clear previous panels
   categoryPanelsContainer.innerHTML = '';
   
-  // Create panels for each category
+  // Create panels for each category with improved styling
   const categoryArray = Array.from(categories);
-  const panelWidth = Math.floor(100 / Math.min(categoryArray.length, 3)); // Max 3 panels per row
-  const panelHeight = Math.floor(100 / Math.ceil(categoryArray.length / 3)); // Adjust height based on number of rows
+  
+  // Calculate optimal panel layout based on number of categories
+  const numCategories = categoryArray.length;
+  let cols = 3; // Default to 3 columns
+  
+  if (numCategories <= 2) cols = 2;
+  if (numCategories === 1) cols = 1;
+  
+  const rows = Math.ceil(numCategories / cols);
+  const panelWidth = Math.floor(100 / cols);
+  const panelHeight = Math.floor(100 / rows);
   
   categoryArray.forEach((category, index) => {
     const panel = document.createElement('div');
     panel.className = 'category-panel';
-    panel.innerHTML = `<div class="category-panel-header">${category}</div>`;
+    panel.innerHTML = `<div class="category-panel-header">${category}</div><div class="category-cards-container"></div>`;
     
     // Position panel
-    const row = Math.floor(index / 3);
-    const col = index % 3;
+    const row = Math.floor(index / cols);
+    const col = index % cols;
     
     panel.style.width = `${panelWidth}%`;
     panel.style.height = `${panelHeight}%`;
     panel.style.left = `${col * panelWidth}%`;
     panel.style.top = `${row * panelHeight}%`;
+    panel.style.background = `linear-gradient(135deg, rgba(25,25,35,0.8), rgba(35,35,60,0.9))`;
+    panel.style.backdropFilter = 'blur(10px)';
+    panel.style.boxShadow = '0 10px 30px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.1)';
     
     categoryPanelsContainer.appendChild(panel);
   });
@@ -4839,69 +4862,94 @@ function sortByCategory() {
   categoryPanelsContainer.style.display = 'block';
   backBtn.style.display = 'block';
   
-  // Hide original cards container content
+  // Group cards by category
+  const cardsByCategory = {};
   cards.forEach(card => {
-    card.style.position = 'absolute';
-    card.style.transition = 'all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
-    
-    // Get card's category
     const categoryElement = card.querySelector('.flashcard-front div:first-child');
     const category = categoryElement ? categoryElement.textContent.trim() : 'Uncategorized';
     
-    // Find target panel
+    if (!cardsByCategory[category]) {
+      cardsByCategory[category] = [];
+    }
+    cardsByCategory[category].push(card);
+  });
+  
+  // Add cards to their respective panels with improved layout
+  Object.entries(cardsByCategory).forEach(([category, categoryCards]) => {
     const targetPanel = Array.from(categoryPanelsContainer.querySelectorAll('.category-panel'))
       .find(panel => panel.querySelector('.category-panel-header').textContent === category);
     
     if (targetPanel) {
-      // Get current position
-      const cardRect = card.getBoundingClientRect();
-      const targetRect = targetPanel.getBoundingClientRect();
+      const cardsContainer = targetPanel.querySelector('.category-cards-container');
+      cardsContainer.style.display = 'flex';
+      cardsContainer.style.flexWrap = 'wrap';
+      cardsContainer.style.justifyContent = 'center';
+      cardsContainer.style.alignItems = 'flex-start';
+      cardsContainer.style.gap = '15px';
+      cardsContainer.style.padding = '15px';
+      cardsContainer.style.overflowY = 'auto';
+      cardsContainer.style.maxHeight = 'calc(100% - 60px)';
       
-      // Store original position
-      card.dataset.originalLeft = card.style.left || '0px';
-      card.dataset.originalTop = card.style.top || '0px';
+      // Calculate optimal card size based on number of cards
+      const cardCount = categoryCards.length;
+      let cardScale = 0.8; // Default scale
       
-      // Calculate new position (center of the panel)
-      const newLeft = targetRect.left + (targetRect.width / 2) - (cardRect.width / 2);
-      const newTop = targetRect.top + (targetRect.height / 2) - (cardRect.height / 2);
+      if (cardCount > 8) cardScale = 0.6;
+      if (cardCount > 16) cardScale = 0.5;
+      if (cardCount > 24) cardScale = 0.4;
       
-      // Set card index for staggered animation
-      const categoryCards = cards.filter(c => {
-        const catElem = c.querySelector('.flashcard-front div:first-child');
-        return (catElem ? catElem.textContent.trim() : 'Uncategorized') === category;
-      });
-      const cardIndex = categoryCards.indexOf(card);
-      card.style.setProperty('--card-index', cardIndex);
-      
-      // Animate to new position
-      setTimeout(() => {
-        card.style.transform = 'scale(0.8)';
-        card.style.left = `${newLeft}px`;
-        card.style.top = `${newTop + 60}px`; // Add offset for the header
+      categoryCards.forEach((card, idx) => {
+        // Store original position
+        const cardRect = card.getBoundingClientRect();
+        card.dataset.originalLeft = card.style.left || '0px';
+        card.dataset.originalTop = card.style.top || '0px';
         
-        // Add offset for the header
+        // Set card index for staggered animation
+        card.style.setProperty('--card-index', idx);
         
-        // Add card to panel after animation
+        // Clone the card to avoid DOM manipulation issues
+        const cardClone = card.cloneNode(true);
+        cardClone.style.position = 'relative';
+        cardClone.style.left = '0';
+        cardClone.style.top = '0';
+        cardClone.style.margin = '0';
+        cardClone.style.transform = `scale(${cardScale})`;
+        cardClone.style.transformOrigin = 'center top';
+        cardClone.style.width = '200px';
+        cardClone.style.height = '250px';
+        cardClone.style.opacity = '0';
+        cardClone.style.transition = 'all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)';
+        cardClone.dataset.originalCard = card.dataset.cardId;
+        
+        // Add click handler to flip card
+        cardClone.addEventListener('click', () => {
+          cardClone.classList.toggle('flipped');
+          setTimeout(() => {
+            if (window.MathJax) {
+              MathJax.typesetPromise([cardClone]).catch(err => console.log(err.message));
+            }
+          }, 300);
+        });
+        
+        // Add the clone to the panel
+        cardsContainer.appendChild(cardClone);
+        
+        // Hide the original card
+        card.style.display = 'none';
+        
+        // Animate the clone with staggered delay
         setTimeout(() => {
-          targetPanel.appendChild(card);
-          card.style.left = '0';
-          card.style.top = '0';
-          card.style.margin = '10px';
-          card.style.position = 'relative';
-          
-          // Add active class to panel to trigger card animations
-          targetPanel.classList.add('active');
-        }, 800);
-      }, cardIndex * 50); // Fixed: Added missing closing parenthesis here
-    } // Fixed: Added missing closing curly brace for the if(targetPanel) block
-  }); // This is the closing parenthesis for the cards.forEach
-  
-  // After all cards have been animated to their panels
-  setTimeout(() => {
-    // Hide any remaining cards in the main container
-    cards.filter(c => !c.parentElement || c.parentElement === container)
-      .forEach(c => c.style.display = 'none');
-  }, 1000);
+          cardClone.style.opacity = '1';
+          cardClone.style.transform = `scale(${cardScale})`;
+        }, 50 + idx * 50);
+      });
+      
+      // Add active class to panel to trigger animations
+      setTimeout(() => {
+        targetPanel.classList.add('active');
+      }, 100);
+    }
+  });
 }
 
 // Exit category view and return to normal fullscreen view
@@ -4914,45 +4962,26 @@ function exitCategoryView() {
   categoryPanelsContainer.style.display = 'none';
   backBtn.style.display = 'none';
   
-  // Get all cards from panels
-  const cards = Array.from(categoryPanelsContainer.querySelectorAll('.flashcard'));
-  
-  // Move cards back to main container with animation
-  cards.forEach((card, index) => {
-    // Get original position if available
-    const originalLeft = card.dataset.originalLeft || '0px';
-    const originalTop = card.dataset.originalTop || '0px';
-    
-    // Set transition for animation
-    card.style.transition = 'all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
-    card.style.position = 'absolute';
-    
-    // Animate back to original position
-    setTimeout(() => {
-      card.style.left = originalLeft;
-      card.style.top = originalTop;
-      card.style.transform = 'scale(1)';
-      
-      // After animation, reset styles and append to main container
-      setTimeout(() => {
-        container.appendChild(card);
-        card.style.position = 'relative';
-        card.style.left = 'auto';
-        card.style.top = 'auto';
-        card.style.margin = '';
-        card.style.transform = '';
-        card.style.transition = '';
-        card.style.opacity = '1';
-        card.style.display = 'block';
-      }, 800);
-    }, index * 50); // Stagger animation
+  // Show all original cards
+  const cards = Array.from(container.querySelectorAll('.flashcard'));
+  cards.forEach((card) => {
+    card.style.display = 'block';
+    card.style.position = 'relative';
+    card.style.left = 'auto';
+    card.style.top = 'auto';
+    card.style.margin = '';
+    card.style.transform = '';
+    card.style.transition = '';
+    card.style.opacity = '1';
   });
   
-  // Clear panels container after animations
+  // Clear panels container
   setTimeout(() => {
     categoryPanelsContainer.innerHTML = '';
-  }, cards.length * 50 + 1000);
+  }, 500);
 }
+
+// ... existing code ...
 
 // Search cards in fullscreen mode
 function searchCards(term) {
@@ -4993,7 +5022,8 @@ function searchCards(term) {
 
 // Add fadeInScale animation for dropdown menu
 document.head.insertAdjacentHTML('beforeend', `
-  <style>
+  
+    <style>
     @keyframes fadeInScale {
       0% {
         opacity: 0;
@@ -5031,6 +5061,78 @@ document.head.insertAdjacentHTML('beforeend', `
     .flashcard.hidden {
       display: none !important;
     }
+    
+    /* Enhanced category panel styling */
+    .category-panel {
+      border-radius: 20px;
+      transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+      overflow: hidden;
+      transform: translateY(20px);
+      opacity: 0.8;
+      background-image: 
+        radial-gradient(circle at 20% 30%, rgba(103, 126, 234, 0.15) 0%, transparent 25%),
+        radial-gradient(circle at 80% 70%, rgba(118, 75, 162, 0.15) 0%, transparent 25%);
+    }
+    
+    .category-panel.active {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    
+    .category-panel-header {
+      background: linear-gradient(90deg, rgba(103, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+      padding: 15px;
+      font-size: 24px;
+      font-weight: 600;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(5px);
+    }
+    
+    .category-cards-container {
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .category-view-back {
+      background: linear-gradient(135deg, rgba(255, 107, 107, 0.8), rgba(255, 71, 87, 0.8));
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .category-view-back:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      background: linear-gradient(135deg, rgba(255, 135, 135, 0.9), rgba(255, 101, 101, 0.9));
+    }
+    .fullscreen-mode .flashcard .expand-btn,
+    .fullscreen-mode .flashcard-front .expand-btn,
+    .fullscreen-mode .flashcard-back .expand-btn {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    
+    /* Hide expand buttons in category panels */
+    .category-panel .flashcard .expand-btn,
+    .category-panel .flashcard-front .expand-btn,
+    .category-panel .flashcard-back .expand-btn {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }  
   </style>
 `);
 
