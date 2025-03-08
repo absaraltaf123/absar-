@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Tools Hub</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
+ <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0f172a;
+      color: white;
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #0ea5e9 0%, #7c3aed 100%);
+    }
+    
+    .card-gradient {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .tool-card {
+      transition: all 0.3s ease;
+    }
+    
+    .tool-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    }
+    
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.4;
+      z-index: -1;
+    }
+    
+    .stroke-animation {
+      stroke-dasharray: 1500;
+      stroke-dashoffset: 1500;
+      animation: draw 3s ease forwards;
+    }
+    
+    @keyframes draw {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+    
+    .floating {
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0px); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background blobs -->
+  <div class="blob" style="width: 600px; height: 600px; background: #0ea5e9; top: -200px; right: -100px;"></div>
+  <div class="blob" style="width: 500px; height: 500px; background: #7c3aed; bottom: -100px; left: -100px;"></div>
+  
+  <!-- Header -->
+  <header class="relative z-10 pt-12 pb-6">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col items-center justify-center text-center">
+        <div class="w-40 h-40 mb-6 relative">
+          <svg viewBox="0 0 100 100" class="w-full h-full stroke-animation">
+            <circle cx="50" cy="50" r="40" stroke="white" stroke-width="1" fill="none" />
+            <path d="M30,50 L70,50 M50,30 L50,70" stroke="white" stroke-width="1" fill="none" />
+          </svg>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <span class="text-4xl font-bold text-transparent bg-clip-text gradient-bg">ST</span>
+          </div>
+        </div>
+        <h1 class="text-5xl font-bold mb-4 text-transparent bg-clip-text gradient-bg">Student Tools Hub</h1>
+        <p class="text-xl text-gray-300 max-w-2xl">Elevate your academic experience with our suite of powerful learning tools</p>
+      </div>
+    </div>
+  </header>
+  
+  <!-- Main content -->
+  <main class="relative z-10 py-16">
+    <div class="container mx-auto px-4">
+       <!-- Tools Grid -->
+      <div id="tools-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        
+        <!-- Ink to LaTeX -->
+        <div class="tool-card card-gradient rounded-xl overflow-hidden p-6">
+          <div class="h-48 mb-6 flex items-center justify-center relative">
+            <div class="floating">
+              <svg viewBox="0 0 100 100" class="w-32 h-32 stroke-animation">
+                <path d="M20,50 C20,30 80,30 80,50 C80,70 20,70 20,50 Z" stroke="#0ea5e9" stroke-width="1" fill="none" />
+                <path d="M30,40 L70,40 M30,50 L70,50 M30,60 L50,60" stroke="#0ea5e9" stroke-width="1" fill="none" />
+              </svg>
+            </div>
+          </div>
+          <h3 class="text-2xl font-bold mb-2 text-transparent bg-clip-text gradient-bg">Ink to LaTeX</h3>
+          <p class="text-gray-300 mb-4">Transform your handwritten mathematical equations into perfectly formatted LaTeX code instantly.</p>
+          <button class="bg-white bg-opacity-10 hover:bg-opacity-20 text-white rounded-lg py-2 px-4 transition duration-300">
+            Launch Tool
+          </button>
+        </div>
+        
+        <!-- Memory Palace Builder -->
+        <div class="tool-card card-gradient rounded-xl overflow-hidden p-6">
+          <div class="h-48 mb-6 flex items-center justify-center">
+            <div class="floating">
+              <svg viewBox="0 0 100 100" class="w-32 h-32 stroke-animation">
+                <rect x="25" y="25" width="50" height="50" stroke="#7c3aed" stroke-width="1" fill="none" />
+                <line x1="25" y1="25" x2="35" y2="15" stroke="#7c3aed" stroke-width="1" />
+                <line x1="75" y1="25" x2="85" y2="15" stroke="#7c3aed" stroke-width="1" />
+                <line x1="25" y1="75" x2="35" y2="85" stroke="#7c3aed" stroke-width="1" />
+                <line x1="75" y1="75" x2="85" y2="85" stroke="#7c3aed" stroke-width="1" />
+                <rect x="35" y="15" width="50" height="10" stroke="#7c3aed" stroke-width="1" fill="none" />
+              </svg>
+            </div>
+          </div>
+          <h3 class="text-2xl font-bold mb-2 text-transparent bg-clip-text gradient-bg">Memory Palace Builder</h3>
+          <p class="text-gray-300 mb-4">Create powerful spatial memory systems to improve recall and retention of complex information.</p>
+          <button class="bg-white bg-opacity-10 hover:bg-opacity-20 text-white rounded-lg py-2 px-4 transition duration-300">
+            Launch Tool
+          </button>
+        </div>
+        
+        <!-- Matrix Solver -->
+        <div class="tool-card card-gradient rounded-xl overflow-hidden p-6">
+          <div class="h-48 mb-6 flex items-center justify-center">
+            <div class="floating">
+              <svg viewBox="0 0 100 100" class="w-32 h-32 stroke-animation">
+                <rect x="25" y="25" width="50" height="50" stroke="#0ea5e9" stroke-width="1" fill="none" />
+                <line x1="25" y1="37" x2="75" y2="37" stroke="#0ea5e9" stroke-width="1" />
+                <line x1="25" y1="50" x2="75" y2="50" stroke="#0ea5e9" stroke-width="1" />
+                <line x1="25" y1="63" x2="75" y2="63" stroke="#0ea5e9" stroke-width="1" />
+                <line x1="37" y1="25" x2="37" y2="75" stroke="#0ea5e9" stroke-width="1" />
+                <line x1="50" y1="25" x2="50" y2="75" stroke="#0ea5e9" stroke-width="1" />
+                <line x1="63" y1="25" x2="63" y2="75" stroke="#0ea5e9" stroke-width="1" />
+              </svg>
+            </div>
+          </div>
+          <h3 class="text-2xl font-bold mb-2 text-transparent bg-clip-text gradient-bg">Matrix Solver</h3>
+          <p class="text-gray-300 mb-4">Solve complex matrix operations with step-by-step solutions and visual representations.</p>
+          <button class="bg-white bg-opacity-10 hover:bg-opacity-20 text-white rounded-lg py-2 px-4 transition duration-300">
+            Launch Tool
+          </button>
+        </div>
+        
+        <!-- Flash Card Creator -->
+        <div class="tool-card card-gradient rounded-xl overflow-hidden p-6">
+          <div class="h-48 mb-6 flex items-center justify-center">
+            <div class="floating">
+              <svg viewBox="0 0 100 100" class="w-32 h-32 stroke-animation">
+                <rect x="20" y="30" width="40" height="50" rx="2" stroke="#7c3aed" stroke-width="1" fill="none" />
+                <rect x="30" y="20" width="40" height="50" rx="2" stroke="#7c3aed" stroke-width="1" fill="none" />
+                <rect x="40" y="40" width="20" height="5" stroke="#7c3aed" stroke-width="1" fill="none" />
+                <rect x="40" y="50" width="30" height="2" stroke="#7c3aed" stroke-width="1" fill="none" />
+                <rect x="40" y="55" width="25" height="2" stroke="#7c3aed" stroke-width="1" fill="none" />
+              </svg>
+            </div>
+          </div>
+          <h3 class="text-2xl font-bold mb-2 text-transparent bg-clip-text gradient-bg">Flash Card Creator</h3>
+          <p class="text-gray-300 mb-4">Design interactive flash cards with spaced repetition algorithms for efficient memorization.</p>
+          <button class="bg-white bg-opacity-10 hover:bg-opacity-20 text-white rounded-lg py-2 px-4 transition duration-300">
+            Launch Tool
+          </button>
+        </div>
+        
+        <!-- Graph Creator -->
+        <div class="tool-card card-gradient rounded-xl overflow-hidden p-6">
+          <div class="h-48 mb-6 flex items-center justify-center">
+            <div class="floating">
+              <svg viewBox="0 0 100 100" class="w-32 h-32 stroke-animation">
+                <circle cx="30" cy="30" r="5" stroke="#0ea5e9" stroke-width="1" fill="none" />
+                <circle cx="70" cy="30" r="5" stroke="#0ea5e9" stroke-width="1" fill="none" />
+                <circle cx="30" cy="70" r="5" stroke="#0ea5e9" stroke-width="1" fill="none" />
+                <circle cx="70" cy="70" r="5" stroke="#0ea5e9" stroke-width="1" fill="none" />
+                <circle cx="50" cy="50" r="5" stroke="#0ea5e9" stroke-width="1" fill="none" />
+                <line x1="30" y1="30" x2="70" y2="30" stroke="#0ea5e9" stroke-width="1" />
+                <line x1="30" y1="30" x2="30" y2="70" stroke="#0ea5e9" stroke-width="1" />
+                <line x1="30" y1="70" x2="70" y2="70" stroke="#0ea5e9" stroke-width="1" />
+                <line x1="70" y1="30" x2="70" y2="70" stroke="#0ea5e9" stroke-width="1" />
+                <line x1="30" y1="30" x2="50" y2="50" stroke="#0ea5e9" stroke-width="1" />
+                <line x1="70" y1="30" x2="50" y2="50" stroke="#0ea5e9" stroke-width="1" />
+                <line x1="30" y1="70" x2="50" y2="50" stroke="#0ea5e9" stroke-width="1" />
+                <line x1="70" y1="70" x2="50" y2="50" stroke="#0ea5e9" stroke-width="1" />
+              </svg>
+            </div>
+          </div>
+          <h3 class="text-2xl font-bold mb-2 text-transparent bg-clip-text gradient-bg">Graph Creator</h3>
+          <p class="text-gray-300 mb-4">Visualize complex data relationships and mathematical functions with customizable graphs.</p>
+          <button class="bg-white bg-opacity-10 hover:bg-opacity-20 text-white rounded-lg py-2 px-4 transition duration-300">
+            Launch Tool
+          </button>
+        </div>
+        
+        <!-- Coming Soon -->
+        <div class="tool-card card-gradient rounded-xl overflow-hidden p-6">
+          <div class="h-48 mb-6 flex items-center justify-center">
+            <div class="floating">
+              <svg viewBox="0 0 100 100" class="w-32 h-32 stroke-animation">
+                <circle cx="50" cy="50" r="35" stroke="#7c3aed" stroke-width="1" fill="none" />
+                <line x1="50" y1="30" x2="50" y2="55" stroke="#7c3aed" stroke-width="1" />
+                <line x1="50" y1="65" x2="50" y2="70" stroke="#7c3aed" stroke-width="1" />
+              </svg>
+            </div>
+          </div>
+          <h3 class="text-2xl font-bold mb-2 text-transparent bg-clip-text gradient-bg">Coming Soon</h3>
+          <p class="text-gray-300 mb-4">More innovative learning tools are in development. Stay tuned for exciting additions.</p>
+          <button class="bg-white bg-opacity-10 hover:bg-opacity-20 text-white rounded-lg py-2 px-4 opacity-50 cursor-not-allowed transition duration-300">
+            Coming Soon
+          </button>
+        </div>
+        
+      </div>
+    </div>
+  </main>
+  
+  <!-- Feature section -->
+  <section class="relative z-10 py-16 bg-black bg-opacity-30">
+    <div class="container mx-auto px-4">
+      <h2 class="text-4xl font-bold mb-16 text-center text-transparent bg-clip-text gradient-bg">Why Students Love Our Tools</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div class="text-center">
+          <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-white bg-opacity-5 flex items-center justify-center">
+            <svg class="w-12 h-12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2V6M12 18V22M4.93 4.93L7.76 7.76M16.24 16.24L19.07 19.07M2 12H6M18 12H22M4.93 19.07L7.76 16.24M16.24 7.76L19.07 4.93" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Intuitive Design</h3>
+          <p class="text-gray-300">Tools designed with students in mind, making complex tasks simple and accessible.</p>
+        </div>
+        
+        <div class="text-center">
+          <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-white bg-opacity-5 flex items-center justify-center">
+            <svg class="w-12 h-12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 3.5V2M5.06 5.06L4 4M5.06 11.94L4 13M12.94 5.06L14 4M9 13.5V15M16.94 11.94L18 13M16.94 5.06L18 4M9 6.5C7.067 6.5 5.5 8.067 5.5 10C5.5 11.5913 6.53215 12.9175 7.99976 13.3809C8.17511 12.7816 8.89464 12.5 9.49994 12.5H14.5C15.1053 12.5 15.8248 12.7816 16.0002 13.3809C17.4678 12.9175 18.5 11.5913 18.5 10C18.5 8.067 16.933 6.5 15 6.5C14.0182 6.5 13.1342 6.95509 12.575 7.6722C12.225 7.57213 11.8525 7.51798 11.4687 7.51798C10.2688 7.51798 9.19346 8.03063 8.42494 8.82541C8.36969 8.0565 8.30512 6.5 9 6.5ZM9.5 16.5V17C9.5 17.8284 10.1716 18.5 11 18.5H13C13.8284 18.5 14.5 17.8284 14.5 17V16.5H9.5Z" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Boost Creativity</h3>
+          <p class="text-gray-300">Unleash your creative potential with tools that inspire innovative thinking and problem solving.</p>
+        </div>
+        
+        <div class="text-center">
+          <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-white bg-opacity-5 flex items-center justify-center">
+            <svg class="w-12 h-12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2Z" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M8 14.5L10 11.5L12.5 14.5L16 10" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Improve Grades</h3>
+          <p class="text-gray-300">Students who use our tools consistently report improved academic performance and understanding.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- CTA section -->
+  <section class="relative z-10 py-20">
+    <div class="container mx-auto px-4">
+      <div class="card-gradient rounded-2xl p-10 max-w-4xl mx-auto text-center">
+        <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text gradient-bg">Ready to Level Up Your Learning?</h2>
+        <p class="text-xl text-gray-300 mb-8">All tools are free for college students. No sign-up required.</p>
+        <div class="flex flex-wrap gap-4 justify-center">
+          <button id="explore-tools-btn" class="gradient-bg text-white font-medium rounded-lg py-3 px-6 text-lg shadow-lg hover:opacity-90 transition duration-300">
+            Explore All Tools
+          </button>
+          <button class="bg-white bg-opacity-10 hover:bg-opacity-20 text-white font-medium rounded-lg py-3 px-6 text-lg transition duration-300">
+            View Tutorials
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Footer -->
+  <footer class="relative z-10 py-10 border-t border-gray-800">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-6 md:mb-0">
+          <h2 class="text-2xl font-bold text-transparent bg-clip-text gradient-bg">Student Tools Hub</h2>
+          <p class="text-gray-400">Made for students, by students</p>
+        </div>
+        <div class="flex space-x-8">
+          <a href="#" class="text-gray-300 hover:text-white">About</a>
+          <a href="#" class="text-gray-300 hover:text-white">Contact</a>
+          <a href="#" class="text-gray-300 hover:text-white">Help</a>
+        </div>
+      </div>
+      <div class="mt-8 text-center text-gray-500 text-sm">
+        &copy; 2025 Student Tools Hub. All tools are free for educational use.
+      </div>
+    </div>
+  </footer>
+  <script>
+    // JavaScript to handle button click and scroll to tools section
+    document.addEventListener('DOMContentLoaded', function() {
+      const exploreToolsBtn = document.getElementById('explore-tools-btn');
+      
+      if (exploreToolsBtn) {
+        exploreToolsBtn.addEventListener('click', function() {
+          const toolsGrid = document.getElementById('tools-grid');
+          
+          if (toolsGrid) {
+            // Smooth scroll to the tools grid section
+            toolsGrid.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
