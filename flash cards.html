@@ -117,8 +117,8 @@
 
     /* Flashcard Styling */
     .flashcard {
-      min-width: 280px;
-      min-height: 180px;
+      min-width: 340px;
+      min-height: 240px;
       max-width: 400px;
       width: auto;
       height: auto;
@@ -202,11 +202,25 @@
     /* Add this to your existing CSS */
 .edit-mode {
   background: linear-gradient(135deg, #ffffff, #f5f5f5);
-  border-radius: 15px;
+  border-radius: 9px;
   padding: 20px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   width: 100%;
   box-sizing: border-box;
+  /* Add transition for smooth animation */
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  
+  height: 100%;
+  overflow: hidden;
+  opacity: 0;
+  padding: 0 20px;
+}
+
+/* Class added after mounting to trigger animation */
+.edit-mode.expanded {
+  max-height: 1000px; /* Large enough to accommodate all content */
+  opacity: 1;
+  padding: 20px;
 }
 
 .edit-mode input,
@@ -453,7 +467,7 @@
     /* Edit Panel Modal for Fullscreen Mode */
     #editPanelModal {
       position: absolute;
-      top: ;
+      top: 0;
       left: 0;
       width: 100%;
       height: 200%;
@@ -1316,12 +1330,12 @@
   margin: 40px auto;
   flex-wrap: wrap;
   justify-content: center;
-  background: linear-gradient(135deg, #2d3748, #4a5568);
-  padding: 30px;
+  background: transparent;
+  padding: 40px;
   border-radius: 20px;
   box-shadow:
-    0 15px 35px rgba(0, 0, 0, 0.2),
-    inset 0 2px 6px rgba(255, 255, 255, 0.1);
+    0 15px 35px rgb(253, 252, 252),
+    inset 0 2px 6px rgba(180, 180, 180, 0.756);
   position: relative;
   max-width: 600px;
   width: 100%;
@@ -1330,38 +1344,9 @@
 }
 
 /* Add subtle animated background pattern */
-.button-panel::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: 
-    radial-gradient(circle at 20% 30%, rgba(103, 126, 234, 0.1) 0%, transparent 25%),
-    radial-gradient(circle at 80% 70%, rgba(118, 75, 162, 0.1) 0%, transparent 25%);
-  opacity: 0.4;
-  z-index: 0;
-  animation: panelGlow 10s infinite alternate;
-}
 
 /* Top border glow effect */
-.button-panel::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.05) 20%,
-    rgba(255, 255, 255, 0.3) 50%,
-    rgba(255, 255, 255, 0.05) 80%,
-    transparent 100%
-  );
-  animation: borderGlow 6s infinite alternate;
-}
+
 
 /* Corner accents */
 .button-panel > .corner {
@@ -1403,60 +1388,15 @@
   border-bottom-right-radius: 15px;
 }
 
-.button-panel button {
-  padding: 14px 28px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  border: none;
-  border-radius: 12px;
-  color: white;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow:
-    0 4px 15px rgba(0, 0, 0, 0.2),
-    inset 0 -2px 4px rgba(0, 0, 0, 0.2);
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
-  letter-spacing: 0.5px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
 
 /* Button ripple effect */
-.button-panel button::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 5px;
-  height: 5px;
-  background: rgba(255, 255, 255, 0.5);
-  opacity: 0;
-  border-radius: 100%;
-  transform: scale(1, 1) translate(-50%, -50%);
-  transform-origin: 50% 50%;
-  z-index: -1;
-}
+
 
 .button-panel button:focus::after {
   animation: ripple 1s ease-out;
 }
 
 /* Button glow on hover */
-.button-panel button::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(135deg, #7f9cf5, #805ad5);
-  z-index: -2;
-  border-radius: 14px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
 
 .button-panel button:hover {
   transform: translateY(-3px) scale(1.02);
@@ -1478,27 +1418,6 @@
     inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.button-panel select {
-  padding: 14px 28px 14px 20px;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  background: linear-gradient(135deg, #2d3748, #4a5568);
-  color: white;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  appearance: none;
-  -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 1;
-  position: relative;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
 
 .button-panel select:hover {
   background: linear-gradient(135deg, #1a202c, #2d3748);
@@ -1552,67 +1471,9 @@
   }
 }
 
-/* Animations */
-@keyframes ripple {
-  0% {
-    transform: scale(0, 0);
-    opacity: 1;
-  }
-  20% {
-    transform: scale(25, 25);
-    opacity: 0.8;
-  }
-  100% {
-    transform: scale(50, 50);
-    opacity: 0;
-  }
-}
 
-@keyframes buttonGlow {
-  0% {
-    box-shadow: 0 0 5px rgba(103, 126, 234, 0.5);
-  }
-  100% {
-    box-shadow: 0 0 15px rgba(118, 75, 162, 0.8);
-  }
-}
 
-@keyframes borderGlow {
-  0%, 100% {
-    opacity: 0.3;
-    transform: translateX(-30%);
-  }
-  50% {
-    opacity: 0.6;
-    transform: translateX(30%);
-  }
-}
 
-@keyframes panelGlow {
-  0% {
-    opacity: 0.2;
-    background-position: 0% 0%;
-  }
-  100% {
-    opacity: 0.5;
-    background-position: 100% 100%;
-  }
-}
-
-/* Dark mode enhancements */
-@media (prefers-color-scheme: dark) {
-  .button-panel {
-    background: linear-gradient(135deg, #1a202c, #2d3748);
-  }
-  
-  .button-panel button {
-    background: linear-gradient(135deg, #5a67d8, #6b46c1);
-  }
-  
-  .button-panel button:hover {
-    background: linear-gradient(135deg, #667eea, #805ad5);
-  }
-}
     /* Create a container for input and button panels */
     body {
       display: flex;
@@ -1718,7 +1579,7 @@ body {
   margin: 0 auto;
   flex-wrap: wrap;
   justify-content: center;
-  background: ;
+  background: transparent;
   padding: 40px;
   border-radius: 24px;
   position: relative;
@@ -1727,18 +1588,10 @@ body {
   overflow: hidden;
   transform-style: preserve-3d;
   transition: transform 0.5s ease, box-shadow 0.5s ease;
-  
+  outline: 4px solid rgba(255, 255, 255, 0);
 }
 
-/* Tilt effect on hover */
-.button-panel:hover {
-  transform: translateY(-5px) rotateX(5deg);
-  box-shadow:
-    0 30px 70px rgba(0, 0, 0, 0.6),
-    0 5px 15px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    inset 0 0 30px rgba(0, 0, 0, 0.8);
-}
+
 
 /* Glowing background effect with animation */
 .button-panel::before {
@@ -1754,69 +1607,23 @@ body {
   z-index: -1;
   filter: blur(30px);
   animation: backgroundPulse 10s infinite alternate;
+  outline: 2px solid rgba(255, 255, 255, 0);
 }
 
 /* Panel glass-like border */
-.button-panel::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border: 1px solid var(--glass-border);
-  border-radius: 24px;
-  box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.05);
-  z-index: 1;
-  pointer-events: none;
-}
+
 
 /* Moving light effect */
 
-/* Floating particles */
-.particles-container {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  z-index: 0;
-}
 
-.particle {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--glow-color-1);
-  opacity: 0.4;
-  animation: float 10s infinite linear;
-}
-
-.particle:nth-child(2n) {
-  width: 8px;
-  height: 8px;
-  background: var(--glow-color-2);
-  animation-duration: 15s;
-}
-
-.particle:nth-child(3n) {
-  width: 4px;
-  height: 4px;
-  background: var(--glow-color-3);
-  animation-duration: 20s;
-}
-
-.particle:nth-child(4n) {
-  width: 3px;
-  height: 10px;
-  border-radius: 3px;
-  background: var(--accent-color-1);
-  animation-duration: 25s;
-}
 
 /* High-end 3D button with neon effect */
 .button-panel button {
   padding: 14px 28px;
-  background: rgba(167, 239, 33, 0.236);
+  background: rgba(237, 237, 237, 0.849);
   border: 1px solid var(--glass-border);
   border-radius: 14px;
-  color: white;
+  color: rgb(116, 73, 73);
   font-size: 16px;
   font-weight: 500;
   letter-spacing: 0.5px;
@@ -1832,6 +1639,7 @@ body {
     0 5px 15px rgba(0, 0, 0, 0.3),
     inset 0 0 5px rgba(255, 255, 255, 0.05);
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  outline: 4px solid rgba(255, 255, 255, 0);
 }
 
 /* Button glow effects */
@@ -1851,6 +1659,7 @@ body {
   opacity: 0;
   transition: opacity 0.4s ease;
   filter: blur(8px);
+  outline: 4px solid rgba(255, 255, 255, 0);
 }
 
 /* Button hover glow */
@@ -3002,7 +2811,7 @@ const cardsData = [
 let currentCards = [];
 let connections = [];
 let currentFilteredCards = [];
-let isSelectMode = false; // Tracks if we’re in selection mode
+let isSelectMode = false; // Tracks if we're in selection mode
 let selectedCards = new Set(); // Stores the IDs of selected cards
 
 // Track segregation state
@@ -3913,19 +3722,33 @@ function enableEditMode(cardElement, card) {
     saveBtn.textContent = 'Save Changes';
     saveBtn.onclick = (e) => {
       e.stopPropagation();
-      card.category = categoryInput.value.trim();
-      card.question = questionInput.value.trim();
-      card.answer = answerInput.value.trim();
-      saveCards();
-      renderCards();
+      
+      // Trigger close animation first
+      editContainer.classList.remove('expanded');
+      
+      // Add delay to allow animation to complete before updating
+      setTimeout(() => {
+        card.category = categoryInput.value.trim();
+        card.question = questionInput.value.trim();
+        card.answer = answerInput.value.trim();
+        saveCards();
+        renderCards();
+      }, 400); // Match this with transition time
     };
     const cancelBtn = document.createElement('button');
     cancelBtn.className = 'cancel-btn';
     cancelBtn.textContent = 'Cancel';
     cancelBtn.onclick = (e) => {
       e.stopPropagation();
-      cardInner.innerHTML = originalContent;
-      cardElement.classList.remove('editing');
+      
+      // Trigger close animation first
+      editContainer.classList.remove('expanded');
+      
+      // Wait for animation to complete before restoring original content
+      setTimeout(() => {
+        cardInner.innerHTML = originalContent;
+        cardElement.classList.remove('editing');
+      }, 400); // Match this with transition time
     };
     buttonGroup.appendChild(saveBtn);
     buttonGroup.appendChild(cancelBtn);
@@ -3968,6 +3791,11 @@ function enableEditMode(cardElement, card) {
     subcardsSection.appendChild(subcardsContainer);
     cardInner.innerHTML = '';
     cardInner.appendChild(editContainer);
+    
+    // Trigger animation after DOM update (using setTimeout with 0 delay)
+    setTimeout(() => {
+      editContainer.classList.add('expanded');
+    }, 10);
   }
 }
 
