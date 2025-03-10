@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implicit Function Plotter</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#1e40af',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="max-w-[2000px] mx-auto p-4 lg:p-6">
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- Left side - Graph -->
+            <div class="lg:w-2/3 bg-white rounded-2xl shadow-lg p-6">
+                <div id="plot" class="h-[800px] rounded-xl overflow-hidden border border-gray-200"></div>
+            </div>
+
+            <!-- Right side - Controls -->
+            <div class="lg:w-1/3 space-y-6">
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <div class="text-center mb-6">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">Implicit Function Plotter</h1>
+                        <p class="text-gray-600" id="latex-example"></p>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                            <div class="flex justify-between items-center mb-2">
+                                <label for="function-input" class="block text-sm font-medium text-gray-700">
+                                    Enter an implicit function:
+                                </label>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-sm text-gray-600">LaTeX Input:</span>
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="latex-toggle" class="sr-only peer">
+                                        <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <input type="text" 
+                                       id="function-input" 
+                                       class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+                                       placeholder="x^2 + y^2 = 9" 
+                                       value="x^2 + y^2 = 9">
+                            </div>
+                            <div id="latex-preview" class="mt-2 text-center text-gray-700 p-2 min-h-[40px]"></div>
+                            
+                            <div class="mt-2 grid grid-cols-4 gap-1">
+                                <button class="latex-symbol p-1 bg-gray-100 hover:bg-gray-200 rounded text-sm" data-symbol="x^2">x²</button>
+                                <button class="latex-symbol p-1 bg-gray-100 hover:bg-gray-200 rounded text-sm" data-symbol="y^2">y²</button>
+                                <button class="latex-symbol p-1 bg-gray-100 hover:bg-gray-200 rounded text-sm" data-symbol="\sin(x)">sin(x)</button>
+                                <button class="latex-symbol p-1 bg-gray-100 hover:bg-gray-200 rounded text-sm" data-symbol="\cos(y)">cos(y)</button>
+                                <button class="latex-symbol p-1 bg-gray-100 hover:bg-gray-200 rounded text-sm" data-symbol="\sqrt{x^2+y^2}">√(x²+y²)</button>
+                                <button class="latex-symbol p-1 bg-gray-100 hover:bg-gray-200 rounded text-sm" data-symbol="\frac{x}{y}">x/y</button>
+                                <button class="latex-symbol p-1 bg-gray-100 hover:bg-gray-200 rounded text-sm" data-symbol="\log(x)">log(x)</button>
+                                <button class="latex-symbol p-1 bg-gray-100 hover:bg-gray-200 rounded text-sm" data-symbol="e^{x}">e^x</button>
+                            </div>
+                            
+                            <div class="mt-2 text-xs text-gray-500">
+                                <span id="latex-guide" class="hidden">
+                                    Examples: x^2 + y^2 = 9, \sin(x*y) = x+y, x^3 - y^2 = 0
+                                </span>
+                                <span id="standard-guide">
+                                    Examples: x^2 + y^2 = 9, sin(x*y) = x+y, x^3 - y^2 = 0
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="space-y-2">
+                                <label class="block text-sm font-medium text-gray-700">X Range</label>
+                                <div class="flex space-x-2">
+                                    <div class="w-1/2">
+                                        <input type="number" id="x-min" value="-5" step="1"
+                                               class="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                                        <label class="text-xs text-gray-500 mt-1">Min</label>
+                                    </div>
+                                    <div class="w-1/2">
+                                        <input type="number" id="x-max" value="5" step="1"
+                                               class="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                                        <label class="text-xs text-gray-500 mt-1">Max</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="block text-sm font-medium text-gray-700">Y Range</label>
+                                <div class="flex space-x-2">
+                                    <div class="w-1/2">
+                                        <input type="number" id="y-min" value="-5" step="1"
+                                               class="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                                        <label class="text-xs text-gray-500 mt-1">Min</label>
+                                    </div>
+                                    <div class="w-1/2">
+                                        <input type="number" id="y-max" value="5" step="1"
+                                               class="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                                        <label class="text-xs text-gray-500 mt-1">Max</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="block text-sm font-medium text-gray-700">Resolution</label>
+                                <input type="number" id="resolution" value="100" min="20" max="500"
+                                       class="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                                <span class="text-xs text-gray-500">Range: 20-500</span>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-center">
+                            <button id="plot-button"
+                                    class="w-full px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-secondary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                                Plot Function
+                            </button>
+                        </div>
+
+                        <div id="error-message" class="text-red-600 font-medium text-center"></div>
+                    </div>
+                </div>
+
+                <!-- Examples section -->
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">Examples</h2>
+                    <div class="space-y-2" id="examples">
+                        <!-- Examples will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const plotButton = document.getElementById('plot-button');
+            const functionInput = document.getElementById('function-input');
+            const xMin = document.getElementById('x-min');
+            const xMax = document.getElementById('x-max');
+            const yMin = document.getElementById('y-min');
+            const yMax = document.getElementById('y-max');
+            const resolution = document.getElementById('resolution');
+            const errorMessage = document.getElementById('error-message');
+            const plotDiv = document.getElementById('plot');
+            const latexToggle = document.getElementById('latex-toggle');
+            const latexGuide = document.getElementById('latex-guide');
+            const standardGuide = document.getElementById('standard-guide');
+            
+            // LaTeX mode state
+            let isLatexMode = false;
+            
+            // Toggle between LaTeX and standard input
+            latexToggle.addEventListener('change', function() {
+                isLatexMode = latexToggle.checked;
+                
+                if (isLatexMode) {
+                    latexGuide.classList.remove('hidden');
+                    standardGuide.classList.add('hidden');
+                    functionInput.placeholder = "x^2 + y^2 = 9";
+                } else {
+                    latexGuide.classList.add('hidden');
+                    standardGuide.classList.remove('hidden');
+                    functionInput.placeholder = "x^2 + y^2 = 9";
+                }
+                
+                // Update the preview
+                updateLatexPreview();
+            });
+            
+            // Add LaTeX symbols to input
+            const latexSymbols = document.querySelectorAll('.latex-symbol');
+            latexSymbols.forEach(button => {
+                button.addEventListener('click', function() {
+                    const symbol = button.getAttribute('data-symbol');
+                    insertAtCursor(functionInput, symbol);
+                    updateLatexPreview();
+                });
+            });
+            
+            // Initial plot
+            plotImplicitFunction();
+
+            // Event listener for the plot button
+            plotButton.addEventListener('click', plotImplicitFunction);
+
+            function plotImplicitFunction() {
+                try {
+                    errorMessage.textContent = '';
+                    
+                    // Get input values
+                    const functionString = functionInput.value;
+                    const xMinVal = parseFloat(xMin.value);
+                    const xMaxVal = parseFloat(xMax.value);
+                    const yMinVal = parseFloat(yMin.value);
+                    const yMaxVal = parseFloat(yMax.value);
+                    const resolutionVal = parseInt(resolution.value);
+                    
+                    // Validate inputs
+                    if (isNaN(xMinVal) || isNaN(xMaxVal) || isNaN(yMinVal) || isNaN(yMaxVal) || isNaN(resolutionVal)) {
+                        throw new Error('Please enter valid numeric values for all fields.');
+                    }
+                    
+                    if (xMinVal >= xMaxVal || yMinVal >= yMaxVal) {
+                        throw new Error('Min values must be less than max values.');
+                    }
+                    
+                    if (resolutionVal < 20 || resolutionVal > 500) {
+                        throw new Error('Resolution must be between 20 and 500.');
+                    }
+                    
+                    // Parse the function
+                    let parsedFunction;
+                    if (isLatexMode) {
+                        parsedFunction = parseLatexFunction(functionString);
+                    } else {
+                        parsedFunction = parseImplicitFunction(functionString);
+                    }
+                    
+                    // Generate data for the contour plot
+                    const data = generateContourData(parsedFunction, xMinVal, xMaxVal, yMinVal, yMaxVal, resolutionVal);
+                    
+                    // Create the plot
+                    Plotly.newPlot(plotDiv, data, {
+                        title: {
+                            text: 'Implicit Function',
+                            font: {
+                                size: 24
+                            }
+                        },
+                        xaxis: {
+                            title: 'x',
+                            range: [xMinVal, xMaxVal],
+                            tickfont: {
+                                size: 14
+                            }
+                        },
+                        yaxis: {
+                            title: 'y',
+                            range: [yMinVal, yMaxVal],
+                            tickfont: {
+                                size: 14
+                            }
+                        },
+                        margin: {
+                            l: 50,
+                            r: 50,
+                            b: 50,
+                            t: 80,
+                            pad: 4
+                        }
+                    });
+                } catch (error) {
+                    errorMessage.textContent = error.message;
+                }
+            }
+
+            function parseImplicitFunction(functionString) {
+                // Check if the function contains an equals sign
+                if (functionString.includes('=')) {
+                    // Split the function into left and right sides
+                    const [leftSide, rightSide] = functionString.split('=').map(side => side.trim());
+                    
+                    // Create a function that returns the difference between the two sides
+                    // When this difference is 0, the implicit function is satisfied
+                    return `(${leftSide}) - (${rightSide})`;
+                } else {
+                    // If no equals sign, assume the function is already in the form f(x,y) = 0
+                    return functionString;
+                }
+            }
+            
+            function parseLatexFunction(latexString) {
+                // Convert LaTeX to math.js compatible syntax
+                let mathString = latexString
+                    // Replace LaTeX commands with JavaScript equivalents
+                    .replace(/\\sin/g, 'sin')
+                    .replace(/\\cos/g, 'cos')
+                    .replace(/\\tan/g, 'tan')
+                    .replace(/\\log/g, 'log')
+                    .replace(/\\ln/g, 'log')
+                    .replace(/\\exp/g, 'exp')
+                    .replace(/\\sqrt{([^}]*)}/g, 'sqrt($1)')
+                    .replace(/\\frac{([^}]*)}{([^}]*)}/g, '($1)/($2)')
+                    // Handle exponents
+                    .replace(/\^{([^}]*)}/g, '^($1)')
+                    // Remove any remaining braces
+                    .replace(/{/g, '(')
+                    .replace(/}/g, ')');
+                    
+                return parseImplicitFunction(mathString);
+            }
+
+            function generateContourData(functionExpression, xMin, xMax, yMin, yMax, resolution) {
+                // Create arrays for x and y values
+                const xStep = (xMax - xMin) / (resolution - 1);
+                const yStep = (yMax - yMin) / (resolution - 1);
+                
+                const xValues = Array.from({ length: resolution }, (_, i) => xMin + i * xStep);
+                const yValues = Array.from({ length: resolution }, (_, i) => yMin + i * yStep);
+                
+                // Create a 2D array for z values
+                const zValues = [];
+                
+                // Compile the function for better performance
+                const compiledFunction = math.compile(functionExpression);
+                
+                // Calculate z values for each (x,y) pair
+                for (let i = 0; i < resolution; i++) {
+                    const row = [];
+                    const y = yValues[i];
+                    
+                    for (let j = 0; j < resolution; j++) {
+                        const x = xValues[j];
+                        
+                        try {
+                            // Evaluate the function at (x,y)
+                            const z = compiledFunction.evaluate({ x, y });
+                            row.push(z);
+                        } catch (error) {
+                            // If there's an error evaluating the function, use NaN
+                            row.push(NaN);
+                        }
+                    }
+                    
+                    zValues.push(row);
+                }
+                
+                // Create the contour plot data
+                return [{
+                    type: 'contour',
+                    x: xValues,
+                    y: yValues,
+                    z: zValues,
+                    contours: {
+                        start: -0.001,  // Start slightly below 0
+                        end: 0.001,     // End slightly above 0
+                        size: 0.002,    // Small step size to get a thin line
+                        coloring: 'lines',
+                        showlabels: false
+                    },
+                    line: {
+                        width: 2,
+                        color: 'blue'
+                    },
+                    colorscale: [
+                        [0, 'rgba(0,0,255,0.8)'],
+                        [1, 'rgba(0,0,255,0.8)']
+                    ],
+                    showscale: false
+                }];
+            }
+            
+            function insertAtCursor(input, textToInsert) {
+                const startPos = input.selectionStart;
+                const endPos = input.selectionEnd;
+                const textBefore = input.value.substring(0, startPos);
+                const textAfter = input.value.substring(endPos, input.value.length);
+                
+                input.value = textBefore + textToInsert + textAfter;
+                
+                // Move cursor position after the inserted text
+                const newCursorPos = startPos + textToInsert.length;
+                input.selectionStart = newCursorPos;
+                input.selectionEnd = newCursorPos;
+                input.focus();
+            }
+
+            // Add LaTeX preview functionality
+            const latexPreview = document.getElementById('latex-preview');
+            const latexExample = document.getElementById('latex-example');
+
+            // Show initial LaTeX example
+            katex.render("f(x,y) = 0", latexExample);
+
+            // Update LaTeX preview when input changes
+            functionInput.addEventListener('input', updateLatexPreview);
+            
+            function updateLatexPreview() {
+                try {
+                    let latex;
+                    if (isLatexMode) {
+                        // If already in LaTeX mode, just render the input
+                        latex = functionInput.value;
+                    } else {
+                        // Convert standard notation to LaTeX
+                        latex = functionInput.value
+                            .replace(/\^/g, '^{')  // Add braces for exponents
+                            .replace(/(\d+|\})/g, '$1}')  // Close the braces
+                            .replace(/\}\}/g, '}')  // Fix double closing braces
+                            .replace(/sin/g, '\\sin')  // Convert trig functions to LaTeX
+                            .replace(/cos/g, '\\cos')
+                            .replace(/tan/g, '\\tan')
+                            .replace(/sqrt/g, '\\sqrt');
+                    }
+                    katex.render(latex, latexPreview);
+                } catch (e) {
+                    latexPreview.textContent = '';
+                }
+            }
+
+            // Add example functions
+            const examples = [
+                { tex: "x^2 + y^2 = 9", func: "x^2 + y^2 = 9", latex: "x^2 + y^2 = 9" },
+                { tex: "\\sin(xy) = x + y", func: "sin(x*y) = x + y", latex: "\\sin(xy) = x + y" },
+                { tex: "x^3 - y^2 = 0", func: "x^3 - y^2 = 0", latex: "x^3 - y^2 = 0" },
+                { tex: "\\frac{x^2}{a^2} + \\frac{y^2}{b^2} = 1", func: "x^2/4 + y^2/9 = 1", latex: "\\frac{x^2}{4} + \\frac{y^2}{9} = 1" }
+            ];
+
+            const examplesContainer = document.getElementById('examples');
+            examples.forEach(example => {
+                const div = document.createElement('div');
+                div.className = 'p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors duration-200';
+                
+                const katexElement = document.createElement('div');
+                katex.render(example.tex, katexElement);
+                
+                div.appendChild(katexElement);
+                div.addEventListener('click', () => {
+                    functionInput.value = isLatexMode ? example.latex : example.func;
+                    updateLatexPreview();
+                    plotImplicitFunction();
+                });
+                
+                examplesContainer.appendChild(div);
+            });
+
+            // Trigger initial LaTeX preview
+            updateLatexPreview();
+        });
+    </script>
+</body>
+</html> 
