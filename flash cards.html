@@ -141,7 +141,7 @@
       transform-style: preserve-3d;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
       border-radius: 10px;
-      background: linear-gradient(135deg, #000000, #004e92);
+      background: linear-gradient(135deg, #ffffff, #ffffff);
     }
 
     .flashcard.flipped .flashcard-inner {
@@ -2738,6 +2738,9 @@ body {
       <button onclick="shuffleCards()">Shuffle Cards</button>
       <button onclick="startPracticeMode()">Let's Practice</button>
       <button onclick="enterConnexionMode()">Make Connexions</button>
+      <button id="exportBtn" onclick="exportCards()">Export Cards</button>
+      <input type="file" id="importFile" accept=".json" onchange="importCards(event)" style="display: none;">
+      <button id="importBtn" onclick="document.getElementById('importFile').click()">Import Cards</button>
       <select id="filterCategory" onchange="renderCards()">
         <option value="all">Show All Categories</option>
       </select>
@@ -3156,6 +3159,54 @@ function closeNoteModal() {
   document.getElementById('noteModal').style.display = 'none';
 }
 
+function exportCards() {
+      const data = {
+        cards: currentCards,
+        connections: connections
+      };
+      const json = JSON.stringify(data, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'flashcards_export.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function importCards(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (!data.cards || !Array.isArray(data.cards)) {
+            throw new Error('Invalid file format: Missing or invalid cards array');
+          }
+          currentCards = data.cards.map(card => ({
+            ...card,
+            id: card.id || Date.now().toString(),
+            createdAt: card.createdAt || new Date().toISOString(),
+            subcards: Array.isArray(card.subcards) ? card.subcards.map(subcard => ({
+              ...subcard,
+              id: subcard.id || Date.now().toString()
+            })) : []
+          }));
+          connections = Array.isArray(data.connections) ? data.connections : [];
+          saveCards();
+          saveConnections();
+          filterCards();
+          alert('Cards imported successfully!');
+        } catch (error) {
+          alert('Error importing cards: ' + error.message);
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = ''; // Reset file input
+    }
 /******************************
  * Edit Panel Modal Functions *
  ******************************/
