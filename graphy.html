@@ -426,6 +426,148 @@
         padding: 12px;
         font-size: 14px;
       }
+      
+      /* Implicit Function Program Overlay */
+      .implicit-program-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #2b1055, #7597de);
+        z-index: 1000;
+        display: none;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+        overflow: hidden;
+      }
+      
+      .implicit-program-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+      }
+      
+      .implicit-program-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      
+      .implicit-program-title {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #fff;
+        background: linear-gradient(135deg, #9e86ff, #4c2c8c);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      }
+      
+      .implicit-back-btn {
+        background: linear-gradient(90deg, #ff8a80, #ff5252);
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 25px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 82, 82, 0.3);
+      }
+      
+      .implicit-back-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 82, 82, 0.5);
+      }
+      
+      .implicit-program-content {
+        position: relative;
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+      }
+      
+      .implicit-program-iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        z-index: 5;
+      }
+      
+      /* Animation classes */
+      .fade-in {
+        display: block;
+        animation: fadeIn 0.5s forwards;
+      }
+      
+      .fade-out {
+        animation: fadeOut 0.5s forwards;
+      }
+      
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      
+      @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; display: none; }
+      }
+      
+      /* Loading spinner styles */
+      .loading-spinner-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: rgba(43, 16, 85, 0.9);
+        color: white;
+        z-index: 10;
+        border-radius: 12px;
+        transition: opacity 0.5s ease;
+      }
+      
+      .loading-spinner-container h3 {
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        color: #fff;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        background: linear-gradient(135deg, #9e86ff, #4c2c8c);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      
+      .loading-spinner {
+        width: 60px;
+        height: 60px;
+        border: 5px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top: 5px solid #9e86ff;
+        animation: spin 1s linear infinite;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      .loading-hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
     </style>
   </head>
   <body onload="brython()">
@@ -730,6 +872,27 @@
       </div>
     </div>
 
+    <!-- Implicit Function Program Overlay -->
+    <div id="implicitProgramOverlay" class="implicit-program-overlay">
+      <div class="implicit-program-container">
+        <div class="implicit-program-header">
+          <div class="implicit-program-title">Implicit Function Explorer</div>
+          <button id="implicitBackBtn" class="implicit-back-btn">← Back to Graph Creator</button>
+        </div>
+        <div class="implicit-program-content">
+          <div id="loadingIndicator" class="loading-spinner-container">
+            <h3>Loading Implicit Function Explorer...</h3>
+            <div class="loading-spinner"></div>
+          </div>
+          <iframe id="implicitProgramFrame" class="implicit-program-iframe" src="" 
+                  frameborder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowfullscreen
+                  sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
+        </div>
+      </div>
+    </div>
+
     <!-- Brython Script -->
     <script type="text/python">
       from browser import document, alert, window
@@ -742,8 +905,6 @@
           except Exception:
               pass
 
-      # Build chart configuration
-      # Build chart configuration
       # Build chart configuration
       def build_chart_config(data_points, dataset_label):
           chart_type = document["chartType"].value
@@ -862,7 +1023,6 @@
           except Exception:
               pass
 
-      # Create graph from data input
       # Create graph from data input
       def create_graph_data(event):
           x_input = document["xValues"].value
@@ -1143,7 +1303,78 @@
       def toggle_additional_inputs(event):
           eq_type = document["equationType"].value
           document["parametricInputs"].style.display = "block" if eq_type == "parametric" else "none"
-          document["implicitInput"].style.display = "block" if eq_type == "implicit" else "none"
+          
+          # If implicit is selected, show the external program instead of the normal inputs
+          if eq_type == "implicit":
+              document["implicitInput"].style.display = "none"
+              show_implicit_program()
+          else:
+              document["implicitInput"].style.display = "block" if eq_type == "implicit" else "none"
+      
+      # Show the implicit function program with animation
+      def show_implicit_program():
+          # Get the iframe and loading elements
+          implicit_frame = document["implicitProgramFrame"]
+          loading_indicator = document["loadingIndicator"]
+          
+          # Show the loading indicator
+          loading_indicator.classList.remove("loading-hidden")
+          
+          # Set up the overlay first
+          overlay = document["implicitProgramOverlay"]
+          overlay.classList.remove("fade-out")
+          overlay.style.display = "block"
+          
+          # Define the iframe load handler
+          def on_frame_load(evt):
+              # Hide loading indicator when frame is loaded
+              loading_indicator.classList.add("loading-hidden")
+          
+          def on_frame_error(evt):
+              alert("Failed to load the implicit function program. Please check the URL.")
+              hide_implicit_program()
+          
+          # Bind the load and error events
+          implicit_frame.bind("load", on_frame_load)
+          implicit_frame.bind("error", on_frame_error)
+          
+          # Use setTimeout to ensure display is applied before animation
+          def show_animation():
+              overlay.classList.add("fade-in")
+              # Apply body styles to prevent scrolling while overlay is shown
+              document.body.style.overflow = "hidden"
+              
+              # Set the iframe source after the overlay is visible
+              # Use a direct URL to the external content
+              implicit_frame.src = "https://absaraltaf123.github.io/absar-/filetype.html"
+          
+          window.setTimeout(show_animation, 10)
+      
+      # Hide the implicit function program with animation
+      def hide_implicit_program(event=None):
+          overlay = document["implicitProgramOverlay"]
+          implicit_frame = document["implicitProgramFrame"]
+          
+          # Clear the iframe source to stop any running processes
+          implicit_frame.src = ""
+          
+          overlay.classList.remove("fade-in")
+          overlay.classList.add("fade-out")
+          
+          # Restore body scrolling
+          document.body.style.overflow = ""
+          
+          # After animation completes, hide the overlay
+          def hide_overlay():
+              overlay.style.display = "none"
+              document["loadingIndicator"].classList.remove("loading-hidden")
+          
+          window.setTimeout(hide_overlay, 500)  # Match the animation duration (0.5s)
+          
+          # Reset equation type to explicit
+          document["equationType"].value = "explicit"
+          document["parametricInputs"].style.display = "none"
+          document["implicitInput"].style.display = "none"
 
       # Plot additional equations
       def plot_additional_equation(event):
@@ -1227,6 +1458,7 @@
       document["plotAdditionalBtn"].bind("click", plot_additional_equation)
       document["data-tab"].bind("click", on_tab_change)
       document["equation-tab"].bind("click", on_tab_change)
+      document["implicitBackBtn"].bind("click", hide_implicit_program)
     </script>
 
     <!-- Bootstrap JS -->
