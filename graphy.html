@@ -266,10 +266,37 @@
       @media (max-width: 768px) {
         .content-wrapper {
           flex-direction: column;
+          overflow: hidden;
+          position: relative;
+          height: 100%;
         }
-        .graph-panel, .input-panel {
+        .graph-panel {
+          flex: none;
+          height: 40vh; /* Fixed height for graph panel */
+          position: sticky;
+          top: 0;
+          z-index: 10;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .input-panel {
           flex: 1;
-          height: 50%;
+          height: 60vh; /* Remaining space for controls */
+          overflow-y: auto; /* Enable scrolling */
+          position: relative;
+          padding-bottom: 20px; /* Add some padding at the bottom */
+        }
+        /* Fix for nested input panel */
+        .input-panel .input-panel {
+          height: auto;
+          overflow: visible;
+        }
+        /* Ensure enough space for all form elements */
+        #moreOptionsContainer {
+          padding-bottom: 50px;
+        }
+        /* Add smooth scrolling to make touch interactions feel better */
+        * {
+          -webkit-overflow-scrolling: touch;
         }
       }
       .custom-nav {
