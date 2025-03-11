@@ -3,142 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Implicit Function Plotter</title>
+    <title>Implicit Function Explorer</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <style>
+        @media (max-width: 768px) {
+            #plot {
+                height: 50vh !important;
+                min-height: 300px;
+            }
+        }
+    </style>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#2563eb',
-                        secondary: '#1e40af',
+                        primary: '#6366f1',
+                        secondary: '#4f46e5',
+                        accent: '#f472b6',
+                        background: {
+                            dark: '#1e1b4b',
+                            light: '#f5f3ff'
+                        }
                     }
                 }
             }
         }
     </script>
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <div class="max-w-[2000px] mx-auto p-4 lg:p-6">
-        <div class="flex flex-col lg:flex-row gap-6">
+<body class="bg-gradient-to-br from-purple-900 to-indigo-800 min-h-screen text-white">
+    <div class="max-w-7xl mx-auto p-4">
+        <div class="flex items-center justify-between mb-4">
+            <h1 class="text-2xl md:text-3xl font-bold">Implicit Function Explorer</h1>
+            <button class="bg-accent hover:bg-pink-500 text-white px-4 py-2 rounded-full text-sm flex items-center transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                Back to Graph Creator
+            </button>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-4">
             <!-- Left side - Graph -->
-            <div class="lg:w-2/3 bg-white rounded-2xl shadow-lg p-6">
-                <div id="plot" class="h-[800px] rounded-xl overflow-hidden border border-gray-200"></div>
+            <div class="w-full lg:w-3/5 bg-white rounded-xl shadow-xl overflow-hidden">
+                <div id="plot" class="h-[400px] md:h-[500px] lg:h-[600px] w-full rounded-lg"></div>
             </div>
 
             <!-- Right side - Controls -->
-            <div class="lg:w-1/3 space-y-6">
-                <div class="bg-white rounded-2xl shadow-lg p-6">
-                    <div class="text-center mb-6">
-                        <h1 class="text-3xl font-bold text-gray-900 mb-2">Implicit Function Plotter</h1>
-                        <p class="text-gray-600" id="latex-example"></p>
+            <div class="w-full lg:w-2/5 bg-white rounded-xl shadow-xl overflow-hidden text-gray-800">
+                <div class="p-4 md:p-6">
+                    <div class="text-center mb-4">
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-2">Implicit Function Plotter</h2>
+                        <div id="latex-example" class="text-gray-600"></div>
                     </div>
                     
-                    <div class="space-y-6">
-                        <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                    <div class="space-y-4">
+                        <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
                             <div class="flex justify-between items-center mb-2">
                                 <label for="function-input" class="block text-sm font-medium text-gray-700">
                                     Enter an implicit function:
                                 </label>
                                 <div class="flex items-center space-x-2">
-                                    <span class="text-sm text-gray-600">LaTeX Input:</span>
+                                    <span class="text-xs text-gray-600">LaTeX:</span>
                                     <label class="inline-flex items-center cursor-pointer">
                                         <input type="checkbox" id="latex-toggle" class="sr-only peer">
-                                        <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                        <div class="relative w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
                                     </label>
                                 </div>
                             </div>
                             <div class="mt-1 relative rounded-md shadow-sm">
                                 <input type="text" 
                                        id="function-input" 
-                                       class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+                                       class="block w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
                                        placeholder="x^2 + y^2 = 9" 
                                        value="x^2 + y^2 = 9">
                             </div>
-                            <div id="latex-preview" class="mt-2 text-center text-gray-700 p-2 min-h-[40px]"></div>
+                            <div id="latex-preview" class="mt-2 text-center text-gray-700 p-2 min-h-[30px]"></div>
                             
                             <div class="mt-2 grid grid-cols-4 gap-1">
-                                <button class="latex-symbol p-1 bg-gray-100 hover:bg-gray-200 rounded text-sm" data-symbol="x^2">x²</button>
-                                <button class="latex-symbol p-1 bg-gray-100 hover:bg-gray-200 rounded text-sm" data-symbol="y^2">y²</button>
-                                <button class="latex-symbol p-1 bg-gray-100 hover:bg-gray-200 rounded text-sm" data-symbol="\sin(x)">sin(x)</button>
-                                <button class="latex-symbol p-1 bg-gray-100 hover:bg-gray-200 rounded text-sm" data-symbol="\cos(y)">cos(y)</button>
-                                <button class="latex-symbol p-1 bg-gray-100 hover:bg-gray-200 rounded text-sm" data-symbol="\sqrt{x^2+y^2}">√(x²+y²)</button>
-                                <button class="latex-symbol p-1 bg-gray-100 hover:bg-gray-200 rounded text-sm" data-symbol="\frac{x}{y}">x/y</button>
-                                <button class="latex-symbol p-1 bg-gray-100 hover:bg-gray-200 rounded text-sm" data-symbol="\log(x)">log(x)</button>
-                                <button class="latex-symbol p-1 bg-gray-100 hover:bg-gray-200 rounded text-sm" data-symbol="e^{x}">e^x</button>
+                                <button class="latex-symbol p-1 bg-gray-100 hover:bg-gray-200 rounded text-xs" data-symbol="x^2">x²</button>
+                                <button class="latex-symbol p-1 bg-gray-100 hover:bg-gray-200 rounded text-xs" data-symbol="y^2">y²</button>
+                                <button class="latex-symbol p-1 bg-gray-100 hover:bg-gray-200 rounded text-xs" data-symbol="sin(x)">sin(x)</button>
+                                <button class="latex-symbol p-1 bg-gray-100 hover:bg-gray-200 rounded text-xs" data-symbol="cos(y)">cos(y)</button>
+                                <button class="latex-symbol p-1 bg-gray-100 hover:bg-gray-200 rounded text-xs" data-symbol="sqrt(x^2+y^2)">√(x²+y²)</button>
+                                <button class="latex-symbol p-1 bg-gray-100 hover:bg-gray-200 rounded text-xs" data-symbol="x/y">x/y</button>
+                                <button class="latex-symbol p-1 bg-gray-100 hover:bg-gray-200 rounded text-xs" data-symbol="log(x)">log(x)</button>
+                                <button class="latex-symbol p-1 bg-gray-100 hover:bg-gray-200 rounded text-xs" data-symbol="e^x">e^x</button>
                             </div>
                             
-                            <div class="mt-2 text-xs text-gray-500">
-                                <span id="latex-guide" class="hidden">
-                                    Examples: x^2 + y^2 = 9, \sin(x*y) = x+y, x^3 - y^2 = 0
-                                </span>
-                                <span id="standard-guide">
-                                    Examples: x^2 + y^2 = 9, sin(x*y) = x+y, x^3 - y^2 = 0
-                                </span>
+                            <div class="mt-1 text-xs text-gray-500">
+                                Examples: x^2 + y^2 = 9, sin(x*y) = x+y
                             </div>
                         </div>
 
-                        <div class="space-y-4">
-                            <div class="space-y-2">
-                                <label class="block text-sm font-medium text-gray-700">X Range</label>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-1">
+                                <label class="block text-xs font-medium text-gray-700">X Range</label>
                                 <div class="flex space-x-2">
                                     <div class="w-1/2">
                                         <input type="number" id="x-min" value="-5" step="1"
-                                               class="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
-                                        <label class="text-xs text-gray-500 mt-1">Min</label>
+                                               class="block w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                                        <label class="text-xs text-gray-500">Min</label>
                                     </div>
                                     <div class="w-1/2">
                                         <input type="number" id="x-max" value="5" step="1"
-                                               class="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
-                                        <label class="text-xs text-gray-500 mt-1">Max</label>
+                                               class="block w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                                        <label class="text-xs text-gray-500">Max</label>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="space-y-2">
-                                <label class="block text-sm font-medium text-gray-700">Y Range</label>
+                            <div class="space-y-1">
+                                <label class="block text-xs font-medium text-gray-700">Y Range</label>
                                 <div class="flex space-x-2">
                                     <div class="w-1/2">
                                         <input type="number" id="y-min" value="-5" step="1"
-                                               class="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
-                                        <label class="text-xs text-gray-500 mt-1">Min</label>
+                                               class="block w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                                        <label class="text-xs text-gray-500">Min</label>
                                     </div>
                                     <div class="w-1/2">
                                         <input type="number" id="y-max" value="5" step="1"
-                                               class="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
-                                        <label class="text-xs text-gray-500 mt-1">Max</label>
+                                               class="block w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                                        <label class="text-xs text-gray-500">Max</label>
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="space-y-2">
-                                <label class="block text-sm font-medium text-gray-700">Resolution</label>
-                                <input type="number" id="resolution" value="100" min="20" max="500"
-                                       class="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
-                                <span class="text-xs text-gray-500">Range: 20-500</span>
-                            </div>
+                        <div class="space-y-1">
+                            <label class="block text-xs font-medium text-gray-700">Resolution</label>
+                            <input type="number" id="resolution" value="100" min="20" max="500"
+                                   class="block w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                            <span class="text-xs text-gray-500">Range: 20-500</span>
                         </div>
 
                         <div class="flex justify-center">
                             <button id="plot-button"
-                                    class="w-full px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-secondary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                                    class="w-full px-4 py-2 bg-primary text-white font-medium text-sm rounded-lg hover:bg-secondary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
                                 Plot Function
                             </button>
                         </div>
 
-                        <div id="error-message" class="text-red-600 font-medium text-center"></div>
+                        <div id="error-message" class="text-red-600 font-medium text-center text-sm"></div>
                     </div>
-                </div>
-
-                <!-- Examples section -->
-                <div class="bg-white rounded-2xl shadow-lg p-6">
-                    <h2 class="text-xl font-bold text-gray-900 mb-4">Examples</h2>
-                    <div class="space-y-2" id="examples">
-                        <!-- Examples will be populated by JavaScript -->
+                    
+                    <!-- Examples section - Horizontal scroll on mobile -->
+                    <div class="mt-4">
+                        <h3 class="text-sm font-bold text-gray-900 mb-2">Examples</h3>
+                        <div class="overflow-x-auto pb-2">
+                            <div class="flex space-x-2" id="examples" style="min-width: max-content">
+                                <!-- Examples will be populated by JavaScript -->
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -157,8 +177,6 @@
             const errorMessage = document.getElementById('error-message');
             const plotDiv = document.getElementById('plot');
             const latexToggle = document.getElementById('latex-toggle');
-            const latexGuide = document.getElementById('latex-guide');
-            const standardGuide = document.getElementById('standard-guide');
             
             // LaTeX mode state
             let isLatexMode = false;
@@ -166,18 +184,6 @@
             // Toggle between LaTeX and standard input
             latexToggle.addEventListener('change', function() {
                 isLatexMode = latexToggle.checked;
-                
-                if (isLatexMode) {
-                    latexGuide.classList.remove('hidden');
-                    standardGuide.classList.add('hidden');
-                    functionInput.placeholder = "x^2 + y^2 = 9";
-                } else {
-                    latexGuide.classList.add('hidden');
-                    standardGuide.classList.remove('hidden');
-                    functionInput.placeholder = "x^2 + y^2 = 9";
-                }
-                
-                // Update the preview
                 updateLatexPreview();
             });
             
@@ -238,30 +244,31 @@
                         title: {
                             text: 'Implicit Function',
                             font: {
-                                size: 24
+                                size: 18
                             }
                         },
                         xaxis: {
                             title: 'x',
                             range: [xMinVal, xMaxVal],
                             tickfont: {
-                                size: 14
+                                size: 12
                             }
                         },
                         yaxis: {
                             title: 'y',
                             range: [yMinVal, yMaxVal],
                             tickfont: {
-                                size: 14
+                                size: 12
                             }
                         },
                         margin: {
-                            l: 50,
-                            r: 50,
-                            b: 50,
-                            t: 80,
+                            l: 40,
+                            r: 40,
+                            b: 40,
+                            t: 60,
                             pad: 4
-                        }
+                        },
+                        responsive: true
                     });
                 } catch (error) {
                     errorMessage.textContent = error.message;
@@ -354,11 +361,11 @@
                     },
                     line: {
                         width: 2,
-                        color: 'blue'
+                        color: '#4f46e5'
                     },
                     colorscale: [
-                        [0, 'rgba(0,0,255,0.8)'],
-                        [1, 'rgba(0,0,255,0.8)']
+                        [0, 'rgba(79, 70, 229, 0.8)'],
+                        [1, 'rgba(79, 70, 229, 0.8)']
                     ],
                     showscale: false
                 }];
@@ -414,23 +421,23 @@
 
             // Add example functions
             const examples = [
-                { tex: "x^2 + y^2 = 9", func: "x^2 + y^2 = 9", latex: "x^2 + y^2 = 9" },
-                { tex: "\\sin(xy) = x + y", func: "sin(x*y) = x + y", latex: "\\sin(xy) = x + y" },
-                { tex: "x^3 - y^2 = 0", func: "x^3 - y^2 = 0", latex: "x^3 - y^2 = 0" },
-                { tex: "\\frac{x^2}{a^2} + \\frac{y^2}{b^2} = 1", func: "x^2/4 + y^2/9 = 1", latex: "\\frac{x^2}{4} + \\frac{y^2}{9} = 1" }
+                { tex: "x^2 + y^2 = 9", func: "x^2 + y^2 = 9" },
+                { tex: "\\sin(xy) = x + y", func: "sin(x*y) = x + y" },
+                { tex: "x^3 - y^2 = 0", func: "x^3 - y^2 = 0" },
+                { tex: "\\frac{x^2}{4} + \\frac{y^2}{9} = 1", func: "x^2/4 + y^2/9 = 1" }
             ];
 
             const examplesContainer = document.getElementById('examples');
             examples.forEach(example => {
                 const div = document.createElement('div');
-                div.className = 'p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors duration-200';
+                div.className = 'p-2 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors duration-200 bg-white flex-shrink-0 w-32';
                 
                 const katexElement = document.createElement('div');
                 katex.render(example.tex, katexElement);
                 
                 div.appendChild(katexElement);
                 div.addEventListener('click', () => {
-                    functionInput.value = isLatexMode ? example.latex : example.func;
+                    functionInput.value = isLatexMode ? example.tex : example.func;
                     updateLatexPreview();
                     plotImplicitFunction();
                 });
@@ -438,9 +445,14 @@
                 examplesContainer.appendChild(div);
             });
 
+            // Make the plot responsive to window resize
+            window.addEventListener('resize', function() {
+                Plotly.Plots.resize(plotDiv);
+            });
+
             // Trigger initial LaTeX preview
             updateLatexPreview();
         });
     </script>
 </body>
-</html> 
+</html>
