@@ -179,6 +179,110 @@
         pointer-events: none;
         z-index: 0;
       }
+
+      /* Enhanced Canvas Styling */
+      canvas#myChart {
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 16px;
+        background: linear-gradient(120deg, rgba(22, 22, 30, 0.95), rgba(38, 38, 55, 0.95));
+        box-shadow: 
+          0 10px 30px rgba(0, 0, 0, 0.2),
+          0 0 15px rgba(160, 68, 255, 0.2);
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        animation: chart-glow 6s ease-in-out infinite alternate;
+      }
+
+      canvas#myChart:hover {
+        box-shadow: 
+          0 15px 40px rgba(0, 0, 0, 0.3),
+          0 0 20px rgba(160, 68, 255, 0.4);
+        transform: translateY(-5px) scale(1.01);
+      }
+
+      @keyframes chart-glow {
+        0% {
+          box-shadow: 
+            0 10px 30px rgba(0, 0, 0, 0.2),
+            0 0 15px rgba(160, 68, 255, 0.2);
+        }
+        100% {
+          box-shadow:
+            0 10px 30px rgba(0, 0, 0, 0.3),
+            0 0 25px rgba(160, 68, 255, 0.5);
+        }
+      }
+
+      /* Chart Overlay Effects */
+      .chart-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+        border-radius: 16px;
+        background: 
+          radial-gradient(circle at top right, rgba(160, 68, 255, 0.08), transparent 50%),
+          radial-gradient(circle at bottom left, rgba(106, 48, 147, 0.08), transparent 50%);
+      }
+      
+      /* Background grid animation for the chart */
+      .graph-content::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+          linear-gradient(90deg, rgba(50, 50, 70, 0.03) 1px, transparent 1px),
+          linear-gradient(rgba(50, 50, 70, 0.03) 1px, transparent 1px);
+        background-size: 20px 20px;
+        z-index: -1;
+        animation: gridMove 60s linear infinite;
+        opacity: 0.5;
+      }
+      
+      @keyframes gridMove {
+        0% { background-position: 0 0; }
+        100% { background-position: 20px 20px; }
+      }
+      
+      /* Enhanced data point highlight */
+      .highlight-point {
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: rgba(160, 68, 255, 0.8);
+        transform: translate(-50%, -50%);
+        box-shadow: 0 0 15px rgba(160, 68, 255, 0.6);
+        pointer-events: none;
+        opacity: 0;
+        z-index: 10;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      
+      @keyframes pulse {
+        0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.4; }
+        50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+        100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.4; }
+      }
+      
+      /* Graph reveal animation */
+      .graph-reveal {
+        animation: revealGraph 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      
+      @keyframes revealGraph {
+        0% { opacity: 0; transform: scale(0.9) translateY(20px); }
+        100% { opacity: 1; transform: scale(1) translateY(0); }
+      }
+      
       .input-panel {
         flex: 1;
         background: #1e1e1e;
@@ -598,6 +702,49 @@
         opacity: 0;
         pointer-events: none;
       }
+
+      /* Add loading effect styles */
+      .graph-loading {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(20, 20, 30, 0.8);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border-radius: 12px;
+        z-index: 50;
+        transition: opacity 0.3s ease;
+      }
+
+      .graph-loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        border-top: 4px solid #9e86ff;
+        animation: spin 1s linear infinite;
+        margin-bottom: 15px;
+      }
+
+      .graph-loading-text {
+        color: #ffffff;
+        font-family: "Fira Code", monospace;
+        font-size: 16px;
+        letter-spacing: 1px;
+        background: linear-gradient(135deg, #9e86ff, #4c2c8c);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
     </style>
   </head>
   <body onload="brython()">
@@ -692,6 +839,107 @@
                       <span id="paramCValue">0</span>
                     </div>
                     <button id="updateEquationWithParams" class="btn btn-primary">Update Equation</button>
+                    <hr />
+                    
+                    <!-- DERIVATIVE VISUALIZATION SECTION -->
+                    <h5>Derivative Visualization</h5>
+                    <div class="mb-3">
+                      <label class="form-label">Show Derivative:</label>
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="showDerivative" />
+                        <label class="form-check-label" for="showDerivative">Display derivative curve</label>
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="derivativeColor" class="form-label">Derivative Color:</label>
+                      <input type="color" id="derivativeColor" class="form-control" value="#ff5252" />
+                    </div>
+                    <div class="mb-3">
+                      <label for="derivativeWidth" class="form-label">Derivative Line Width:</label>
+                      <input type="range" id="derivativeWidth" class="form-range" min="1" max="5" step="0.5" value="2" />
+                      <span id="derivativeWidthValue">2</span>
+                    </div>
+                    <div class="mb-3">
+                      <button id="calculateDerivativeBtn" class="btn btn-primary">Show Derivative</button>
+                    </div>
+                    <hr />
+                    
+                    <!-- PROBABILITY DISTRIBUTIONS SECTION -->
+                    <h5>Probability Distributions</h5>
+                    <div class="mb-3">
+                      <label for="distributionType" class="form-label">Distribution Type:</label>
+                      <select id="distributionType" class="form-control">
+                        <option value="normal">Normal (Gaussian) Distribution</option>
+                        <option value="uniform">Uniform Distribution</option>
+                        <option value="exponential">Exponential Distribution</option>
+                        <option value="poisson">Poisson Distribution</option>
+                        <option value="binomial">Binomial Distribution</option>
+                      </select>
+                    </div>
+                    
+                    <!-- Normal Distribution Parameters -->
+                    <div id="normalParams" class="distribution-params">
+                      <div class="mb-3">
+                        <label for="normalMean" class="form-label">Mean (μ):</label>
+                        <input type="range" id="normalMean" class="form-range" min="-5" max="5" step="0.1" value="0" />
+                        <span id="normalMeanValue">0</span>
+                      </div>
+                      <div class="mb-3">
+                        <label for="normalStdDev" class="form-label">Standard Deviation (σ):</label>
+                        <input type="range" id="normalStdDev" class="form-range" min="0.1" max="3" step="0.1" value="1" />
+                        <span id="normalStdDevValue">1</span>
+                      </div>
+                    </div>
+                    
+                    <!-- Uniform Distribution Parameters -->
+                    <div id="uniformParams" class="distribution-params" style="display: none;">
+                      <div class="mb-3">
+                        <label for="uniformMin" class="form-label">Minimum (a):</label>
+                        <input type="range" id="uniformMin" class="form-range" min="-5" max="0" step="0.1" value="-1" />
+                        <span id="uniformMinValue">-1</span>
+                      </div>
+                      <div class="mb-3">
+                        <label for="uniformMax" class="form-label">Maximum (b):</label>
+                        <input type="range" id="uniformMax" class="form-range" min="0" max="5" step="0.1" value="1" />
+                        <span id="uniformMaxValue">1</span>
+                      </div>
+                    </div>
+                    
+                    <!-- Exponential Distribution Parameters -->
+                    <div id="exponentialParams" class="distribution-params" style="display: none;">
+                      <div class="mb-3">
+                        <label for="exponentialRate" class="form-label">Rate (λ):</label>
+                        <input type="range" id="exponentialRate" class="form-range" min="0.1" max="2" step="0.1" value="1" />
+                        <span id="exponentialRateValue">1</span>
+                      </div>
+                    </div>
+                    
+                    <!-- Poisson Distribution Parameters -->
+                    <div id="poissonParams" class="distribution-params" style="display: none;">
+                      <div class="mb-3">
+                        <label for="poissonLambda" class="form-label">Lambda (λ):</label>
+                        <input type="range" id="poissonLambda" class="form-range" min="0.1" max="10" step="0.1" value="3" />
+                        <span id="poissonLambdaValue">3</span>
+                      </div>
+                    </div>
+                    
+                    <!-- Binomial Distribution Parameters -->
+                    <div id="binomialParams" class="distribution-params" style="display: none;">
+                      <div class="mb-3">
+                        <label for="binomialN" class="form-label">Number of Trials (n):</label>
+                        <input type="range" id="binomialN" class="form-range" min="1" max="30" step="1" value="10" />
+                        <span id="binomialNValue">10</span>
+                      </div>
+                      <div class="mb-3">
+                        <label for="binomialP" class="form-label">Success Probability (p):</label>
+                        <input type="range" id="binomialP" class="form-range" min="0.01" max="0.99" step="0.01" value="0.5" />
+                        <span id="binomialPValue">0.5</span>
+                      </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <button id="plotDistributionBtn" class="btn btn-primary">Plot Distribution</button>
+                    </div>
                     <hr />
                     <h5>Implicit and Parametric Equations</h5>
                     <div class="mb-3">
@@ -948,15 +1196,43 @@
           x_scale_type = "linear" if x_axis_type == "Numeric" else "category"
           y_scale_type = "linear" if y_axis_type == "Numeric" else "category"
           
-          # For pie charts, we need to handle colors differently
+          # Define beautiful color palettes for charts
+          elegant_palettes = {
+              "neon": ["#ff00cc", "#9933ff", "#00ccff", "#33ff33", "#ff3399", "#ffcc00"],
+              "pastel": ["#FFB6C1", "#FFD700", "#87CEFA", "#98FB98", "#DDA0DD", "#FFDAB9"],
+              "gradient": ["#9333ea", "#7e22ce", "#6d28d9", "#4f46e5", "#4338ca", "#3b82f6"],
+              "ocean": ["#0ea5e9", "#0284c7", "#0369a1", "#075985", "#0c4a6e", "#082f49"],
+              "sunset": ["#f97316", "#ea580c", "#c2410c", "#9a3412", "#7c2d12", "#ef4444"],
+              "forest": ["#22c55e", "#16a34a", "#15803d", "#166534", "#14532d", "#052e16"]
+          }
+          
+          # Select a palette based on the chart type or randomly
+          palette_key = "gradient"  # Default palette
+          if chart_type == "line" or chart_type == "area":
+              palette_key = "ocean"
+          elif chart_type == "bar" or chart_type == "horizontalBar":
+              palette_key = "sunset"
+          elif chart_type == "scatter":
+              palette_key = "neon"
+              
+          selected_palette = elegant_palettes[palette_key]
+          
+          # For pie charts, use all colors from the palette
           if chart_type == "pie":
-              # Generate an array of visually distinct colors
               num_segments = len(data_points)
-              background_colors = [
-                  f"hsl({(i * 360 / num_segments)}, 70%, 50%)"
-                  for i in range(num_segments)
-              ]
-              border_colors = ["rgba(255, 255, 255, 0.8)"] * num_segments  # White borders
+              background_colors = []
+              border_colors = []
+              
+              # Use palette colors and extend if needed
+              for i in range(num_segments):
+                  color_index = i % len(selected_palette)
+                  base_color = selected_palette[color_index]
+                  # Extract RGB components with alpha variations
+                  r, g, b = int(base_color[1:3], 16), int(base_color[3:5], 16), int(base_color[5:7], 16)
+                  bg_color = f"rgba({r}, {g}, {b}, 0.8)"
+                  border_color = f"rgba({r}, {g}, {b}, 1.0)"
+                  background_colors.append(bg_color)
+                  border_colors.append(border_color)
               
               config = {
                   "type": "pie",
@@ -966,22 +1242,70 @@
                           "data": [point["y"] for point in data_points],
                           "backgroundColor": background_colors,
                           "borderColor": border_colors,
-                          "borderWidth": 2
+                          "borderWidth": 2,
+                          "hoverOffset": 15,
+                          "borderRadius": 5,
+                          "hoverBorderWidth": 3,
+                          "shadowOffsetX": 3,
+                          "shadowOffsetY": 3,
+                          "shadowBlur": 10,
+                          "shadowColor": "rgba(0, 0, 0, 0.5)"
                       }]
                   },
                   "options": {
                       "responsive": True,
                       "plugins": {
-                          "legend": {"display": True},
-                          "title": {"display": bool(chart_title), "text": chart_title}
+                          "legend": {
+                              "display": True,
+                              "labels": {
+                                  "font": {"size": 14, "family": "'Fira Code', monospace"},
+                                  "color": "rgba(255, 255, 255, 0.9)",
+                                  "padding": 15
+                              }
+                          },
+                          "title": {
+                              "display": bool(chart_title),
+                              "text": chart_title,
+                              "font": {"size": 18, "weight": "bold"},
+                              "color": "rgba(255, 255, 255, 0.9)",
+                              "padding": {"top": 10, "bottom": 25}
+                          }
+                      },
+                      "animation": {
+                          "animateScale": True,
+                          "animateRotate": True,
+                          "duration": 2000,
+                          "easing": "easeOutQuart"
                       }
                   }
               }
               return config
           else:
-              # For other chart types, use the provided color
-              background_colors = dataset_color
-              border_colors = border_color
+              # For other chart types, use enhanced colors from palette
+              main_color = selected_palette[0]  # Use the first color from the palette
+              
+              # Override colors if user has selected them manually
+              if dataset_color != "#4caf50" or border_color != "#4caf50":
+                  # User has changed the default color, respect their choice
+                  main_color = dataset_color
+              else:
+                  # Use palette color and set the input field to match
+                  document["datasetColor"].value = main_color
+                  document["borderColor"].value = main_color
+              
+              # Extract RGB components
+              r, g, b = int(main_color[1:3], 16), int(main_color[3:5], 16), int(main_color[5:7], 16)
+              
+              # Create a slight variation for the border
+              border_r = min(255, int(r * 0.9))
+              border_g = min(255, int(g * 0.9))
+              border_b = min(255, int(b * 0.9))
+              
+              # Set solid colors for all chart types for reliability
+              background_color = f"rgba({r}, {g}, {b}, 0.7)"
+              border_color = f"rgb({border_r}, {border_g}, {border_b})"
+              hover_background_color = f"rgba({r}, {g}, {b}, 1.0)"
+              point_border_color = "rgba(255, 255, 255, 0.9)"
           
           config = {
               "type": chart_type,
@@ -989,24 +1313,129 @@
                   "datasets": [{
                       "label": dataset_label,
                       "data": data_points,
-                      "backgroundColor": background_colors,
-                      "borderColor": border_colors,
-                      "borderWidth": 2,
-                      "pointRadius": 4 if dataset_label == "Data Points" else 0,
+                          "backgroundColor": background_color,
+                          "borderColor": border_color,
+                          "borderWidth": 3,
+                          "pointRadius": 6 if dataset_label == "Data Points" else 0,
+                          "pointHoverRadius": 10 if dataset_label == "Data Points" else 0,
+                          "pointBackgroundColor": hover_background_color,
+                          "pointBorderColor": point_border_color,
+                          "pointBorderWidth": 2,
                       "fill": False,
-                      "tension": 0.3
+                          "tension": 0.4,
+                          "cubicInterpolationMode": "monotone",
+                          "hoverBackgroundColor": hover_background_color,
+                          "hoverBorderColor": "rgba(255, 255, 255, 1.0)"
                   }]
               },
               "options": {
                   "scales": {
-                      "x": {"type": x_scale_type, "position": "bottom", "title": {"display": bool(x_axis_label), "text": x_axis_label}},
-                      "y": {"type": y_scale_type, "title": {"display": bool(y_axis_label), "text": y_axis_label}}
+                          "x": {
+                              "type": x_scale_type,
+                              "position": "bottom",
+                              "title": {"display": bool(x_axis_label), "text": x_axis_label, "color": "rgba(255, 255, 255, 0.9)", "font": {"size": 16, "weight": "bold"}},
+                              "grid": {
+                                  "display": True,
+                                  "color": "rgba(255, 255, 255, 0.1)",
+                                  "tickColor": "rgba(255, 255, 255, 0.2)",
+                                  "z": -1
+                              },
+                              "ticks": {
+                                  "color": "rgba(255, 255, 255, 0.7)",
+                                  "font": {"family": "'Fira Code', monospace"}
+                              }
+                          },
+                          "y": {
+                              "type": y_scale_type,
+                              "title": {"display": bool(y_axis_label), "text": y_axis_label, "color": "rgba(255, 255, 255, 0.9)", "font": {"size": 16, "weight": "bold"}},
+                              "grid": {
+                                  "display": True,
+                                  "color": "rgba(255, 255, 255, 0.1)",
+                                  "tickColor": "rgba(255, 255, 255, 0.2)",
+                                  "z": -1
+                              },
+                              "ticks": {
+                                  "color": "rgba(255, 255, 255, 0.7)",
+                                  "font": {"family": "'Fira Code', monospace"}
+                              }
+                          }
                   },
                   "plugins": {
-                      "legend": {"display": True},
-                      "title": {"display": bool(chart_title), "text": chart_title},
-                      "zoom": {"zoom": {"enabled": True, "mode": "xy"}, "pan": {"enabled": True, "mode": "xy"}},
+                          "legend": {
+                              "display": True,
+                              "labels": {
+                                  "color": "rgba(255, 255, 255, 0.9)",
+                                  "font": {"size": 14, "family": "'Fira Code', monospace"},
+                                  "padding": 15,
+                                  "boxWidth": 15,
+                                  "boxHeight": 15,
+                                  "usePointStyle": True
+                              }
+                          },
+                          "title": {
+                              "display": bool(chart_title),
+                              "text": chart_title,
+                              "font": {"size": 18, "weight": "bold"},
+                              "color": "rgba(255, 255, 255, 0.9)",
+                              "padding": {"top": 10, "bottom": 25}
+                          },
+                          "tooltip": {
+                              "enabled": True,
+                              "backgroundColor": "rgba(0, 0, 0, 0.7)",
+                              "titleFont": {"size": 14, "family": "'Fira Code', monospace"},
+                              "bodyFont": {"size": 14, "family": "'Fira Code', monospace"},
+                              "padding": 12,
+                              "cornerRadius": 8,
+                              "caretSize": 6,
+                              "displayColors": True,
+                              "borderColor": "rgba(255, 255, 255, 0.2)",
+                              "borderWidth": 1
+                          },
+                          "zoom": {
+                              "zoom": {
+                                  "enabled": True,
+                                  "mode": "xy",
+                                  "speed": 0.1,
+                                  "sensitivity": 3
+                              },
+                              "pan": {
+                                  "enabled": True,
+                                  "mode": "xy"
+                              }
+                          },
                       "annotation": {"annotations": {}}
+                      },
+                      "interaction": {
+                          "mode": "nearest",
+                          "intersect": False,
+                          "axis": "xy"
+                      },
+                      "layout": {
+                          "padding": 20
+                      },
+                      "elements": {
+                          "line": {
+                              "tension": 0.4,
+                              "borderWidth": 3,
+                              "borderCapStyle": "round",
+                              "borderJoinStyle": "round",
+                              "cubicInterpolationMode": "monotone"
+                          },
+                          "point": {
+                              "radius": 6,
+                              "borderWidth": 2,
+                              "hitRadius": 8,
+                              "hoverRadius": 10,
+                              "hoverBorderWidth": 2
+                          },
+                          "arc": {
+                              "borderWidth": 2,
+                              "borderRadius": 5
+                          },
+                          "bar": {
+                              "borderRadius": 8,
+                              "borderSkipped": False
+                          }
                   }
               }
           }
@@ -1015,6 +1444,8 @@
           if chart_type == "area":
               config["type"] = "line"
               config["data"]["datasets"][0]["fill"] = True
+              # Use a simpler solid color for area fill
+              config["data"]["datasets"][0]["backgroundColor"] = f"rgba({r}, {g}, {b}, 0.2)"
           elif chart_type == "horizontalBar":
               config["type"] = "bar"
               config["options"]["indexAxis"] = "y"
@@ -1029,11 +1460,33 @@
                   # Extract labels from data points if they're in {x, y} format
                   config["data"]["labels"] = [point["x"] for point in data_points]
                   config["data"]["datasets"][0]["data"] = [point["y"] for point in data_points]
+          elif chart_type == "scatter":
+              config["data"]["datasets"][0]["pointRadius"] = 8
+              config["data"]["datasets"][0]["pointHoverRadius"] = 12
+              config["data"]["datasets"][0]["pointStyle"] = "circle"
+              config["data"]["datasets"][0]["showLine"] = False
+              
+              # Just use a single color for all scatter points for simplicity
+              config["data"]["datasets"][0]["pointBackgroundColor"] = background_color
+              config["data"]["datasets"][0]["pointBorderColor"] = "rgba(255, 255, 255, 0.8)"
+              config["data"]["datasets"][0]["pointBorderWidth"] = 1.5
+          elif chart_type == "bar":
+              # Use a simpler solid color for bars
+              config["data"]["datasets"][0]["backgroundColor"] = background_color
+              
+              # Enhance bar appearance
+              config["data"]["datasets"][0]["borderRadius"] = 8
+              config["data"]["datasets"][0]["borderSkipped"] = False
+              config["data"]["datasets"][0]["borderWidth"] = 1
+              config["data"]["datasets"][0]["borderColor"] = border_color
           else:
               config["type"] = chart_type
           
           if "enableAnimation" in document and document["enableAnimation"].checked:
-              config["options"]["animation"] = {"duration": 1000}
+              config["options"]["animation"] = {
+                  "duration": 1500,
+                  "easing": "easeOutQuart"
+              }
           else:
               config["options"]["animation"] = {"duration": 0}
           
@@ -1046,10 +1499,79 @@
       def apply_transform_animation():
           try:
               canvas = document["myChart"]
+              
+              # Add chart overlay for enhanced visual effects
+              graph_content = document.querySelector(".graph-content")
+              if not document.querySelector(".chart-overlay"):
+                  overlay = document.createElement("div")
+                  overlay.className = "chart-overlay"
+                  graph_content.appendChild(overlay)
+              
               if "enableTransform" in document and document["enableTransform"].checked:
-                  canvas.style.transition = "transform 1s"
-                  canvas.style.transform = "scale(1.1)"
-                  window.setTimeout(lambda: setattr(canvas.style, "transform", "scale(1)"), 1000)
+                  canvas.style.transition = "transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)"
+                  canvas.style.transform = "scale(1.05) translateY(-10px)"
+                  window.setTimeout(lambda: setattr(canvas.style, "transform", "scale(1) translateY(0)"), 1200)
+              
+              # Add subtle pulse animation to chart
+              canvas.style.animation = "none"
+              void = canvas.offsetHeight  # Trigger reflow
+              canvas.style.animation = "chart-glow 6s ease-in-out infinite alternate"
+              
+              # Remove highlight effect for now as it's causing visual issues
+              # if window.chart and window.chart.config.type in ["line", "scatter"]:
+              #     add_point_highlight_effect()
+          except Exception:
+              pass
+      
+      # Add highlight effect to random data points - keeping the function but not calling it
+      def add_point_highlight_effect():
+          try:
+              graph_content = document.querySelector(".graph-content")
+              
+              # Remove any existing highlights
+              for old_highlight in document.querySelectorAll(".highlight-point"):
+                  old_highlight.remove()
+              
+              # Only proceed if we have data points
+              if not hasattr(window, "dataPoints") or not window.dataPoints:
+                  return
+                  
+              # Get a random data point to highlight
+              if len(window.dataPoints) > 2:
+                  # Choose 2-3 random points to highlight
+                  num_highlights = min(3, len(window.dataPoints) // 3)
+                  indices = []
+                  for _ in range(num_highlights):
+                      idx = window.Math.floor(window.Math.random() * len(window.dataPoints))
+                      if idx not in indices:  # Avoid duplicates
+                          indices.append(idx)
+                  
+                  # For each selected point, create a highlight
+                  for idx in indices:
+                      # Create a highlight element
+                      highlight = document.createElement("div")
+                      highlight.className = "highlight-point"
+                      
+                      # Calculate the position based on the chart
+                      point = window.dataPoints[idx]
+                      x_scale = window.chart.scales.x
+                      y_scale = window.chart.scales.y
+                      
+                      # Calculate pixel positions (approximation)
+                      canvas = document["myChart"]
+                      x_pixel = x_scale.getPixelForValue(point.x) 
+                      y_pixel = y_scale.getPixelForValue(point.y)
+                      
+                      # Set the position - adjust if needed to match chart coordinates
+                      highlight.style.left = f"{x_pixel}px"
+                      highlight.style.top = f"{y_pixel}px"
+                      
+                      # Add to the graph content
+                      canvas.parentNode.appendChild(highlight)
+                      
+                      # Make visible with a slight delay
+                      delay = window.Math.random() * 1000  # Random delay up to 1 second
+                      window.setTimeout(lambda h=highlight: setattr(h.style, "opacity", "1"), delay)
           except Exception:
               pass
 
@@ -1101,6 +1623,9 @@
           if x_axis_type != "Numeric" and y_axis_type != "Numeric":
               alert("At least one axis must be numeric.")
               return
+          
+          # Add loading effect
+          add_graph_loading_effect()
 
           data_points = [{"x": x_values[i], "y": y_values[i]} for i in range(len(x_values))]
           clear_chart()
@@ -1109,6 +1634,13 @@
           window.chart = window.Chart.new(ctx, config)
           window.dataPoints = data_points
           apply_transform_animation()
+          
+          # Add the reveal animation class to the chart
+          canvas = document["myChart"]
+          canvas.classList.add("graph-reveal")
+          
+          # Remove the class after animation completes
+          window.setTimeout(lambda: canvas.classList.remove("graph-reveal"), 1200)
 
       # Create graph from equation
       def create_graph_equation(event):
@@ -1126,6 +1658,9 @@
           if start_x >= end_x:
               alert("Start x must be less than end x.")
               return
+          
+          # Add loading effect
+          add_graph_loading_effect()
 
           try:
               def f(x):
@@ -1149,6 +1684,39 @@
           window.chart = window.Chart.new(ctx, config)
           window.dataPoints = data_points
           apply_transform_animation()
+          
+          # Add the reveal animation class to the chart
+          canvas = document["myChart"]
+          canvas.classList.add("graph-reveal")
+          
+          # Remove the class after animation completes
+          window.setTimeout(lambda: canvas.classList.remove("graph-reveal"), 1200)
+      
+      # Add loading effect before graph creation
+      def add_graph_loading_effect():
+          graph_content = document.querySelector(".graph-content")
+          
+          # Create loading overlay if it doesn't exist
+          if not document.querySelector(".graph-loading"):
+              loading = document.createElement("div")
+              loading.className = "graph-loading"
+              loading.innerHTML = """
+                  <div class="graph-loading-spinner"></div>
+                  <div class="graph-loading-text">Rendering Graph...</div>
+              """
+              graph_content.appendChild(loading)
+          else:
+              document.querySelector(".graph-loading").style.display = "flex"
+          
+          # Hide loading effect after a short delay
+          window.setTimeout(lambda: remove_graph_loading_effect(), 800)
+      
+      # Remove loading effect
+      def remove_graph_loading_effect():
+          loading = document.querySelector(".graph-loading")
+          if loading:
+              loading.style.opacity = "0"
+              window.setTimeout(lambda: setattr(loading.style, "display", "none"), 300)
 
       # Insert trigonometric function into equation input
       def insert_trig_function(event):
@@ -1464,6 +2032,331 @@
           document["moreOptionsContainer"].style.display = "block" if target_id == "#dataPanel" else "none"
           clear_chart()
 
+      # Toggle distribution parameter inputs based on selected distribution type
+      def toggle_distribution_params(event):
+          dist_type = document["distributionType"].value
+          # Hide all parameter divs first
+          for params_div in document.querySelectorAll(".distribution-params"):
+              params_div.style.display = "none"
+          
+          # Show the selected distribution's parameters
+          if dist_type == "normal":
+              document["normalParams"].style.display = "block"
+          elif dist_type == "uniform":
+              document["uniformParams"].style.display = "block"
+          elif dist_type == "exponential":
+              document["exponentialParams"].style.display = "block"
+          elif dist_type == "poisson":
+              document["poissonParams"].style.display = "block"
+          elif dist_type == "binomial":
+              document["binomialParams"].style.display = "block"
+
+      # Calculate numerical derivative of a function
+      def calculate_derivative(func, x, h=0.0001):
+          # Central difference formula for better accuracy
+          return (func(x + h) - func(x - h)) / (2 * h)
+      
+      # Show derivative of the current equation
+      def show_derivative(event):
+          eq = document["equation"].value.strip()
+          start_str = document["startX"].value.strip()
+          end_str = document["endX"].value.strip()
+          derivative_color = document["derivativeColor"].value
+          derivative_width = float(document["derivativeWidth"].value)
+          
+          if not eq or not start_str or not end_str:
+              alert("Fill in equation and domain values first.")
+              return
+          
+          try:
+              start_x, end_x = float(start_str), float(end_str)
+          except Exception:
+              alert("Invalid start or end x value.")
+              return
+          
+          if start_x >= end_x:
+              alert("Start x must be less than end x.")
+              return
+          
+          # Add loading effect
+          add_graph_loading_effect()
+          
+          try:
+              # Function to evaluate the original equation
+              def f(x):
+                  try:
+                      return eval(eq, {"__builtins__": None, "math": math, "x": x})
+                  except Exception:
+                      return None
+              
+              # Calculate original function points
+              x_values = [start_x + i * (end_x - start_x) / 100 for i in range(101)]
+              original_data_points = []
+              for x in x_values:
+                  try:
+                      y = f(x)
+                      if y is not None and not math.isinf(y) and not math.isnan(y):
+                          original_data_points.append({"x": x, "y": y})
+                  except Exception:
+                      pass
+              
+              # Calculate derivative points using numerical differentiation
+              derivative_data_points = []
+              for x in x_values:
+                  try:
+                      # Calculate the derivative at this point
+                      derivative_y = calculate_derivative(f, x)
+                      if derivative_y is not None and not math.isinf(derivative_y) and not math.isnan(derivative_y):
+                          derivative_data_points.append({"x": x, "y": derivative_y})
+                  except Exception:
+                      pass
+              
+              # Create/update chart with both original function and its derivative
+              clear_chart()
+              ctx = document["myChart"].getContext("2d")
+              
+              # Create config for the original function with standard settings
+              config = build_chart_config(original_data_points, f"y = {eq}")
+              
+              # Add a second dataset for the derivative if checkbox is checked
+              if document["showDerivative"].checked:
+                  derivative_dataset = {
+                      "label": f"d/dx({eq})",
+                      "data": derivative_data_points,
+                      "backgroundColor": derivative_color,
+                      "borderColor": derivative_color,
+                      "borderWidth": derivative_width,
+                      "pointRadius": 0,  # No points for smoother appearance
+                      "borderDash": [5, 5],  # Dashed line for the derivative
+                      "tension": 0.4,
+                      "fill": False
+                  }
+                  config["data"]["datasets"].append(derivative_dataset)
+              
+              # Create the chart
+              window.chart = window.Chart.new(ctx, config)
+              window.dataPoints = original_data_points
+              apply_transform_animation()
+              
+              # Add the reveal animation class to the chart
+              canvas = document["myChart"]
+              canvas.classList.add("graph-reveal")
+              
+              # Remove the class after animation completes
+              window.setTimeout(lambda: canvas.classList.remove("graph-reveal"), 1200)
+              
+          except Exception as e:
+              alert(f"Error calculating derivative: {str(e)}")
+              return
+              
+      # Helper function for factorial calculation
+      def factorial(n):
+          if n == 0 or n == 1:
+              return 1
+          else:
+              # Use iterative approach to avoid recursion depth issues
+              result = 1
+              for i in range(2, n + 1):
+                  result *= i
+              return result
+      
+      # Helper function for binomial coefficient
+      def binomial_coef(n, k):
+          # More efficient calculation to avoid large factorials
+          if k < 0 or k > n:
+              return 0
+          if k > n - k:
+              k = n - k
+          result = 1
+          for i in range(k):
+              result = result * (n - i) // (i + 1)
+          return result
+              
+      # Plot probability distribution
+      def plot_distribution(event):
+          dist_type = document["distributionType"].value
+          start_x = -10
+          end_x = 10
+          
+          # Add loading effect
+          add_graph_loading_effect()
+          
+          try:
+              # Generate x values for the distribution
+              x_values = [start_x + i * (end_x - start_x) / 200 for i in range(201)]
+              data_points = []
+              
+              # Calculate y values based on the probability distribution
+              if dist_type == "normal":
+                  # Normal distribution
+                  mean = float(document["normalMean"].value)
+                  std_dev = float(document["normalStdDev"].value)
+                  
+                  def normal_pdf(x, mean, std_dev):
+                      # Normal probability density function
+                      return (1 / (std_dev * math.sqrt(2 * math.pi))) * math.exp(-0.5 * ((x - mean) / std_dev) ** 2)
+                  
+                  # Adjust x range to focus on the significant part of the distribution
+                  x_values = [mean - 4*std_dev + i * (8*std_dev) / 200 for i in range(201)]
+                  
+                  for x in x_values:
+                      try:
+                          y = normal_pdf(x, mean, std_dev)
+                          if not math.isnan(y) and not math.isinf(y):
+                              data_points.append({"x": x, "y": y})
+                      except Exception:
+                          pass
+                  
+                  title = f"Normal Distribution (μ={mean}, σ={std_dev})"
+                  
+              elif dist_type == "uniform":
+                  # Uniform distribution
+                  a = float(document["uniformMin"].value)
+                  b = float(document["uniformMax"].value)
+                  
+                  if a >= b:
+                      alert("Minimum value must be less than maximum value.")
+                      return
+                  
+                  def uniform_pdf(x, a, b):
+                      # Uniform probability density function
+                      if a <= x <= b:
+                          return 1 / (b - a)
+                      return 0
+                  
+                  # Adjust x range to focus on the distribution plus some padding
+                  x_values = [a - (b-a)*0.2 + i * ((b-a)*1.4) / 200 for i in range(201)]
+                  
+                  for x in x_values:
+                      try:
+                          y = uniform_pdf(x, a, b)
+                          data_points.append({"x": x, "y": y})
+                      except Exception:
+                          pass
+                  
+                  title = f"Uniform Distribution (a={a}, b={b})"
+                  
+              elif dist_type == "exponential":
+                  # Exponential distribution
+                  lambda_rate = float(document["exponentialRate"].value)
+                  
+                  def exponential_pdf(x, rate):
+                      # Exponential probability density function
+                      if x >= 0:
+                          return rate * math.exp(-rate * x)
+                      return 0
+                  
+                  # Adjust x values for exponential distribution - focus on the relevant range
+                  max_x = 5 / lambda_rate  # Cover to where PDF gets very small
+                  x_values = [i * max_x / 200 for i in range(201)]
+                  
+                  for x in x_values:
+                      try:
+                          y = exponential_pdf(x, lambda_rate)
+                          data_points.append({"x": x, "y": y})
+                      except Exception:
+                          pass
+                  
+                  title = f"Exponential Distribution (λ={lambda_rate})"
+                  
+              elif dist_type == "poisson":
+                  # Poisson distribution
+                  lambda_param = float(document["poissonLambda"].value)
+                  
+                  def poisson_pmf(k, lambda_param):
+                      # Poisson probability mass function
+                      if k < 0 or k != int(k):
+                          return 0
+                      # Use a more stable calculation for Poisson PMF
+                      k = int(k)
+                      log_pmf = k * math.log(lambda_param) - lambda_param - math.log(factorial(k))
+                      return math.exp(log_pmf)
+                  
+                  # Adjust x values for Poisson distribution (discrete)
+                  max_k = min(30, int(lambda_param * 3 + 5))  # Limit to reasonable range
+                  x_values = list(range(0, max_k + 1))
+                  
+                  for k in x_values:
+                      try:
+                          y = poisson_pmf(k, lambda_param)
+                          if not math.isnan(y) and not math.isinf(y):
+                              data_points.append({"x": k, "y": y})
+                      except Exception:
+                          pass
+                  
+                  title = f"Poisson Distribution (λ={lambda_param})"
+                  
+              elif dist_type == "binomial":
+                  # Binomial distribution
+                  n = int(document["binomialN"].value)
+                  p = float(document["binomialP"].value)
+                  
+                  def binomial_pmf(k, n, p):
+                      # Binomial probability mass function
+                      if k < 0 or k > n or k != int(k):
+                          return 0
+                      # Calculate binomial coefficient * p^k * (1-p)^(n-k)
+                      k = int(k)
+                      try:
+                          coef = binomial_coef(n, k)
+                          return coef * (p ** k) * ((1 - p) ** (n - k))
+                      except:
+                          # Fallback for large values
+                          log_pmf = math.log(binomial_coef(n, k)) + k * math.log(p) + (n - k) * math.log(1 - p)
+                          return math.exp(log_pmf)
+                  
+                  # Adjust x values for binomial distribution (discrete)
+                  x_values = list(range(0, n + 1))
+                  
+                  for k in x_values:
+                      try:
+                          y = binomial_pmf(k, n, p)
+                          if not math.isnan(y) and not math.isinf(y):
+                              data_points.append({"x": k, "y": y})
+                      except Exception:
+                          pass
+                  
+                  title = f"Binomial Distribution (n={n}, p={p})"
+              
+              # Create chart with probability distribution
+              clear_chart()
+              ctx = document["myChart"].getContext("2d")
+              
+              # Create config for the distribution with appropriate chart type
+              chart_type = "line"
+              if dist_type in ["poisson", "binomial"]:
+                  chart_type = "bar"  # Use bar chart for discrete distributions
+              
+              # Save current chart type and restore after
+              original_chart_type = document["chartType"].value
+              document["chartType"].value = chart_type
+              
+              config = build_chart_config(data_points, title)
+              
+              # For discrete distributions, add special handling
+              if dist_type in ["poisson", "binomial"]:
+                  config["data"]["datasets"][0]["barPercentage"] = 0.9
+                  config["data"]["datasets"][0]["categoryPercentage"] = 0.8
+              
+              # Create the chart
+              window.chart = window.Chart.new(ctx, config)
+              window.dataPoints = data_points
+              apply_transform_animation()
+              
+              # Add the reveal animation class to the chart
+              canvas = document["myChart"]
+              canvas.classList.add("graph-reveal")
+              
+              # Remove the class after animation completes
+              window.setTimeout(lambda: canvas.classList.remove("graph-reveal"), 1200)
+              
+              # Restore original chart type
+              document["chartType"].value = original_chart_type
+              
+          except Exception as e:
+              alert(f"Error plotting distribution: {str(e)}")
+              return
+
       # Bind events
       document["createBtn"].bind("click", create_graph_data)
       document["createEquationBtn"].bind("click", create_graph_equation)
@@ -1489,6 +2382,27 @@
       document["data-tab"].bind("click", on_tab_change)
       document["equation-tab"].bind("click", on_tab_change)
       document["implicitBackBtn"].bind("click", hide_implicit_program)
+      
+      # Add event handlers for derivative width slider
+      document["derivativeWidth"].bind("input", update_slider_display)
+      
+      # Add event handlers for probability distribution sliders
+      document["normalMean"].bind("input", update_slider_display)
+      document["normalStdDev"].bind("input", update_slider_display)
+      document["uniformMin"].bind("input", update_slider_display)
+      document["uniformMax"].bind("input", update_slider_display)
+      document["exponentialRate"].bind("input", update_slider_display)
+      document["poissonLambda"].bind("input", update_slider_display)
+      document["binomialN"].bind("input", update_slider_display)
+      document["binomialP"].bind("input", update_slider_display)
+      
+      # Bind new event handlers for our added features
+      document["distributionType"].bind("change", toggle_distribution_params)
+      document["calculateDerivativeBtn"].bind("click", show_derivative)
+      document["plotDistributionBtn"].bind("click", plot_distribution)
+      
+      # Initialize distribution params display on page load
+      toggle_distribution_params({"target": document["distributionType"]})
     </script>
 
     <!-- Bootstrap JS -->
