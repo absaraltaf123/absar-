@@ -913,17 +913,18 @@
                      }
                  });
 
-                this.deleteNodeOption.addEventListener('click', () => {
-                     if (this.contextMenuNodeId !== null) {
-                         const nodeToDelete = this.getNodeById(this.contextMenuNodeId);
-                         if (nodeToDelete && confirm(`Delete node "${nodeToDelete.title}" and all its children?`)) {
-                             this.deleteNode(this.contextMenuNodeId);
-                             // Don't auto-save
-                         }
-                         this.closeContextMenu();
+            this.deleteNodeOption.addEventListener('click', () => {
+                 if (this.contextMenuNodeId !== null) {
+                     const nodeToDelete = this.getNodeById(this.contextMenuNodeId);
+                     // MODIFIED CODE: Removed the 'confirm' check
+                     if (nodeToDelete) { // Only check if the node exists
+                         this.deleteNode(this.contextMenuNodeId); // Delete directly
+                         // Don't auto-save
                      }
-                 });
-
+                     // END OF MODIFIED CODE
+                     this.closeContextMenu();
+                 }
+             });
 
                 // Controls
                 this.zoomInBtn.addEventListener('click', () => { this.zoom(1.25); /* Auto-save view removed */ });
@@ -966,8 +967,9 @@
                             if (e.target === document.body || e.target === this.canvasContainer) {
                                 e.preventDefault(); // Prevent browser back navigation on Backspace
                                 const nodeToDelete = this.getNodeById(this.selectedNodeId);
-                                if (nodeToDelete && confirm(`Delete node "${nodeToDelete.title}" and all its children?`)) {
-                                    this.deleteNode(this.selectedNodeId);
+                                // MODIFIED CODE: Removed the 'confirm' check
+                                if (nodeToDelete) { // Only check if the node exists
+                                    this.deleteNode(this.selectedNodeId); // Delete directly
                                      // Don't auto-save
                                 }
                             }
