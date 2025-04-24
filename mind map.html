@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +17,7 @@
             --background: #ffffff;
             --canvas-bg: #f9fafb; /* Light background for canvas */
             --text: #1f2937;
-            --text-muted: #6b7280;
+            --text-muted: #080808;
             --border: #e5e7eb;
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
@@ -25,7 +26,7 @@
             --node-bg-color: white; /* Default node background */
             --node-border-color: rgba(0, 0, 0, 0.1);
             --node-text-color: var(--text);
-            --node-content-color: #4b5563;
+            --node-content-color: #000000;
             --modal-bg: white;
             --input-bg: white;
             --input-border: var(--border);
@@ -48,7 +49,7 @@
             --secondary: #374151; /* Darker grey */
             --background: #111827; /* Very dark grey */
             --canvas-bg: #1f2937; /* Dark grey canvas */
-            --text: #f3f4f6; /* Light grey text */
+            --text: #000000; /* Light grey text */
             --text-muted: #9ca3af;
             --border: #4b5563; /* Medium grey border */
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
@@ -57,16 +58,16 @@
             --node-bg-color: #374151; /* Dark node background */
             --node-border-color: rgba(255, 255, 255, 0.1);
             --node-text-color: var(--text);
-            --node-content-color: #d1d5db; /* Lighter content text */
-            --modal-bg: #1f2937;
+            --node-content-color: #000000; /* Lighter content text */
+            --modal-bg: #aeb9c7;
             --input-bg: #374151;
             --input-border: #4b5563;
-            --control-bg: rgba(31, 41, 55, 0.8); /* Darker control bg */
+            --control-bg: rgba(166, 169, 173, 0.8); /* Darker control bg */
             --control-icon-color: #9ca3af;
             --sidebar-bg: #1f2937;
-            --tree-hover-bg: #374151;
+            --tree-hover-bg: #a9adb3;
             --tree-selected-bg: var(--primary); /* Use lighter primary */
-            --tree-selected-text: #111827; /* Dark text on selected */
+            --tree-selected-text: #fcfcfc; /* Dark text on selected */
         }
 
         * {
@@ -228,7 +229,7 @@
             overflow: hidden;
             background-color: var(--canvas-bg);
             height: 100%;
-            touch-action: none; /* Essential for preventing browser default panning/zooming */
+            touch-action: none;
         }
 
         #connector-svg {
@@ -246,7 +247,7 @@
         #connector-svg line {
             stroke-width: var(--connector-width);
             stroke-linecap: round;
-            transition: stroke 0.3s ease;
+           
         }
 
         #canvas {
@@ -342,7 +343,7 @@
          .modal.active .modal-content { transform: scale(1); }
          .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.8rem; }
          .modal-title { font-weight: 600; font-size: 1.15rem; color: var(--text); }
-         .modal-close { background: none; border: none; cursor: pointer; font-size: 1.5rem; color: var(--text-muted); line-height: 1; padding: 0.2rem; /* Add padding for easier tapping */ }
+         .modal-close { background: none; border: none; cursor: pointer; font-size: 1.5rem; color: var(--text-muted); line-height: 1; }
          .modal-close:hover { color: var(--text); }
          .form-group { margin-bottom: 1rem; }
          .form-label { display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; color: var(--text); }
@@ -420,7 +421,7 @@
          .tree-children { padding-left: 16px; border-left: 1px solid var(--border); margin-left: 8px; }
 
          /* Toast Notification */
-          .toast-notification { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100%); background-color: #10b981; color: white; padding: 0.75rem 1.5rem; border-radius: 0.375rem; box-shadow: var(--shadow-lg); z-index: 50; opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease; font-size: 0.9rem; pointer-events: none; /* Prevent interaction */ }
+          .toast-notification { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100%); background-color: #10b981; color: white; padding: 0.75rem 1.5rem; border-radius: 0.375rem; box-shadow: var(--shadow-lg); z-index: 50; opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease; font-size: 0.9rem; }
           .toast-notification.error { background-color: #ef4444; }
           .toast-notification.show { opacity: 1; transform: translateX(-50%) translateY(0); }
           html.dark-mode .toast-notification { background-color: #059669; color: #f0fdf4; }
@@ -457,13 +458,10 @@
                 top: 0;
                 left: 0;
                 transform: translateX(-100%);
-                height: 100%; /* Ensure full height */
-                max-height: calc(100vh - var(--header-height)); /* Adjust max height */
-                top: var(--header-height); /* Position below header */
+                height: 100%;
                 z-index: 15;
                 border-right: 1px solid var(--border);
                 box-shadow: var(--shadow-lg);
-                overflow-y: auto; /* Ensure scrollable if content overflows */
             }
             .sidebar.open {
                 transform: translateX(0);
@@ -475,7 +473,7 @@
                 padding: 0.4rem;
             }
              .control-btn { width: 38px; height: 38px; }
-             .mini-tooltip::after { display: none; } /* Hide tooltips on mobile */
+             .mini-tooltip::after { display: none; }
 
              .modal-content { max-width: 95%; padding: 1rem; }
              .modal-title { font-size: 1.1rem; }
@@ -492,22 +490,22 @@
         </div>
         <div class="toolbar">
              <!-- Sidebar Toggle Button -->
-            <button id="sidebar-toggle" class="mini-tooltip" data-tooltip="Toggle Sidebar" aria-label="Toggle Sidebar">
+            <button id="sidebar-toggle" title="Toggle Sidebar">
                 <i class="fas fa-bars"></i>
             </button>
             <!-- Theme Toggle Button -->
-            <button id="theme-toggle" class="mini-tooltip" data-tooltip="Toggle Theme" aria-label="Toggle Theme">
+            <button id="theme-toggle" title="Toggle Theme">
                 <i class="fas fa-sun"></i> <!-- Icon changes dynamically -->
             </button>
-            <button id="new-node-btn" class="btn btn-primary mini-tooltip" data-tooltip="Add Root Node" aria-label="Add Root Node">
+            <button id="new-node-btn" class="btn btn-primary" title="Add Root Node">
                 <i class="fas fa-plus"></i>
                 <span>Add Root</span>
             </button>
-            <button id="save-btn" class="btn btn-secondary mini-tooltip" data-tooltip="Save to File" aria-label="Save to File">
+            <button id="save-btn" class="btn btn-secondary" title="Save to File">
                 <i class="fas fa-save"></i>
                 <span>Save</span>
             </button>
-            <button id="load-btn" class="btn btn-secondary mini-tooltip" data-tooltip="Load from File" aria-label="Load from File">
+            <button id="load-btn" class="btn btn-secondary" title="Load from File">
                 <i class="fas fa-folder-open"></i>
                 <span>Load</span>
             </button>
@@ -515,36 +513,36 @@
     </div>
 
     <div class="container">
-        <div id="sidebar" class="sidebar" aria-label="Mind Map Structure Sidebar">
+        <div id="sidebar" class="sidebar">
             <div class="sidebar-title">Mind Map Structure</div>
             <div id="structure-tree"></div>
         </div>
         <div class="canvas-container">
-            <svg id="connector-svg" aria-hidden="true"></svg>
-            <div id="canvas" role="application" aria-label="Mind Map Canvas"></div>
+            <svg id="connector-svg"></svg>
+            <div id="canvas"></div>
         </div>
     </div>
 
-    <div class="controls" role="toolbar" aria-label="Canvas Controls">
-        <button id="zoom-in" class="control-btn mini-tooltip" data-tooltip="Zoom In" aria-label="Zoom In">
+    <div class="controls">
+        <button id="zoom-in" class="control-btn mini-tooltip" data-tooltip="Zoom In">
             <i class="fas fa-search-plus"></i>
         </button>
-        <button id="zoom-out" class="control-btn mini-tooltip" data-tooltip="Zoom Out" aria-label="Zoom Out">
+        <button id="zoom-out" class="control-btn mini-tooltip" data-tooltip="Zoom Out">
             <i class="fas fa-search-minus"></i>
         </button>
-        <button id="center-view" class="control-btn mini-tooltip" data-tooltip="Center View" aria-label="Center View">
+        <button id="center-view" class="control-btn mini-tooltip" data-tooltip="Center View">
             <i class="fas fa-compress-arrows-alt"></i>
         </button>
-        <button id="fullscreen-toggle" class="control-btn mini-tooltip" data-tooltip="Toggle Fullscreen" aria-label="Toggle Fullscreen">
+        <button id="fullscreen-toggle" class="control-btn mini-tooltip" data-tooltip="Toggle Fullscreen">
             <i class="fas fa-expand"></i> <!-- Icon changes dynamically -->
         </button>
     </div>
 
-    <div id="node-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-id">
+    <div id="node-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title" id="modal-title-id">Edit Node</h3>
-                <button class="modal-close" title="Close" aria-label="Close">&times;</button>
+                <h3 class="modal-title">Edit Node</h3>
+                <button class="modal-close" title="Close">×</button>
             </div>
             <form id="node-form">
                 <div class="form-group">
@@ -559,7 +557,7 @@
                 <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                     <div class="form-group" style="flex: 1;">
                         <label class="form-label" for="node-color">Node Color</label>
-                        <input type="color" id="node-color" class="form-color" value="#ffffff" aria-label="Node Background Color">
+                        <input type="color" id="node-color" class="form-color" value="#ffffff">
                     </div>
                     <div class="form-group" style="flex: 2;">
                         <label class="form-label" for="node-shape">Node Shape</label>
@@ -580,33 +578,34 @@
         </div>
     </div>
 
-    <div id="context-menu" class="contextmenu" role="menu" aria-label="Node Actions Menu">
-        <div id="add-child-option" class="contextmenu-item" role="menuitem">
-            <i class="fas fa-plus" aria-hidden="true"></i>
+    <div id="context-menu" class="contextmenu">
+        <div id="add-child-option" class="contextmenu-item">
+            <i class="fas fa-plus"></i>
             <span>Add Child Node</span>
         </div>
-        <div id="edit-node-option" class="contextmenu-item" role="menuitem">
-            <i class="fas fa-edit" aria-hidden="true"></i>
+        <div id="edit-node-option" class="contextmenu-item">
+            <i class="fas fa-edit"></i>
             <span>Edit / Style Node</span>
         </div>
-        <div id="change-connector-color-option" class="contextmenu-item" role="menuitem"> <!-- Initially hidden via CSS -->
-             <i class="fas fa-palette" aria-hidden="true"></i>
+        <div id="change-connector-color-option" class="contextmenu-item"> <!-- Initially hidden via CSS -->
+             <i class="fas fa-palette"></i>
              <span>Change Connector Color</span>
         </div>
-        <div class="contextmenu-divider" role="separator"></div>
-        <div id="delete-node-option" class="contextmenu-item danger" role="menuitem">
-            <i class="fas fa-trash" aria-hidden="true"></i>
+        <div class="contextmenu-divider"></div>
+        <div id="delete-node-option" class="contextmenu-item danger">
+            <i class="fas fa-trash"></i>
             <span>Delete Node</span>
         </div>
     </div>
 
     <!-- Hidden color input for connector -->
-    <input type="color" id="connector-color-picker" aria-label="Connector Color Picker" style="visibility: hidden; position: absolute; left: -9999px;">
+    <input type="color" id="connector-color-picker">
 
-    <!-- Toast Notification Placeholder (dynamically created) -->
-    <!-- <div class="toast-notification" role="alert">Message</div> -->
+    <!-- Toast Notification Placeholder -->
+    <!-- <div class="toast-notification">Message</div> -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+ 
     <script>
 
         // --- Theme Helper (runs early) ---
@@ -619,13 +618,11 @@
             if (theme === 'dark') {
                 htmlEl.classList.add('dark-mode');
                 if (icon) icon.className = 'fas fa-moon'; // Show moon in dark mode
-                 if (themeToggleBtn) themeToggleBtn.setAttribute('data-tooltip', 'Switch to Light Mode');
-                 if (themeToggleBtn) themeToggleBtn.setAttribute('aria-label', 'Switch to Light Mode');
+                 if (themeToggleBtn) themeToggleBtn.title = 'Switch to Light Mode';
             } else {
                 htmlEl.classList.remove('dark-mode');
                 if (icon) icon.className = 'fas fa-sun'; // Show sun in light mode
-                 if (themeToggleBtn) themeToggleBtn.setAttribute('data-tooltip', 'Switch to Dark Mode');
-                 if (themeToggleBtn) themeToggleBtn.setAttribute('aria-label', 'Switch to Dark Mode');
+                 if (themeToggleBtn) themeToggleBtn.title = 'Switch to Dark Mode';
             }
         }
 
@@ -709,7 +706,7 @@
                 this.modalCloseBtn = this.nodeModal.querySelector('.modal-close');
 
                 this.contextMenuNodeId = null;
-                this.rootNodeMap = new Map(); // Maps node ID to its root node ID
+                this.rootNodeMap = new Map();
 
                 this.init();
             }
@@ -720,21 +717,14 @@
                 this.setupEventListeners();
                 this.updateFullscreenIcon(); // Set initial fullscreen icon state
 
-                let loadedFromStorage = false;
-                try {
-                   loadedFromStorage = this.loadFromLocalStorage(); // Try loading data (now includes theme)
-                } catch (error) {
-                   console.error("Error loading from local storage during init:", error);
-                   localStorage.removeItem('mindMapData'); // Clear potentially corrupt data
-                   this.showToast('Error loading previous session. Starting fresh.', true);
-                }
+                let loadedFromStorage = this.loadFromLocalStorage(); // Try loading data (now includes theme)
 
                 // Apply loaded/initial theme (redundant with early script, but safe)
                 applyTheme(this.currentTheme);
 
                 if (!loadedFromStorage || this.nodes.length === 0) {
                     if (!loadedFromStorage) {
-                        this.clearMap(false); // Clear map state, but keep view/theme
+                        this.clearMap();
                         console.log("No valid data in localStorage or load failed.");
                     }
                     if (this.nodes.length === 0) {
@@ -751,16 +741,14 @@
                              shape: 'rounded-rectangle'
                          };
                          this.addNode(initialNode);
-                         // Initial offset to approximately center the first node
                          this.offset.x = initialX - (initialNode.x * this.scale);
                          this.offset.y = initialY - (initialNode.y * this.scale);
                          this.updateCanvasTransform();
                     }
                 } else {
                     console.log(`Loaded ${this.nodes.length} nodes from localStorage. Creating DOM elements.`);
-                    // Rebuild DOM from loaded data
-                    const tempConnections = [...this.connections]; // Keep connections safe
-                    this.connections = []; // Clear connections temporarily for correct parentId calculation
+                    const tempConnections = [...this.connections];
+                    this.connections = []; // Clear connections temporarily
 
                     this.nodes.forEach(nodeData => {
                         const nodeElement = document.createElement('div');
@@ -768,49 +756,43 @@
                         nodeElement.dataset.id = nodeData.id;
                         this.updateNodeElementContent(nodeElement, nodeData);
                         this.canvas.appendChild(nodeElement);
-                        this.applyNodeStyle(nodeData, nodeElement); // Apply loaded style
-                        this.updateNodeElementPosition(nodeData, nodeElement); // Apply loaded position
+                        this.applyNodeStyle(nodeData);
+                        this.updateNodeElementPosition(nodeData);
                     });
                     this.connections = tempConnections; // Restore connections
                 }
 
                  // Final setup steps
-                 this.buildRootNodeMap(); // Crucial for connector colors etc.
+                 this.buildRootNodeMap();
                  this.updateCanvasTransform(); // Apply loaded/initial transform
-                 // applyAllNodeStyles might be redundant if styles applied during creation loop
+                 this.applyAllNodeStyles(); // Ensure styles match data
                  this.updateConnections(); // Draw connections based on loaded data
                  this.updateStructureTree();
-                 // Center view after elements are rendered and dimensions are known
-                 requestAnimationFrame(() => this.centerView());
+                 requestAnimationFrame(() => this.centerView()); // Center after rendering
                  console.log("Initialization complete.");
             }
 
             setupEventListeners() {
-                // --- Mouse Events ---
+                // Mouse Events
                 this.canvasContainer.addEventListener('mousedown', this.handleInteractionStart.bind(this), false);
-                // Add listeners to document to catch mouseup/mousemove outside the canvas
                 document.addEventListener('mousemove', this.handleInteractionMove.bind(this), false);
                 document.addEventListener('mouseup', this.handleInteractionEnd.bind(this), false);
-                // Optional: Handle mouse leaving the window entirely
-                // document.addEventListener('mouseleave', this.handleInteractionLeave.bind(this), false);
+                document.addEventListener('mouseleave', this.handleInteractionLeave.bind(this), false);
 
-                // --- Touch Events ---
-                // Use { passive: false } to allow preventDefault() for panning/zooming
+                // Touch Events
                 this.canvasContainer.addEventListener('touchstart', this.handleInteractionStart.bind(this), { passive: false });
                 this.canvasContainer.addEventListener('touchmove', this.handleInteractionMove.bind(this), { passive: false });
                 this.canvasContainer.addEventListener('touchend', this.handleInteractionEnd.bind(this), false);
-                this.canvasContainer.addEventListener('touchcancel', this.handleInteractionEnd.bind(this), false); // Handle interruption
+                this.canvasContainer.addEventListener('touchcancel', this.handleInteractionEnd.bind(this), false);
 
-                // --- Context Menu ---
                 this.canvasContainer.addEventListener('contextmenu', e => {
-                    e.preventDefault(); // Prevent default browser context menu
-                    // Only show custom menu on non-touch interactions (long press handles touch)
+                    e.preventDefault();
                     if (!this.isTouch) {
                         this.handleContextMenu(e);
                     }
                 });
 
-                // --- Node Modal Form Submission ---
+                // Node Modal Form Submission
                 this.nodeForm.addEventListener('submit', (e) => {
                     e.preventDefault();
                     const title = this.nodeTitleInput.value.trim();
@@ -818,55 +800,47 @@
                     const color = this.nodeColorInput.value;
                     const shape = this.nodeShapeSelect.value;
 
-                    if (!title) {
-                        this.showToast("Node title cannot be empty.", true);
-                        return;
-                    }
+                    if (!title) return;
 
                     if (this.editingNodeId !== null) {
-                        // Update existing node
                         const node = this.getNodeById(this.editingNodeId);
                         if (node) {
                             node.title = title; node.content = content; node.color = color; node.shape = shape;
-                            const nodeElement = this.getNodeElement(node.id);
-                            this.updateNodeElementContent(nodeElement, node);
-                            this.applyNodeStyle(node, nodeElement);
-                            this.updateConnections(); // Redraw connections (size might change)
+                            this.updateNodeElementContent(this.getNodeElement(node.id), node);
+                            this.applyNodeStyle(node);
+                            this.updateConnections(); // Size might change
                             this.updateStructureTree();
-                            this.showToast("Node updated.");
                         }
                     } else {
-                        // Add new node (either root or child)
-                        let parentId = this.contextMenuNodeId; // Will be null if adding a root node
+                        let parentId = this.contextMenuNodeId;
                         let position = this.calculateNewNodePosition(parentId);
-                        const newNodeData = {
+                        this.addNode({
                             id: this.getNextId(), title, content,
                             x: position.x, y: position.y,
                             parentId: parentId, color, shape
-                        };
-                        this.addNode(newNodeData); // This handles connections, structure tree, etc.
-                        this.showToast("Node added.");
-                        // Note: addNode calls buildRootNodeMap and updateConnections
+                        });
+                        this.buildRootNodeMap();
+                        this.updateConnections(); // Redraw for color
                     }
                     this.closeModal();
                     this.saveToLocalStorage();
                 });
 
-                // --- Modal Buttons ---
+                // Modal Buttons
                 this.cancelNodeBtn.addEventListener('click', () => this.closeModal());
                 this.modalCloseBtn.addEventListener('click', () => this.closeModal());
 
-                // --- Toolbar Buttons ---
+                // Toolbar Buttons
                 this.newNodeBtn.addEventListener('click', () => {
                     this.closeContextMenu();
-                    this.contextMenuNodeId = null; // Explicitly set context to null (adding root)
-                    this.editingNodeId = null; // Not editing
+                    this.contextMenuNodeId = null;
+                    this.editingNodeId = null;
                     this.modalTitle.textContent = 'Add Root Node';
                     // Use current theme's default node color for new root nodes
                     const defaultNodeColor = getComputedStyle(this.htmlEl).getPropertyValue('--node-bg-color').trim() || '#ffffff';
                     this.nodeColorInput.value = defaultNodeColor;
-                    this.nodeShapeSelect.value = 'rounded-rectangle'; // Default shape
-                    this.nodeTitleInput.value = ''; this.nodeContentInput.value = ''; // Clear fields
+                    this.nodeShapeSelect.value = 'rounded-rectangle';
+                    this.nodeTitleInput.value = ''; this.nodeContentInput.value = '';
                     this.openModal();
                 });
                 this.saveBtn.addEventListener('click', () => this.saveToFile());
@@ -874,429 +848,372 @@
                 this.sidebarToggle.addEventListener('click', () => this.toggleSidebar());
                 this.themeToggleBtn.addEventListener('click', () => this.toggleTheme());
 
-                // --- Context Menu Options ---
+                // Context Menu Options
                 this.addChildOption.addEventListener('click', () => {
                     if (this.contextMenuNodeId !== null) {
-                        this.editingNodeId = null; // We are adding, not editing
+                        this.editingNodeId = null;
                         this.modalTitle.textContent = 'Add Child Node';
-                        // Default child node style (e.g., color from parent, default shape)
+                        // Default child node color to parent's color or theme default
                         const parentNode = this.getNodeById(this.contextMenuNodeId);
                         const defaultNodeColor = parentNode?.color || getComputedStyle(this.htmlEl).getPropertyValue('--node-bg-color').trim() || '#ffffff';
                         this.nodeColorInput.value = defaultNodeColor;
                         this.nodeShapeSelect.value = 'rounded-rectangle';
                         this.nodeTitleInput.value = ''; this.nodeContentInput.value = '';
-                        this.openModal(); // contextMenuNodeId is already set from context menu open
+                        this.openModal();
                         this.closeContextMenu();
-                    } else {
-                        console.warn("Add child called without context node ID.");
                     }
                 });
                 this.editNodeOption.addEventListener('click', () => {
                     if (this.contextMenuNodeId !== null) {
                         const node = this.getNodeById(this.contextMenuNodeId);
                         if (node) {
-                            this.editingNodeId = this.contextMenuNodeId; // Set editing state
+                            this.editingNodeId = this.contextMenuNodeId;
                             this.modalTitle.textContent = 'Edit / Style Node';
-                            // Populate form with existing node data
                             this.nodeTitleInput.value = node.title;
-                            this.nodeContentInput.value = node.content || '';
-                            // Ensure default values are handled if loading old data without these fields
+                            this.nodeContentInput.value = node.content;
+                            // Ensure default values are handled if loading old data
                             const defaultNodeColor = getComputedStyle(this.htmlEl).getPropertyValue('--node-bg-color').trim() || '#ffffff';
                             this.nodeColorInput.value = node.color || defaultNodeColor;
                             this.nodeShapeSelect.value = node.shape || 'rounded-rectangle';
                             this.openModal();
-                        } else {
-                             console.warn("Edit called for non-existent node ID:", this.contextMenuNodeId);
                         }
                         this.closeContextMenu();
-                    } else {
-                        console.warn("Edit called without context node ID.");
                     }
                 });
                  this.changeConnectorColorOption.addEventListener('click', () => {
                      if (this.contextMenuNodeId !== null) {
                          const node = this.getNodeById(this.contextMenuNodeId);
-                         // Ensure the node exists and has a parent (only incoming connectors can have their color changed this way)
                          if (node && node.parentId !== null) {
-                             // Find the specific connection object to get its current color
+                             // Find the connection object
                              const connection = this.connections.find(c => c.from === node.parentId && c.to === node.id);
-                             // Set current color on picker (use custom, fallback to branch, fallback to default CSS)
-                              const defaultConnectorColor = getComputedStyle(this.htmlEl).getPropertyValue('--connector-default-color').trim() || '#cbd5e1';
-                              const branchColor = this.getBranchColor(node.id);
-                             this.connectorColorPicker.value = connection?.color || branchColor || defaultConnectorColor;
+                             // Set current color on picker and trigger click
+                             this.connectorColorPicker.value = connection?.color || this.getBranchColor(node.id) || '#cbd5e1'; // Default to branch or grey
                              this.connectorColorPicker.click(); // Open browser's color picker
-                         } else {
-                            console.warn("Change connector color called for root node or non-existent node.");
                          }
-                         this.closeContextMenu(); // Close menu after initiating color change
+                         this.closeContextMenu();
                      }
                  });
-                 // Listener for the *hidden* color picker input changes
-                this.connectorColorPicker.addEventListener('input', (e) => { // Use 'input' for live updates if picker supports it
+                 // Listener for the hidden color picker
+                this.connectorColorPicker.addEventListener('change', (e) => {
                      if (this.contextMenuNodeId !== null) {
                          const node = this.getNodeById(this.contextMenuNodeId);
                          if (node && node.parentId !== null) {
-                             let connection = this.connections.find(c => c.from === node.parentId && c.to === node.id);
+                             const connection = this.connections.find(c => c.from === node.parentId && c.to === node.id);
                              if (connection) {
-                                 connection.color = e.target.value; // Update connection color in our data
-                                 this.updateConnections();        // Redraw connectors immediately
-                                 this.saveToLocalStorage();       // Persist the change
-                             } else { // Should not happen if option was visible, but handle defensively
+                                 connection.color = e.target.value; // Update connection color
+                                 this.updateConnections();        // Redraw
+                                 this.saveToLocalStorage();       // Persist
+                             } else { // Should not happen if option was visible, but handle anyway
                                  console.warn("Could not find connection to update color for node:", this.contextMenuNodeId);
                              }
                          }
-                         // Do not clear contextMenuNodeId here, let the user finish picking.
-                         // It will be cleared naturally on the next interaction start or context menu open.
+                         // Clear contextMenuNodeId AFTER processing the change
+                         this.contextMenuNodeId = null;
                      }
                  });
 
                 this.deleteNodeOption.addEventListener('click', () => {
                      if (this.contextMenuNodeId !== null) {
                          const nodeToDelete = this.getNodeById(this.contextMenuNodeId);
-                         if (nodeToDelete) {
-                            // Use a more user-friendly confirmation
-                            const childrenCount = this.findNodeAndDescendants(this.contextMenuNodeId).length - 1;
-                            const confirmationMessage = childrenCount > 0
-                                ? `Delete node "${nodeToDelete.title}" and its ${childrenCount} descendant(s)?`
-                                : `Delete node "${nodeToDelete.title}"?`;
-
-                             if (confirm(confirmationMessage)) {
-                                 this.deleteNode(this.contextMenuNodeId); // This handles redraw, state updates
-                                 this.saveToLocalStorage();
-                                 this.showToast("Node deleted.");
-                             }
-                         } else {
-                            console.warn("Delete called for non-existent node ID:", this.contextMenuNodeId);
+                         if (nodeToDelete && confirm(`Delete node "${nodeToDelete.title}" and all its children?`)) {
+                             this.deleteNode(this.contextMenuNodeId);
+                             this.saveToLocalStorage();
                          }
                          this.closeContextMenu();
-                     } else {
-                        console.warn("Delete called without context node ID.");
                      }
                  });
 
 
-                // --- Controls ---
+                // Controls
                 this.zoomInBtn.addEventListener('click', () => { this.zoom(1.25); this.saveViewToLocalStorage(); });
                 this.zoomOutBtn.addEventListener('click', () => { this.zoom(0.8); this.saveViewToLocalStorage(); });
-                this.centerViewBtn.addEventListener('click', () => { this.centerView(true); /* centerView saves view state */ });
+                this.centerViewBtn.addEventListener('click', () => { this.centerView(true); this.saveViewToLocalStorage(); });
                 this.fullscreenToggleBtn.addEventListener('click', () => this.toggleFullscreen());
-                // Listen for fullscreen changes triggered by browser UI (e.g., Esc key)
                 document.addEventListener('fullscreenchange', () => this.handleFullscreenChange());
 
 
-                // --- Global Click/Tap Listener (for closing menus/modals) ---
+                // Global Click/Tap Listener
                 document.addEventListener('click', (e) => {
-                    // Close context menu if click is outside it
-                    if (this.contextMenu.style.display === 'block' && !this.contextMenu.contains(e.target)) {
+                    if (!this.contextMenu.contains(e.target)) {
                          this.closeContextMenu();
                     }
-                    // Close modal if click is on the backdrop overlay
-                    if (this.nodeModal.classList.contains('active') && e.target === this.nodeModal) {
+                    if (e.target === this.nodeModal) {
                          this.closeModal();
                     }
-                     // Close sidebar on mobile if click is outside it and the toggle button
-                     if (window.innerWidth <= 768 && this.sidebar.classList.contains('open')) {
-                         if (!this.sidebar.contains(e.target) && !this.sidebarToggle.contains(e.target)) {
-                             this.toggleSidebar(false); // Explicitly close
-                         }
+                     if (window.innerWidth <= 768 && this.sidebar.classList.contains('open') && !this.sidebar.contains(e.target) && !this.sidebarToggle.contains(e.target)) {
+                         this.toggleSidebar(false);
                      }
-                }, true); // Use capture phase to catch clicks early
+                }, true);
 
-                // --- Wheel Zoom ---
+                // Wheel Zoom
                 this.canvasContainer.addEventListener('wheel', (e) => {
-                    e.preventDefault(); // Prevent page scrolling
-                    const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9; // Zoom in/out based on scroll direction
+                    e.preventDefault();
+                    const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
                     const rect = this.canvasContainer.getBoundingClientRect();
-                    // Calculate mouse position relative to the canvas container
                     const mouseX = e.clientX - rect.left;
                     const mouseY = e.clientY - rect.top;
-                    this.zoomAtPoint(zoomFactor, mouseX, mouseY); // Zoom centered on the mouse pointer
-                    this.saveViewToLocalStorage(); // Persist view changes
-                }, { passive: false }); // Need false to allow preventDefault
+                    this.zoomAtPoint(zoomFactor, mouseX, mouseY);
+                    this.saveViewToLocalStorage();
+                }, { passive: false });
 
-                // --- Keyboard Shortcuts ---
+                // Keyboard Shortcuts
                 document.addEventListener('keydown', (e) => {
-                    // Don't trigger shortcuts if modal is active or if typing in an input/textarea
-                    if (this.nodeModal.classList.contains('active') || ['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
-                        return;
-                    }
+                    if (this.nodeModal.classList.contains('active')) return;
 
-                    // Delete Node (Delete or Backspace key)
                     if (e.key === 'Delete' || e.key === 'Backspace') {
                         if (this.selectedNodeId !== null) {
-                             // Prevent default backspace navigation only if focus is not on input
                             if (e.target === document.body || e.target === this.canvasContainer) {
                                 e.preventDefault();
                             }
                             const nodeToDelete = this.getNodeById(this.selectedNodeId);
-                            if (nodeToDelete) {
-                                const childrenCount = this.findNodeAndDescendants(this.selectedNodeId).length - 1;
-                                const confirmationMessage = childrenCount > 0
-                                    ? `Delete selected node "${nodeToDelete.title}" and its ${childrenCount} descendant(s)?`
-                                    : `Delete selected node "${nodeToDelete.title}"?`;
-
-                                if (confirm(confirmationMessage)) {
-                                    this.deleteNode(this.selectedNodeId);
-                                    this.saveToLocalStorage();
-                                    this.showToast("Node deleted.");
-                                }
+                            if (nodeToDelete && confirm(`Delete node "${nodeToDelete.title}" and all its children?`)) {
+                                this.deleteNode(this.selectedNodeId);
+                                this.saveToLocalStorage();
                             }
                         }
                     }
-                    // Escape Key (Close menus/modals, deselect, exit fullscreen)
                     if (e.key === 'Escape') {
-                         if (this.contextMenu.style.display === 'block') {
-                             this.closeContextMenu();
-                         } else if (this.nodeModal.classList.contains('active')) {
-                              this.closeModal();
-                         } else if (this.selectedNodeId !== null) {
-                              this.deselectNode();
-                         } else if (this.isFullscreen) { // Also exit fullscreen on Escape
-                            document.exitFullscreen().catch(err => console.error("Error exiting fullscreen:", err));
+                         this.closeContextMenu();
+                         this.closeModal();
+                         this.deselectNode();
+                         if (this.isFullscreen) { // Also exit fullscreen on Escape
+                            document.exitFullscreen();
                          }
                     }
-                    // Save (Ctrl/Cmd + S)
                     if ((e.ctrlKey || e.metaKey) && e.key === 's') {
                          e.preventDefault(); this.saveToFile();
                     }
-                    // Load (Ctrl/Cmd + O)
                     if ((e.ctrlKey || e.metaKey) && e.key === 'o') {
                          e.preventDefault(); this.loadFromFile();
                     }
-                    // Add Child (Tab or Insert on selected node?) - Future enhancement
-                    // Edit Node (Enter or F2 on selected node?) - Future enhancement
                 });
 
-                 // --- Window Resize ---
-                 // Use debouncing to avoid excessive calls during resize
-                 let resizeTimeout;
-                 window.addEventListener('resize', () => {
-                    clearTimeout(resizeTimeout);
-                    resizeTimeout = setTimeout(() => {
-                        // Re-center view on resize to adapt layout
-                        this.centerView();
-                        // Close sidebar if window becomes larger than mobile breakpoint
-                         if (window.innerWidth > 768 && this.sidebar.classList.contains('open')) {
-                             this.toggleSidebar(false);
-                         }
-                    }, 150); // Adjust debounce delay as needed
-                 });
-
-                 // --- System Theme Changes ---
+                 window.addEventListener('resize', () => this.centerView());
+                 // Listen for system theme changes
                  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-                     // Only change if no explicit preference is saved in local storage
+                     // Only change if no explicit preference is saved
                      if (!localStorage.getItem(themePrefKey)) {
                          const newTheme = e.matches ? 'dark' : 'light';
                          this.currentTheme = newTheme;
-                         applyTheme(newTheme); // Apply visual theme
-                         this.applyAllNodeStyles(); // Re-apply styles (defaults might change)
-                         this.updateConnections(); // Re-draw connectors (default color might change)
+                         applyTheme(newTheme);
+                         this.applyAllNodeStyles(); // Re-apply styles if default colors changed
+                         this.updateConnections(); // Re-draw connectors if default color changed
                      }
                  });
             }
 
             // --- Interaction Handlers ---
-             handleInteractionStart(e) {
+            handleInteractionStart(e) {
                 this.isTouch = e.type.startsWith('touch');
                  if (this.isTouch) {
-                    // Prevent default touch actions like scrolling/zooming while interacting with canvas
+                    console.log("Touch Start Detected"); // <<< ADDED LOG
                     e.preventDefault();
                  }
 
-                 this.closeContextMenu(); // Close any open context menu on new interaction
+                 this.closeContextMenu();
                  const interactionPos = this.getInteractionPosition(e);
-                 // Use elementFromPoint to find the element under the cursor/touch
+                 // Store initial drag start position, needed if long press occurs
+                 this.dragStart = { x: interactionPos.clientX, y: interactionPos.clientY };
                  const targetElement = document.elementFromPoint(interactionPos.clientX, interactionPos.clientY);
                  const targetNodeElement = targetElement ? targetElement.closest('.node') : null;
 
-                 // Long Press for Context Menu on Touch
-                 if (this.isTouch) {
-                     if(this.longPressTimeout) clearTimeout(this.longPressTimeout); // Clear previous timer
-                     this.longPressTimeout = setTimeout(() => {
-                         if (targetNodeElement) {
-                              // Use the initial touch position for context menu
-                              this.handleContextMenu(this.dragStart || interactionPos);
-                         }
-                         this.longPressTimeout = null; // Timer finished or cleared
-                     }, 500); // 500ms for long press
+                 // Log if we found a node element right at the start
+                 if (targetNodeElement) {
+                    console.log("Touch Start is over node:", targetNodeElement.dataset.id); // <<< ADDED LOG
+                 } else {
+                    console.log("Touch Start is NOT over a node."); // <<< ADDED LOG
                  }
 
+
+                 if (this.isTouch) {
+                     if(this.longPressTimeout) clearTimeout(this.longPressTimeout);
+                     console.log("Setting Long Press Timer..."); // <<< ADDED LOG
+
+                     this.longPressTimeout = setTimeout(() => {
+                         console.log("--- Long Press Timer FIRED ---"); // <<< ADDED LOG
+
+                         // Re-check the element under the finger *when the timer fires* is less reliable if held still.
+                         // Use the original targetNodeElement found at the start.
+                         // const currentTargetElement = document.elementFromPoint(interactionPos.clientX, interactionPos.clientY);
+                         // const currentNodeElement = currentTargetElement ? currentTargetElement.closest('.node') : null;
+
+                         if (targetNodeElement) { // Check the original element found at the start
+                             console.log("Long Press Target (original start) is Node:", targetNodeElement.dataset.id); // <<< ADDED LOG
+                             console.log("   -> Calling handleContextMenu for long press"); // <<< ADDED LOG
+                              // Use the stored dragStart position for consistency
+                              this.handleContextMenu(this.dragStart || interactionPos);
+                         // } else if (currentNodeElement) { // Fallback: check element *now* - REMOVED as it caused issues
+                         //      console.log("Long Press Target (current) is Node:", currentNodeElement.dataset.id); // <<< ADDED LOG
+                         //      console.log("   -> Calling handleContextMenu for long press (current element)"); // <<< ADDED LOG
+                         //      this.handleContextMenu(interactionPos); // Use current position
+                         } else {
+                             console.log("Long Press Target is NOT a Node when timer fired."); // <<< ADDED LOG
+                         }
+                         this.longPressTimeout = null;
+                     }, 700); // <<< INCREASED DURATION SLIGHTLY (0.7 sec) for testing
+                 }
+
+
                  if (targetNodeElement) {
-                     // --- Start Moving Node ---
+                     // Node Interaction Logic (Select/Move Prep)
                      const nodeId = parseInt(targetNodeElement.dataset.id);
-                     this.selectNode(nodeId); // Select the node being interacted with
+                     this.selectNode(nodeId);
                      this.isMovingNode = true;
                      this.isPanning = false;
                      const node = this.getNodeById(nodeId);
-                     if (!node) { // Should not happen, but safety check
-                         this.isMovingNode = false; return;
-                     }
-                     // Record starting positions
-                     this.dragStart = { x: interactionPos.clientX, y: interactionPos.clientY };
+                     // Drag start already set above
                      this.nodeStartPos = { x: node.x, y: node.y };
-                     // Update cursor styles
-                     targetNodeElement.style.cursor = 'grabbing';
-                     this.canvas.style.cursor = 'grabbing'; // Canvas cursor too
-                     document.body.style.cursor = 'grabbing'; // Body cursor prevents flickering
-                     // Stop propagation to prevent triggering panning on the canvas container
-                     // e.stopPropagation(); // careful with stopping propagation
+                     this.canvas.style.cursor = 'grabbing';
+                     document.body.style.cursor = 'grabbing';
+                     e.stopPropagation(); // Prevent canvas panning if starting on a node
 
                  } else if (targetElement && (targetElement.closest('.controls') || targetElement.closest('.header') || targetElement.closest('.sidebar'))) {
-                      // --- Interaction on Controls/Header/Sidebar ---
-                      // Do nothing - allow default button actions etc.
+                      // Click/Tap on Controls, Header or Sidebar - Do nothing related to canvas interaction
                       this.isPanning = false;
                       this.isMovingNode = false;
                  } else {
-                     // --- Start Panning Canvas ---
+                     // Canvas Panning Logic
                      this.isPanning = true;
                      this.isMovingNode = false;
-                     this.dragStart = { x: interactionPos.clientX, y: interactionPos.clientY };
-                     // Update cursor styles
+                     // Drag start already set above
                      this.canvas.classList.add('grabbing');
                      document.body.style.cursor = 'grabbing';
-                     this.deselectNode(); // Deselect any node when starting a pan
+                     this.deselectNode();
                  }
              }
 
             handleInteractionMove(e) {
-                 // Only process move if panning or moving a node
                  if (!this.isPanning && !this.isMovingNode) return;
-                 if (this.isTouch) {
-                    e.preventDefault(); // Prevent scrolling page during drag/pan
-                 }
+                 if (this.isTouch) e.preventDefault();
 
                  const interactionPos = this.getInteractionPosition(e);
                  const dx = interactionPos.clientX - this.dragStart.x;
                  const dy = interactionPos.clientY - this.dragStart.y;
 
-                 // Cancel long press timer if significant movement occurs
+                 // Check if the long press timer exists and if movement threshold is exceeded
                  if (this.longPressTimeout && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
+                     console.log("Long Press Timer CANCELED due to movement."); // <<< ADDED LOG
                      clearTimeout(this.longPressTimeout);
                      this.longPressTimeout = null;
                  }
 
                  if (this.isMovingNode && this.selectedNodeId !== null) {
-                     // --- Move Node ---
                      const node = this.getNodeById(this.selectedNodeId);
                      if (node) {
-                         // Calculate position change in canvas coordinates (adjusting for scale)
                          const deltaX = dx / this.scale;
                          const deltaY = dy / this.scale;
-                         // Update node's logical position
                          node.x = this.nodeStartPos.x + deltaX;
                          node.y = this.nodeStartPos.y + deltaY;
-                         // Update node's visual position (transform)
                          this.updateNodeElementPosition(node);
-                         // Update connectors continuously during drag for better feedback
-                         this.updateConnections();
+                         this.updateConnections(); // Draw connectors continuously
                      }
                  } else if (this.isPanning) {
-                     // --- Pan Canvas ---
-                     // Update canvas offset directly
                      this.offset.x += dx;
                      this.offset.y += dy;
-                     // Update drag start position for the next move calculation
-                     this.dragStart = { x: interactionPos.clientX, y: interactionPos.clientY };
-                     // Apply the new transform to the canvas and SVG layer
+                     this.dragStart = { x: interactionPos.clientX, y: interactionPos.clientY }; // Update dragStart for continuous panning
                      this.updateCanvasTransform();
                  }
             }
 
             handleInteractionEnd(e) {
-                 // Clear long press timer if interaction ends before it fires
+                 // Check if a long press timer was active and clear it
                  if (this.longPressTimeout) {
+                     console.log("Long Press Timer CANCELED due to touch end."); // <<< ADDED LOG
                      clearTimeout(this.longPressTimeout);
                      this.longPressTimeout = null;
                  }
 
                  if (this.isMovingNode) {
-                     // --- End Moving Node ---
                      this.isMovingNode = false;
-                     // Reset cursor styles
-                     const nodeElement = this.getNodeElement(this.selectedNodeId);
-                     if(nodeElement) nodeElement.style.cursor = 'pointer';
                      this.canvas.style.cursor = 'grab';
                      document.body.style.cursor = 'default';
-                     // Save the final node position
-                     this.saveToLocalStorage();
+                     this.saveToLocalStorage(); // Save node position
                  }
                  if (this.isPanning) {
-                     // --- End Panning ---
                      this.isPanning = false;
-                     // Reset cursor styles
                      this.canvas.classList.remove('grabbing');
                      document.body.style.cursor = 'default';
-                     // Save the final view state (offset, scale)
-                     this.saveViewToLocalStorage();
+                     this.saveViewToLocalStorage(); // Save view changes
                  }
-                 // Reset isTouch flag (will be set again on next touchstart)
-                 // this.isTouch = false; // Better to set at the start of interactions
+                 // this.isTouch flag is reset at the start of the next interaction
             }
 
-            // handleInteractionLeave(e) {
-                 // Optional: If the mouse leaves the *window* during a drag/pan, treat it as an interaction end.
-                 // if (!this.isTouch && (this.isMovingNode || this.isPanning)) {
-                 //    console.log("Mouse left window during interaction, ending.");
-                 //    this.handleInteractionEnd(e);
-                 // }
-            // }
+            handleInteractionLeave(e) {
+                 // Treat mouse leave like mouse up/end if dragging/panning
+                 if (!this.isTouch && (this.isMovingNode || this.isPanning)) {
+                     this.handleInteractionEnd(e);
+                 }
+            }
 
             getInteractionPosition(e) {
-                // Handles both MouseEvent and TouchEvent
                 if (e.touches && e.touches.length > 0) {
-                    // Use the first touch point for single-touch interactions
                     return { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY };
                 } else if (e.changedTouches && e.changedTouches.length > 0) {
-                     // Useful for touchend/touchcancel events
+                     // Use changedTouches for touchend/touchcancel
                      return { clientX: e.changedTouches[0].clientX, clientY: e.changedTouches[0].clientY };
                 }
-                // Default to mouse event coordinates
+                // For mouse events
                 return { clientX: e.clientX, clientY: e.clientY };
             }
 
-            handleContextMenu(pos) {
-                // pos should be { clientX, clientY }
-                 const targetElement = document.elementFromPoint(pos.clientX, pos.clientY);
+            handleContextMenu(e) {
+                 // Determine if called by event (right-click) or position data (long-press)
+                 const eventType = (e instanceof Event) ? e.type : 'longpress';
+                 console.log(`handleContextMenu called by: ${eventType}`); // Keep this log
+
+                 let clientX, clientY; // Define variables to hold the final coordinates
+
+                 // Check the format of the input 'e' and extract coordinates accordingly
+                 if (e instanceof MouseEvent || e instanceof PointerEvent) {
+                     // If it's a real mouse/pointer event, get coords directly
+                     clientX = e.clientX;
+                     clientY = e.clientY;
+                 } else if (e && typeof e.clientX === 'number' && typeof e.clientY === 'number') {
+                     // If it's an object that already has clientX/clientY (less likely now but safe fallback)
+                     clientX = e.clientX;
+                     clientY = e.clientY;
+                 } else if (e && typeof e.x === 'number' && typeof e.y === 'number') {
+                     // If it's an object with x/y (like our 'this.dragStart' from long press)
+                     clientX = e.x; // Use x property
+                     clientY = e.y; // Use y property
+                 } else {
+                     // If we don't have valid coordinates in any expected format
+                     console.error("handleContextMenu received invalid or unexpected position data:", e);
+                     return; // Stop if coordinates are invalid
+                 }
+
+                 // --- From here onwards, use the extracted clientX and clientY ---
+
+                 console.log(`   -> Using coordinates: (${clientX}, ${clientY})`); // Log the coords being used
+
+                 const targetElement = document.elementFromPoint(clientX, clientY);
                  const targetNodeElement = targetElement ? targetElement.closest('.node') : null;
 
                  if (targetNodeElement) {
-                     // --- Context Menu on a Node ---
                      const nodeId = parseInt(targetNodeElement.dataset.id);
-                     const node = this.getNodeById(nodeId);
-                     if (!node) return; // Exit if node data not found
-
-                     this.selectNode(nodeId); // Select the node being right-clicked/long-pressed
-                     this.contextMenuNodeId = nodeId; // Store the ID for menu actions
-
-                     // Show/Hide "Change Connector Color" based on whether the node has a parent
-                     const hasParent = node.parentId !== null;
+                     console.log(`   -> Found node ${nodeId} for context menu.`); // Keep this log
+                     this.selectNode(nodeId);
+                     this.contextMenuNodeId = nodeId;
+                     // Show/Hide connector color option based on whether the node has a parent
+                     const hasParent = this.connections.some(c => c.to === nodeId);
                      this.changeConnectorColorOption.style.display = hasParent ? 'flex' : 'none'; // Use flex for alignment
-
-                     // Show the context menu at the interaction position
-                     this.showContextMenu(pos.clientX, pos.clientY);
+                     this.showContextMenu(clientX, clientY); // Pass the unified coordinates
                  } else {
-                     // --- Context Menu on Canvas Background ---
-                     // Optional: Could have a context menu for the canvas itself (e.g., "Add Root Node", "Paste")
-                     // For now, just close any existing menu and deselect node
+                     console.log("   -> No node found at context menu position."); // Keep this log
                      this.contextMenuNodeId = null;
                      this.closeContextMenu();
                      this.deselectNode();
                  }
             }
-
             toggleSidebar(forceState) {
-                 // forceState: true = open, false = close, undefined = toggle
-                 const shouldOpen = typeof forceState === 'boolean' ? forceState : !this.sidebar.classList.contains('open');
+                 const isOpen = this.sidebar.classList.contains('open');
+                 const shouldOpen = typeof forceState === 'boolean' ? forceState : !isOpen;
                  this.sidebar.classList.toggle('open', shouldOpen);
-                 // Update aria-expanded for accessibility
-                 this.sidebarToggle.setAttribute('aria-expanded', shouldOpen.toString());
             }
 
             // --- ID Management, Coordinates, Node Helpers ---
             getNextId() { return this.nextId++; }
-
             screenToCanvasCoords(screenX, screenY) {
-                 // Converts screen coordinates (e.g., mouse click) to canvas's internal coordinates
                  const rect = this.canvasContainer.getBoundingClientRect();
                  const canvasX = (screenX - rect.left - this.offset.x) / this.scale;
                  const canvasY = (screenY - rect.top - this.offset.y) / this.scale;
@@ -1304,140 +1221,103 @@
             }
             getNodeById(id) { return this.nodes.find(n => n.id === id); }
             getNodeElement(nodeId) { return this.canvas.querySelector(`.node[data-id="${nodeId}"]`); }
-
             getParentId(nodeId) {
-                 // Find the connection where this node is the 'to' target
                  const connection = this.connections.find(c => c.to === nodeId);
-                 return connection ? connection.from : null; // Return parent ID or null if root/no connection found
+                 return connection ? connection.from : null;
             }
 
             // --- Node Management ---
             addNode(nodeData) {
-                // Check if ID already exists (e.g., from loading data)
                 if (this.getNodeById(nodeData.id)) {
                     console.warn(`Node with ID ${nodeData.id} already exists. Skipping add.`);
-                    // Ensure nextId is higher than any existing ID
-                    this.nextId = Math.max(this.nextId, nodeData.id + 1);
-                    return; // Don't add duplicates
+                    return;
                 }
-                // Ensure nextId is correctly updated if adding with a specific ID
-                 this.nextId = Math.max(this.nextId, nodeData.id + 1);
+                this.nextId = Math.max(this.nextId, nodeData.id + 1);
 
-                // Ensure default values are set if missing
+                // Ensure defaults
                 const defaultNodeColor = getComputedStyle(this.htmlEl).getPropertyValue('--node-bg-color').trim() || '#ffffff';
                 nodeData.color = nodeData.color || defaultNodeColor;
                 nodeData.shape = nodeData.shape || 'rounded-rectangle';
-                // parentId should be passed correctly, default to null if undefined
                 nodeData.parentId = nodeData.parentId !== undefined ? nodeData.parentId : null;
 
-                // Add node data to the array
                 this.nodes.push(nodeData);
 
-                // Create DOM element for the node
                 const nodeElement = document.createElement('div');
-                nodeElement.className = 'node'; // Base class
-                nodeElement.dataset.id = nodeData.id; // Store ID on the element
-                nodeElement.setAttribute('role', 'treeitem'); // Accessibility role
-                nodeElement.setAttribute('aria-label', nodeData.title); // Basic label
+                nodeElement.className = 'node';
+                nodeElement.dataset.id = nodeData.id;
+                this.updateNodeElementContent(nodeElement, nodeData);
+                this.applyNodeStyle(nodeData, nodeElement);
+                this.updateNodeElementPosition(nodeData, nodeElement);
+                this.canvas.appendChild(nodeElement);
 
-                this.updateNodeElementContent(nodeElement, nodeData); // Set inner HTML (title, content)
-                this.applyNodeStyle(nodeData, nodeElement);          // Apply color and shape classes/styles
-                this.updateNodeElementPosition(nodeData, nodeElement); // Set initial transform: translate
-                this.canvas.appendChild(nodeElement);                // Add element to the canvas
-
-                // Add connection if it's a child node
-                if (nodeData.parentId !== null) {
-                    const parentNode = this.getNodeById(nodeData.parentId);
-                    if (parentNode) {
-                         // Check if this connection already exists (e.g., during loading)
-                         if (!this.connections.some(c => c.from === nodeData.parentId && c.to === nodeData.id)) {
-                             // Add connection WITHOUT a custom color initially (will use branch/default)
-                             this.connections.push({ from: nodeData.parentId, to: nodeData.id });
-                         }
-                    } else {
-                         // Parent ID was specified but parent node doesn't exist - treat as root
-                         console.warn(`Parent node ${nodeData.parentId} not found for new node ${nodeData.id}. Adding as root.`);
-                         nodeData.parentId = null; // Correct the data
+                // Add connection (ensure no duplicates)
+                if (nodeData.parentId !== null && this.getNodeById(nodeData.parentId)) {
+                    if (!this.connections.some(c => c.from === nodeData.parentId && c.to === nodeData.id)) {
+                         // Add connection WITHOUT custom color initially
+                         this.connections.push({ from: nodeData.parentId, to: nodeData.id });
                     }
+                } else if (nodeData.parentId !== null) {
+                     console.warn(`Parent node ${nodeData.parentId} not found for node ${nodeData.id}. Setting parentId to null.`);
+                     nodeData.parentId = null; // Correct data
                 }
 
-                // Update internal state and UI
-                this.buildRootNodeMap();    // Important for connector colors
-                this.updateStructureTree(); // Update the sidebar tree view
-                this.updateConnections();   // Draw/redraw connections including the new one
-                this.selectNode(nodeData.id); // Select the newly added node
 
-                // Animate the node appearance
-                gsap.fromTo(nodeElement,
-                    { scale: 0.5, opacity: 0 },
-                    { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(1.7)" });
-
+                this.buildRootNodeMap(); // Needed for connector colors
+                this.updateStructureTree();
+                this.updateConnections();
+                this.selectNode(nodeData.id);
+                gsap.fromTo(nodeElement, { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(1.7)" });
                 console.log(`Node added: ID=${nodeData.id}, Title='${nodeData.title}'`);
             }
 
             updateNodeElementContent(element, nodeData) {
                  if (!element) return;
-                 // Sanitize title and content to prevent basic HTML injection
-                 const safeTitle = nodeData.title ? nodeData.title.replace(/</g, "&lt;").replace(/>/g, "&gt;") : 'Untitled';
-                 const safeContent = nodeData.content ? nodeData.content.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, '<br>') : '';
-
+                 const safeTitle = nodeData.title?.replace(/</g, "<") || 'Untitled';
+                 const safeContent = nodeData.content?.replace(/</g, "<").replace(/\n/g, '<br>') || '';
                  element.innerHTML = `
                      <div class="node-title">${safeTitle}</div>
                      ${safeContent ? `<div class="node-content">${safeContent}</div>` : ''}
                  `;
-                 // Update ARIA label if title changed
-                 element.setAttribute('aria-label', safeTitle);
             }
 
             applyNodeStyle(node, element = null) {
                  const targetElement = element || this.getNodeElement(node.id);
                  if (!targetElement) return;
-
-                 // Get default node color for the current theme as a fallback
                  const defaultNodeColor = getComputedStyle(this.htmlEl).getPropertyValue('--node-bg-color').trim() || '#ffffff';
-                 // Set background color using CSS variable for consistency
                  targetElement.style.setProperty('--node-bg-color', node.color || defaultNodeColor);
-
-                 // Manage shape classes
-                 targetElement.classList.remove(
-                    'node-shape-rectangle', 'node-shape-rounded-rectangle',
-                    'node-shape-stadium', 'node-shape-ellipse'
-                 );
+                 targetElement.classList.remove('node-shape-rectangle', 'node-shape-rounded-rectangle', 'node-shape-stadium', 'node-shape-ellipse');
                  targetElement.classList.add(`node-shape-${node.shape || 'rounded-rectangle'}`);
             }
 
             applyAllNodeStyles() {
-                // Useful after theme change to ensure nodes reflect new defaults if they don't have custom colors
                 this.nodes.forEach(node => this.applyNodeStyle(node));
             }
 
             updateNodeElementPosition(node, element = null) {
                 const targetElement = element || this.getNodeElement(node.id);
                 if (targetElement) {
-                    // Use translate for positioning - generally better performance than top/left
-                    targetElement.style.transform = `translate(${node.x}px, ${node.y}px)`;
+                    // Ensure x and y are numbers before applying transform
+                    const xPos = typeof node.x === 'number' ? node.x : 0;
+                    const yPos = typeof node.y === 'number' ? node.y : 0;
+                    targetElement.style.transform = `translate(${xPos}px, ${yPos}px)`;
                 }
             }
 
-            selectNode(nodeId) {
-                 // Allow re-selecting the same node (e.g., to bring focus)
-                 if (this.selectedNodeId !== nodeId) {
-                     this.deselectNode(); // Deselect previously selected node first
-                     this.selectedNodeId = nodeId;
-                      console.log(`Node selected: ID=${nodeId}`);
-                 } else {
-                     // If clicking the already selected node, maybe do nothing or bring to front?
-                 }
 
+            selectNode(nodeId) {
+                 // Allow re-selecting the same node to bring it forward if needed, but don't log repeatedly
+                 if (this.selectedNodeId !== nodeId) {
+                     this.deselectNode(); // Deselect previous
+                     this.selectedNodeId = nodeId;
+                      // console.log(`Node selected: ID=${nodeId}`); // Keep logging minimal
+                 }
                  const element = this.getNodeElement(nodeId);
                  if (element) {
                       element.classList.add('selected');
-                      element.setAttribute('aria-selected', 'true');
-                      // Optional: Bring selected node visually to front if needed (can impact performance slightly)
+                      // Optional: Bring selected node visually to front (if z-index issues arise)
                       // this.canvas.appendChild(element);
                  }
-                 // Update the structure tree to reflect selection
-                 this.updateStructureTreeSelection();
+                 this.updateStructureTree();
             }
 
             deselectNode() {
@@ -1445,195 +1325,175 @@
                      const prevElement = this.getNodeElement(this.selectedNodeId);
                      if (prevElement) {
                          prevElement.classList.remove('selected');
-                         prevElement.setAttribute('aria-selected', 'false');
                      }
-                     console.log(`Node deselected: ID=${this.selectedNodeId}`);
+                     // console.log(`Node deselected: ID=${this.selectedNodeId}`); // Keep logging minimal
                      this.selectedNodeId = null;
-                     // Update the structure tree to reflect deselection
-                     this.updateStructureTreeSelection();
+                     this.updateStructureTree();
                  }
             }
 
-             updateStructureTreeSelection() {
-                // Remove 'selected' from all tree nodes first
-                this.structureTree.querySelectorAll('.tree-node.selected').forEach(el => {
-                    el.classList.remove('selected');
-                });
-                // Add 'selected' to the currently selected node's tree element
-                if (this.selectedNodeId !== null) {
-                    const treeElement = this.structureTree.querySelector(`.tree-node[data-tree-id="${this.selectedNodeId}"]`);
-                    if (treeElement) {
-                        treeElement.classList.add('selected');
-                        // Scroll the selected node into view within the sidebar
-                        treeElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                    }
-                }
-             }
-
-
             deleteNode(nodeId) {
                 const nodesToDeleteIds = this.findNodeAndDescendants(nodeId);
-                if (nodesToDeleteIds.length === 0) {
-                     console.warn("Attempted to delete non-existent node:", nodeId);
-                     return;
-                }
+                if (nodesToDeleteIds.length === 0) return;
                 console.log(`Deleting nodes: ${nodesToDeleteIds.join(', ')}`);
 
-                // Animate and remove DOM elements
                 nodesToDeleteIds.forEach(id => {
                     const element = this.getNodeElement(id);
                     if (element) {
-                        gsap.to(element, {
-                           scale: 0.5, opacity: 0, duration: 0.2,
-                           onComplete: () => element.remove()
-                        });
+                        gsap.to(element, { scale: 0.5, opacity: 0, duration: 0.2, onComplete: () => element.remove() });
                     }
-                    // Remove from root map cache
                     this.rootNodeMap.delete(id);
                 });
 
-                // Filter out deleted nodes and connections from data arrays
                 this.nodes = this.nodes.filter(node => !nodesToDeleteIds.includes(node.id));
                 this.connections = this.connections.filter(conn =>
                     !nodesToDeleteIds.includes(conn.from) && !nodesToDeleteIds.includes(conn.to)
                 );
 
-                // Clear selection if the selected node was deleted
                 if (this.selectedNodeId !== null && nodesToDeleteIds.includes(this.selectedNodeId)) {
                     this.selectedNodeId = null;
                 }
-                // Clear context menu target if it was deleted
                  if (this.contextMenuNodeId !== null && nodesToDeleteIds.includes(this.contextMenuNodeId)) {
                      this.contextMenuNodeId = null;
-                     this.closeContextMenu(); // Ensure menu is closed
+                     this.closeContextMenu();
                  }
 
-                // Update UI
-                this.updateConnections();   // Redraw connectors
-                this.updateStructureTree(); // Rebuild sidebar tree
+                this.updateConnections();
+                this.updateStructureTree();
             }
 
 
             // --- Root Finding & Connections ---
              buildRootNodeMap() {
                  this.rootNodeMap.clear();
-                 const parentMap = new Map(); // Map: childId -> parentId
-                 this.connections.forEach(c => parentMap.set(c.to, c.from));
+                 const parentMap = new Map();
+                 this.connections.forEach(c => parentMap.set(c.to, c.from)); // map childId -> parentId
 
-                 // Recursive function to find the ultimate root for a given node ID
-                 const findRootRecursive = (currentId, visited = new Set()) => {
-                     // 1. Check cache
+                 const findRootRecursive = (currentId) => {
                      if (this.rootNodeMap.has(currentId)) {
                          return this.rootNodeMap.get(currentId);
                      }
-                     // 2. Detect loops
-                     if (visited.has(currentId)) {
-                         console.warn(`Loop detected involving node ${currentId}. Treating as root.`);
-                         this.rootNodeMap.set(currentId, currentId); // Treat as its own root
+                     const parentId = parentMap.get(currentId);
+                     if (parentId === undefined || parentId === null) {
+                         this.rootNodeMap.set(currentId, currentId); // It's a root
                          return currentId;
                      }
-                     visited.add(currentId); // Mark as visited for this path
-
-                     // 3. Get parent
-                     const parentId = parentMap.get(currentId);
-
-                     // 4. Base case: No parent means it's a root
-                     if (parentId === undefined || parentId === null) {
+                     // Check for potential loops (though unlikely in parent-child structure)
+                     if (this.rootNodeMap.has(parentId) && this.rootNodeMap.get(parentId) === currentId) {
+                         console.warn(`Loop detected between ${currentId} and ${parentId}. Treating ${currentId} as root.`);
                          this.rootNodeMap.set(currentId, currentId);
                          return currentId;
                      }
 
-                     // 5. Recursive step: Find the root of the parent
-                     const rootId = findRootRecursive(parentId, visited);
-
-                     // 6. Cache result for current node
+                     const rootId = findRootRecursive(parentId);
                      this.rootNodeMap.set(currentId, rootId);
                      return rootId;
                  };
 
-                 // Populate the map for all nodes
                  this.nodes.forEach(node => {
                      if (!this.rootNodeMap.has(node.id)) {
-                         findRootRecursive(node.id, new Set()); // Start recursion for each potential root/branch
+                         findRootRecursive(node.id);
                      }
                  });
-                 // console.log("Root map built:", this.rootNodeMap);
              }
 
              // Helper to get branch color based on root (used as fallback for connector color)
              getBranchColor(nodeId) {
                  const rootId = this.rootNodeMap.get(nodeId);
-                 // Only assign branch colors to non-root nodes within a branch
                  if (rootId !== undefined && rootId !== nodeId && this.branchColors.length > 0) {
-                     // Use a simple modulo hash of the root ID for consistent color assignment
-                     // Use Math.abs to handle potential negative IDs if they ever occur
-                     const colorIndex = Math.abs(rootId % this.branchColors.length);
-                     return this.branchColors[colorIndex];
+                     // Ensure rootId is a number before modulo
+                     const numericRootId = Number(rootId);
+                     if (!isNaN(numericRootId)) {
+                        const colorIndex = Math.abs(numericRootId % this.branchColors.length);
+                        return this.branchColors[colorIndex];
+                     }
                  }
-                 return null; // Return null if it's a root node or no colors defined
+                 return null; // No specific branch color
              }
 
 
              updateConnections() {
-                 // Clear existing SVG lines
-                 this.connectorSvg.innerHTML = '';
+                this.connectorSvg.innerHTML = '';
 
-                 // Ensure root map is built (might be needed if called before init finishes)
-                 if (this.rootNodeMap.size === 0 && this.nodes.length > 0) {
-                     // console.warn("Root map empty, rebuilding before drawing connections.");
-                     this.buildRootNodeMap();
-                 }
+                // Validate node map before proceeding
+                if (this.rootNodeMap.size !== this.nodes.length && this.nodes.length > 0) {
+                    console.warn("Root map size mismatch, rebuilding before drawing connections.");
+                    this.buildRootNodeMap();
+                }
 
-                  // Get default connector color based on current theme CSS variable
-                  const defaultColor = getComputedStyle(this.htmlEl).getPropertyValue('--connector-default-color').trim() || '#cbd5e1';
+                // Cache the default color to avoid repeated DOM queries
+                const defaultColor = getComputedStyle(this.htmlEl).getPropertyValue('--connector-default-color').trim() || '#cbd5e1';
 
-                 this.connections.forEach(conn => {
-                     const fromNode = this.getNodeById(conn.from);
-                     const toNode = this.getNodeById(conn.to);
+                // Create a document fragment to improve performance
+                const fragment = document.createDocumentFragment();
 
-                     if (fromNode && toNode) {
-                         // Get the corresponding DOM elements
-                         const fromElement = this.getNodeElement(fromNode.id);
-                         const toElement = this.getNodeElement(toNode.id);
+                // Track visible connections for potential optimization
+                let visibleConnectionCount = 0;
 
-                         // Ensure elements exist and have dimensions before calculating connection points
-                         if (fromElement && toElement && fromElement.offsetWidth > 0 && toElement.offsetWidth > 0) {
-                             // Calculate center points of the nodes
-                             const fromX = fromNode.x + fromElement.offsetWidth / 2;
-                             const fromY = fromNode.y + fromElement.offsetHeight / 2;
-                             const toX = toNode.x + toElement.offsetWidth / 2;
-                             const toY = toNode.y + toElement.offsetHeight / 2;
+                this.connections.forEach(conn => {
+                    try {
+                        const fromNode = this.getNodeById(conn.from);
+                        const toNode = this.getNodeById(conn.to);
 
-                             // Determine connector color priority: Custom > Branch > Default
-                             let color = conn.color || this.getBranchColor(toNode.id) || defaultColor;
+                        if (!fromNode || !toNode) return; // Skip if either node is missing
 
-                             // Create SVG line element
-                             const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                             line.setAttribute('x1', fromX); line.setAttribute('y1', fromY);
-                             line.setAttribute('x2', toX); line.setAttribute('y2', toY);
-                             line.style.stroke = color; // Apply the determined color
-                             // line.setAttribute('stroke', color); // Alternative way to set color
-                             this.connectorSvg.appendChild(line);
-                         } else {
-                             // console.warn(`Skipping connection draw for ${conn.from}->${conn.to}: Elements not ready.`);
-                         }
-                     } else {
-                        // console.warn(`Skipping connection draw for ${conn.from}->${conn.to}: Node data missing.`);
-                     }
-                 });
-             }
+                        const fromElement = this.getNodeElement(fromNode.id);
+                        const toElement = this.getNodeElement(toNode.id);
+
+                        // Ensure elements exist and are visible in the DOM
+                        if (fromElement && toElement &&
+                            fromElement.offsetWidth > 0 && toElement.offsetWidth > 0) {
+
+                            // Calculate center points - ensure node positions are numbers
+                            const fromX = (typeof fromNode.x === 'number' ? fromNode.x : 0) + fromElement.offsetWidth / 2;
+                            const fromY = (typeof fromNode.y === 'number' ? fromNode.y : 0) + fromElement.offsetHeight / 2;
+                            const toX = (typeof toNode.x === 'number' ? toNode.x : 0) + toElement.offsetWidth / 2;
+                            const toY = (typeof toNode.y === 'number' ? toNode.y : 0) + toElement.offsetHeight / 2;
+
+
+                            // Determine color priority: Custom > Branch > Default
+                            const color = conn.color || this.getBranchColor(toNode.id) || defaultColor;
+
+                            // Create line and set attributes
+                            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                            line.setAttribute('x1', fromX);
+                            line.setAttribute('y1', fromY);
+                            line.setAttribute('x2', toX);
+                            line.setAttribute('y2', toY);
+                            line.style.stroke = color;
+
+                            // Set class for potential styling through CSS
+                            line.classList.add('connector-line');
+
+                            // Add connection data attributes for potential interactivity
+                            line.dataset.fromId = fromNode.id;
+                            line.dataset.toId = toNode.id;
+
+                            // Add to fragment instead of directly to SVG
+                            fragment.appendChild(line);
+                            visibleConnectionCount++;
+                        }
+                    } catch (error) {
+                        console.error("Error creating connection:", error, conn);
+                    }
+                });
+
+                // Add all connections to the DOM in one operation
+                this.connectorSvg.appendChild(fragment);
+
+                // Optional debug info
+                // console.log(`Rendered ${visibleConnectionCount} of ${this.connections.length} connections`);
+            }
 
 
              // --- Canvas Transformation, Zoom, Center ---
              updateCanvasTransform() {
-                 // Apply the current offset and scale to both the node canvas and the SVG connector layer
                  const transform = `translate(${this.offset.x}px, ${this.offset.y}px) scale(${this.scale})`;
                  this.canvas.style.transform = transform;
-                 this.connectorSvg.style.transform = transform; // Keep SVG layer synced
+                 this.connectorSvg.style.transform = transform;
              }
 
              zoom(factor) {
-                // Zooms towards the center of the canvas container
                  const rect = this.canvasContainer.getBoundingClientRect();
                  const centerX = rect.width / 2;
                  const centerY = rect.height / 2;
@@ -1641,108 +1501,79 @@
              }
 
              zoomAtPoint(factor, screenX, screenY) {
-                // Zooms towards a specific point on the screen (e.g., mouse cursor)
                  const newScale = Math.max(this.minScale, Math.min(this.maxScale, this.scale * factor));
-                 // Don't zoom if already at min/max scale
                  if (newScale === this.scale) return;
-
-                 // Calculate the canvas point corresponding to the screen point BEFORE zooming
-                 const pointX_before = (screenX - this.offset.x) / this.scale;
-                 const pointY_before = (screenY - this.offset.y) / this.scale;
-
-                 // Calculate the new offset needed to keep the screen point stationary AFTER zooming
-                 this.offset.x = screenX - pointX_before * newScale;
-                 this.offset.y = screenY - pointY_before * newScale;
-
-                 // Apply the new scale
+                 const pointX = (screenX - this.offset.x) / this.scale;
+                 const pointY = (screenY - this.offset.y) / this.scale;
+                 this.offset.x = screenX - pointX * newScale;
+                 this.offset.y = screenY - pointY * newScale;
                  this.scale = newScale;
-
-                 // Update the visual transform
                  this.updateCanvasTransform();
              }
 
              centerView(userInitiated = false) {
                  if(this.nodes.length === 0){
-                     // If no nodes, center the view at origin with scale 1
                      this.offset = { x: this.canvasContainer.offsetWidth / 2, y: this.canvasContainer.offsetHeight / 2 };
                      this.scale = 1;
-                     if (userInitiated) {
-                          gsap.to(this, {
-                              scale: this.scale, offset: this.offset, duration: 0.4, ease: "power2.out",
-                              onUpdate: () => this.updateCanvasTransform(),
-                              onComplete: () => this.saveViewToLocalStorage() // Save after animation
-                          });
-                     } else {
-                         this.updateCanvasTransform();
-                         this.saveViewToLocalStorage(); // Save immediately if not animated
-                     }
+                     this.updateCanvasTransform();
                      return;
                  }
-
-                 // Calculate bounding box of all rendered nodes
                  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
                  let nodeCount = 0;
 
                  this.nodes.forEach(node => {
                      const element = this.getNodeElement(node.id);
-                     // Only include nodes that are actually rendered and have dimensions
+                     // Ensure node coordinates are numbers before using them
+                     const nodeX = typeof node.x === 'number' ? node.x : 0;
+                     const nodeY = typeof node.y === 'number' ? node.y : 0;
+
                      if(element && element.offsetWidth > 0 && element.offsetHeight > 0){
-                         minX = Math.min(minX, node.x);
-                         maxX = Math.max(maxX, node.x + element.offsetWidth);
-                         minY = Math.min(minY, node.y);
-                         maxY = Math.max(maxY, node.y + element.offsetHeight);
+                         minX = Math.min(minX, nodeX);
+                         maxX = Math.max(maxX, nodeX + element.offsetWidth);
+                         minY = Math.min(minY, nodeY);
+                         maxY = Math.max(maxY, nodeY + element.offsetHeight);
                          nodeCount++;
                      }
                  });
 
-                 if(nodeCount === 0){ // If nodes exist but none are rendered yet, fallback
+
+                 if(nodeCount === 0){ // If no nodes rendered yet, use basic centering
                       this.offset = { x: this.canvasContainer.offsetWidth / 2, y: this.canvasContainer.offsetHeight / 2 };
                       this.scale = 1;
                       this.updateCanvasTransform();
-                      if(userInitiated) this.saveViewToLocalStorage(); // Save view if user initiated
                      return;
                  }
 
-                 // Calculate dimensions and center of the bounding box
-                 const nodesWidth = Math.max(maxX - minX, 200); // Ensure a minimum width/height
-                 const nodesHeight = Math.max(maxY - minY, 100);
+                 const nodesWidth = Math.max(maxX - minX, 150); // Ensure minimum width
+                 const nodesHeight = Math.max(maxY - minY, 50); // Ensure minimum height
                  const nodesCenterX = minX + (maxX - minX) / 2;
                  const nodesCenterY = minY + (maxY - minY) / 2;
 
-                 // Calculate required scale to fit the bounding box within the container viewport
                  const containerRect = this.canvasContainer.getBoundingClientRect();
                  const containerWidth = containerRect.width;
                  const containerHeight = containerRect.height;
-                 // Add some padding around the edges
-                 const padding = Math.min(containerWidth, containerHeight) * 0.1; // 10% padding
+                 const padding = Math.min(containerWidth, containerHeight) * 0.1;
 
                  const scaleX = (containerWidth - padding * 2) / nodesWidth;
                  const scaleY = (containerHeight - padding * 2) / nodesHeight;
-                 // Use the smaller scale factor to ensure everything fits, clamp within min/max/reasonable limits
-                 const targetScale = Math.max(this.minScale, Math.min(this.maxScale, scaleX, scaleY, 1.2)); // Don't zoom in too much automatically
-
-                 // Calculate offset to center the bounding box at the target scale
+                 const targetScale = Math.max(this.minScale, Math.min(this.maxScale, scaleX, scaleY, 1.5)); // Limit auto-zoom-in
                  const targetOffsetX = containerWidth / 2 - nodesCenterX * targetScale;
                  const targetOffsetY = containerHeight / 2 - nodesCenterY * targetScale;
 
-                 // Animate the transition if triggered by user action (button click)
                  if (userInitiated) {
                       gsap.to(this, {
                           scale: targetScale,
                           offset: { x: targetOffsetX, y: targetOffsetY },
                           duration: 0.4,
                           ease: "power2.out",
-                          onUpdate: () => this.updateCanvasTransform(), // Update transform during animation
-                          onComplete: () => this.saveViewToLocalStorage() // Save final state after animation
+                          onUpdate: () => this.updateCanvasTransform(),
+                          onComplete: () => this.saveViewToLocalStorage()
                       });
                  } else {
-                      // Apply immediately if not user-initiated (e.g., on load, resize)
                       this.scale = targetScale;
                       this.offset.x = targetOffsetX;
                       this.offset.y = targetOffsetY;
                       this.updateCanvasTransform();
-                      // Don't save view state here automatically for non-user actions like resize
-                      // It will be saved by the specific action that triggered the centering (load, etc.)
                  }
              }
 
@@ -1750,767 +1581,568 @@
              // --- Modals & Menus ---
              openModal() {
                  this.nodeModal.classList.add('active');
-                 this.nodeModal.setAttribute('aria-hidden', 'false');
-                 // Set focus to the first input field shortly after opening
                  setTimeout(() => this.nodeTitleInput.focus(), 50);
              }
              closeModal() {
                  this.nodeModal.classList.remove('active');
-                 this.nodeModal.setAttribute('aria-hidden', 'true');
-                 this.nodeForm.reset(); // Reset form fields
-                 // Reset color picker to current theme's default node bg
+                 this.nodeForm.reset();
+                 // Get default color for the current theme to reset the picker
                  const defaultNodeColor = getComputedStyle(this.htmlEl).getPropertyValue('--node-bg-color').trim() || '#ffffff';
                  this.nodeColorInput.value = defaultNodeColor;
-                 // Clear editing state
                  this.editingNodeId = null;
-                 this.contextMenuNodeId = null; // Clear context if modal was opened from context menu
-                 console.log("Modal closed.");
+                 // console.log("Modal closed."); // Keep logging minimal
              }
-             showContextMenu(x, y) {
-                 this.closeContextMenu(); // Close any existing menu first
+            showContextMenu(x, y) {
+                 console.log(`   -> showContextMenu called at (${x}, ${y})`); // <<< ADDED LOG
+                 this.closeContextMenu(); // Close any existing first
                  this.contextMenu.style.display = 'block';
-                 this.contextMenu.setAttribute('aria-hidden', 'false');
-
-                 // Initial position
                  let adjustedX = x;
                  let adjustedY = y;
+                 // Set initial position before measuring
                  this.contextMenu.style.left = `${adjustedX}px`;
                  this.contextMenu.style.top = `${adjustedY}px`;
 
-                 // Use requestAnimationFrame to ensure dimensions are calculated after display: block
                  requestAnimationFrame(() => {
+                    // Now measure after it's potentially rendered
                     const menuRect = this.contextMenu.getBoundingClientRect();
-                    // Use window dimensions for boundary checks
                     const winWidth = window.innerWidth;
                     const winHeight = window.innerHeight;
-                    const margin = 10; // Small margin from window edges
 
-                    // Adjust position if menu goes off-screen
-                    if (menuRect.right > winWidth - margin) {
-                         adjustedX = x - menuRect.width; // Shift left
+                    // Adjust position if it goes off-screen
+                    if (menuRect.right > winWidth - 10) { // Add slight margin
+                         adjustedX = x - menuRect.width;
                     }
-                    if (menuRect.bottom > winHeight - margin) {
-                         adjustedY = y - menuRect.height; // Shift up
+                    if (menuRect.bottom > winHeight - 10) {
+                         adjustedY = y - menuRect.height;
                     }
-                    // Prevent going off top/left edges
-                    if (adjustedX < margin) adjustedX = margin;
-                    if (adjustedY < margin) adjustedY = margin;
+                    // Prevent going off the top/left edges
+                    if (adjustedX < 10) adjustedX = 10;
+                    if (adjustedY < 10) adjustedY = 10;
 
-                    // Apply adjusted position
+                    // Apply final adjusted position
                     this.contextMenu.style.left = `${adjustedX}px`;
                     this.contextMenu.style.top = `${adjustedY}px`;
-
-                    // Optional: Focus the first item for keyboard navigation
-                    // const firstItem = this.contextMenu.querySelector('[role="menuitem"]');
-                    // if (firstItem) firstItem.focus();
                  });
              }
              closeContextMenu() {
                  if (this.contextMenu.style.display === 'block') {
                       this.contextMenu.style.display = 'none';
-                      this.contextMenu.setAttribute('aria-hidden', 'true');
-                      // Important: Don't clear contextMenuNodeId here if the color picker might be open.
-                      // It's needed by the color picker's 'change'/'input' event.
-                      // It gets cleared naturally on the next interaction or modal close/submit.
+                      // Don't clear contextMenuNodeId here, it's needed by the connector color picker 'change' event
+                      // It will be cleared after the change event, or when a new interaction starts.
                  }
              }
 
 
-            // --- Structure Tree ---
+             // --- Structure Tree ---
              updateStructureTree() {
-                 this.structureTree.innerHTML = ''; // Clear previous tree
-                 this.structureTree.setAttribute('role', 'tree'); // ARIA role
-
-                 // Build a map of nodes with children arrays
+                 this.structureTree.innerHTML = '';
                  const nodesMap = new Map();
                  this.nodes.forEach(node => {
                      nodesMap.set(node.id, { ...node, children: [] });
                  });
 
-                 // Populate children arrays based on connections
                  this.connections.forEach(conn => {
                      const parentNode = nodesMap.get(conn.from);
                      const childNode = nodesMap.get(conn.to);
-                     if(parentNode && childNode){
-                        // Ensure parentId matches connection (consistency check)
-                        childNode.parentId = conn.from;
-                        parentNode.children.push(childNode);
-                     }
+                     if(parentNode && childNode){ parentNode.children.push(childNode); }
                  });
 
-                 // Find root nodes (nodes not present as 'to' in any connection)
                  const childIds = new Set(this.connections.map(conn => conn.to));
                  const rootNodes = this.nodes
                      .filter(node => !childIds.has(node.id))
-                     .map(node => nodesMap.get(node.id)) // Get the object with children array
-                     .sort((a, b) => a.title.localeCompare(b.title)); // Sort roots alphabetically
+                     .map(node => nodesMap.get(node.id))
+                     .sort((a, b) => (a.title || '').localeCompare(b.title || '')); // Safer sort
 
-                 // Recursively create and append tree elements
                  rootNodes.forEach(node => {
                      const treeElement = this.createTreeElement(node);
                      if (treeElement) this.structureTree.appendChild(treeElement);
                  });
-
-                 // Update selection highlighting in the newly built tree
-                 this.updateStructureTreeSelection();
              }
 
              createTreeElement(node) {
                  if (!node) return null;
-
                  const container = document.createElement('div');
-                 container.setAttribute('role', 'treeitem'); // Role for the container
-                 container.setAttribute('aria-labelledby', `tree-node-label-${node.id}`);
-
                  const nodeElement = document.createElement('div');
                  nodeElement.classList.add('tree-node');
-                 nodeElement.id = `tree-node-label-${node.id}`; // ID for aria-labelledby
-                 nodeElement.dataset.treeId = node.id; // Store node ID for click handling
                  nodeElement.textContent = node.title || 'Untitled';
-                 nodeElement.title = node.title; // Tooltip for potentially truncated text
+                 nodeElement.title = node.title || 'Untitled'; // Ensure title attribute exists
+                 if (node.id === this.selectedNodeId) {
+                     nodeElement.classList.add('selected');
+                 }
 
-                 // Add click listener to select node and scroll canvas
                  nodeElement.addEventListener('click', (e) => {
-                     e.stopPropagation(); // Prevent clicks bubbling to parent tree items
+                     e.stopPropagation();
                      this.selectNode(node.id);
                      this.scrollToNode(node.id);
-                      // Close sidebar on mobile after selection
                       if (window.innerWidth <= 768 && this.sidebar.classList.contains('open')) {
                           this.toggleSidebar(false);
                       }
                  });
                  container.appendChild(nodeElement);
 
-                 // Recursively add children if any
                  if (node.children && node.children.length > 0) {
                      const childrenContainer = document.createElement('div');
                      childrenContainer.classList.add('tree-children');
-                     childrenContainer.setAttribute('role', 'group'); // Role for children group
-
                      node.children
-                         .sort((a, b) => a.title.localeCompare(b.title)) // Sort children alphabetically
+                         .sort((a, b) => (a.title || '').localeCompare(b.title || '')) // Safer sort
                          .forEach(child => {
                              const childElement = this.createTreeElement(child);
                              if (childElement) childrenContainer.appendChild(childElement);
                          });
                      container.appendChild(childrenContainer);
-                     container.setAttribute('aria-expanded', 'true'); // Assume expanded for now
-                 } else {
-                     container.setAttribute('aria-expanded', 'false');
                  }
-
                  return container;
              }
 
               scrollToNode(nodeId) {
-                // Scrolls the canvas view to center the specified node
                  const node = this.getNodeById(nodeId);
                  const element = this.getNodeElement(nodeId);
-                 if (!node || !element || element.offsetWidth === 0) {
-                     console.warn("Cannot scroll to node: Node data or element not found/ready.", nodeId);
-                     return; // Cannot scroll if node or element is missing/not rendered
-                 }
+                 if (!node || !element) return;
+
+                 // Ensure node coordinates are numbers
+                 const nodeX = typeof node.x === 'number' ? node.x : 0;
+                 const nodeY = typeof node.y === 'number' ? node.y : 0;
 
                  const containerRect = this.canvasContainer.getBoundingClientRect();
                  const nodeWidth = element.offsetWidth;
                  const nodeHeight = element.offsetHeight;
-
-                 // Calculate the desired center point of the node in canvas coordinates
-                 const targetX = node.x + nodeWidth / 2;
-                 const targetY = node.y + nodeHeight / 2;
-
-                 // Calculate the offset needed to place this point at the center of the viewport
-                 // Target Offset = Viewport Center - (Node Center * Scale)
+                 const targetX = nodeX + nodeWidth / 2;
+                 const targetY = nodeY + nodeHeight / 2;
                  const desiredOffsetX = containerRect.width / 2 - targetX * this.scale;
                  const desiredOffsetY = containerRect.height / 2 - targetY * this.scale;
 
-                 // Animate the transition to the new offset
                  gsap.to(this.offset, {
                      x: desiredOffsetX,
                      y: desiredOffsetY,
-                     duration: 0.4, // Animation duration
-                     ease: "power2.out", // Easing function
-                     onUpdate: () => this.updateCanvasTransform(), // Update transform during animation
-                     onComplete: () => this.saveViewToLocalStorage() // Save view state after animation completes
+                     duration: 0.4,
+                     ease: "power2.out",
+                     onUpdate: () => this.updateCanvasTransform(),
+                     onComplete: () => this.saveViewToLocalStorage()
                  });
              }
 
-            // --- New Node Position Calculation ---
+             // --- New Node Position Calculation ---
               calculateNewNodePosition(parentId) {
                  const parentNode = parentId !== null ? this.getNodeById(parentId) : null;
                  const parentElement = parentId !== null ? this.getNodeElement(parentId) : null;
 
+                 // Ensure parent node coordinates are numbers
+                 const parentX = (parentNode && typeof parentNode.x === 'number') ? parentNode.x : 0;
+                 const parentY = (parentNode && typeof parentNode.y === 'number') ? parentNode.y : 0;
+
+
                  if(parentNode && parentElement && parentElement.offsetWidth > 0) {
-                     // --- Calculate Position Relative to Parent ---
                      const parentWidth = parentElement.offsetWidth;
-                     const parentHeight = parentElement.offsetHeight;
+                     const baseSpacingX = 180; // Base spacing
+                     const baseSpacingY = 50;
+                     // Avoid division by zero or very small scale
+                     const safeScale = Math.max(this.scale, 0.1);
+                     const spacingX = baseSpacingX / safeScale;
+                     const spacingY = baseSpacingY / safeScale;
 
-                     // Base spacing (adjust as needed) - use larger values for more space
-                     const baseSpacingX = 200;
-                     const baseSpacingY = 60;
-                     // Adjust spacing based on current zoom scale (more space when zoomed out)
-                     const spacingX = baseSpacingX / this.scale;
-                     const spacingY = baseSpacingY / this.scale;
-
-                     // Find existing children of the parent, sorted by Y position
                      const children = this.connections
                          .filter(c => c.from === parentId)
                          .map(c => ({ node: this.getNodeById(c.to), element: this.getNodeElement(c.to) }))
-                         // Filter out children that might not be rendered yet or have no dimensions
-                         .filter(data => data.node && data.element && data.element.offsetHeight > 0)
-                         .sort((a,b) => a.node.y - b.node.y); // Sort by current Y position
+                         .filter(data => data.node && data.element && data.element.offsetHeight > 0) // Ensure valid children with height
+                         .sort((a,b) => (typeof a.node.y === 'number' ? a.node.y : 0) - (typeof b.node.y === 'number' ? b.node.y : 0)); // Sort by Y position safely
 
-                     // Default X position: to the right of the parent
-                     let targetX = parentNode.x + parentWidth + spacingX;
+                     let targetX = parentX + parentWidth + spacingX;
                      let targetY;
 
                      if (children.length > 0) {
-                         // Place below the lowest existing child
+                         // Place below the lowest child
                          const lastChild = children[children.length - 1];
-                         targetY = lastChild.node.y + lastChild.element.offsetHeight + spacingY;
+                         const lastChildY = typeof lastChild.node.y === 'number' ? lastChild.node.y : 0;
+                         targetY = lastChildY + lastChild.element.offsetHeight + spacingY;
                      } else {
-                         // First child: Place roughly vertically aligned with the parent's center
-                         // Estimate new node height (use parent's height as a proxy or a default)
-                         const newNodeApproxHeight = parentHeight > 0 ? parentHeight : 60; // Default height if parent not rendered
-                         targetY = parentNode.y + parentHeight / 2 - newNodeApproxHeight / 2;
+                         // First child, align roughly with parent center
+                         targetY = parentY; // Align top with parent's top initially
                      }
                      return { x: targetX, y: targetY };
-
                  } else {
-                     // --- Calculate Position for Root Node (or Orphan) ---
-                     // Find approximate center of the current view in canvas coordinates
+                     // Root node or parent not found/rendered
                      const screenCenter = {
                          x: this.canvasContainer.offsetWidth / 2,
-                         y: this.canvasContainer.offsetHeight / 3 // Place slightly higher than true center
+                         y: this.canvasContainer.offsetHeight / 3
                      };
                      const canvasCoords = this.screenToCanvasCoords(screenCenter.x, screenCenter.y);
-
-                     // Add slight random offset to prevent stacking if multiple roots are added quickly
-                     const randomOffsetX = (Math.random() - 0.5) * 50 / this.scale;
-                     const randomOffsetY = (Math.random() - 0.5) * 50 / this.scale;
-
-                     // Check if this position overlaps significantly with existing root nodes
-                     // (Simple check: find nearby nodes - could be more sophisticated)
-                     const overlapThreshold = 150 / this.scale; // Radius to check for overlap
-                     let positionOK = false;
-                     let attempts = 0;
-                     let finalX = canvasCoords.x + randomOffsetX;
-                     let finalY = canvasCoords.y + randomOffsetY;
-
-                     while (!positionOK && attempts < 10) {
-                         positionOK = true;
-                         for (const node of this.nodes) {
-                              if (node.parentId === null) { // Check against other root nodes
-                                   const dist = Math.sqrt(Math.pow(node.x - finalX, 2) + Math.pow(node.y - finalY, 2));
-                                   if (dist < overlapThreshold) {
-                                        // Try shifting position
-                                        finalX += (Math.random() - 0.5) * 100 / this.scale;
-                                        finalY += (Math.random() - 0.5) * 100 / this.scale;
-                                        positionOK = false;
-                                        attempts++;
-                                        break; // Re-check all roots with new position
-                                   }
-                              }
-                         }
-                     }
-
-                     return { x: finalX, y: finalY };
+                     // Avoid division by zero or very small scale
+                     const safeScale = Math.max(this.scale, 0.1);
+                     canvasCoords.x += (Math.random() - 0.5) * 50 / safeScale;
+                     canvasCoords.y += (Math.random() - 0.5) * 50 / safeScale;
+                     return canvasCoords;
                  }
              }
 
             // --- Persistence ---
             saveToFile() {
                 try {
-                    // Create a clean data object for saving
-                    // Ensure parentId is correctly derived from connections just before saving
+                    // Ensure defaults and cleanup parentIds
                     this.nodes.forEach(n => {
-                       n.parentId = this.getParentId(n.id); // Recalculate parentId from connections
+                       const defaultNodeColor = getComputedStyle(this.htmlEl).getPropertyValue('--node-bg-color').trim() || '#ffffff';
+                       n.color = n.color || defaultNodeColor;
+                       n.shape = n.shape || 'rounded-rectangle';
+                       n.parentId = this.getParentId(n.id); // Recalculate parentId just before saving
+                       if (n.parentId !== null && !this.getNodeById(n.parentId)) {
+                           n.parentId = null;
+                       }
+                       // Ensure coordinates are numbers
+                       n.x = typeof n.x === 'number' ? n.x : 0;
+                       n.y = typeof n.y === 'number' ? n.y : 0;
                     });
-
                     const data = {
                         nodes: this.nodes,
-                        connections: this.connections, // Includes optional connector colors
+                        connections: this.connections, // Now includes optional color
                         nextId: this.nextId,
-                        view: { offset: this.offset, scale: this.scale }, // Save current view
+                        view: { offset: this.offset, scale: this.scale },
                         theme: this.currentTheme // Save theme preference
                     };
-                    const dataStr = JSON.stringify(data, null, 2); // Pretty print JSON
-                    const blob = new Blob([dataStr], { type: 'application/json;charset=utf-8' }); // Specify charset
-
-                    // Use File System Access API if available (more modern, asks for save location)
-                    if ('showSaveFilePicker' in window) {
-                        window.showSaveFilePicker({
-                           suggestedName: `mindmap-${new Date().toISOString().slice(0,10)}.json`,
-                           types: [{ description: 'Mind Map JSON', accept: {'application/json': ['.json']} }],
-                        }).then(handle => handle.createWritable())
-                          .then(writable => {
-                              writable.write(blob).then(() => {
-                                 writable.close();
-                                 this.showToast('Mind map saved successfully!');
-                              });
-                          }).catch(err => {
-                              // Handle errors, e.g., user cancellation
-                              if (err.name !== 'AbortError') {
-                                   console.error('Error saving file via File System Access API:', err);
-                                   this.showToast('Error saving mind map!', true);
-                              } else {
-                                   console.log('File save cancelled by user.');
-                              }
-                          });
-                    } else {
-                        // Fallback to traditional download link method
-                        const url = URL.createObjectURL(blob);
-                        const exportLink = document.createElement('a');
-                        exportLink.href = url;
-                        exportLink.download = `mindmap-${new Date().toISOString().slice(0,10)}.json`;
-                        document.body.appendChild(exportLink);
-                        exportLink.click();
-                        document.body.removeChild(exportLink);
-                        URL.revokeObjectURL(url); // Clean up blob URL
-                        this.showToast('Mind map download started!');
-                    }
+                    const dataStr = JSON.stringify(data, null, 2);
+                    const blob = new Blob([dataStr], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const exportLink = document.createElement('a');
+                    exportLink.href = url;
+                    exportLink.download = `mindmap-${new Date().toISOString().slice(0,10)}.json`;
+                    document.body.appendChild(exportLink);
+                    exportLink.click();
+                    document.body.removeChild(exportLink);
+                    URL.revokeObjectURL(url);
+                    this.showToast('Mind map saved to file!');
                 } catch (error) {
-                     console.error('Error preparing mind map data for saving:', error);
-                     this.showToast('Error preparing data for saving!', true);
+                     console.error('Error saving mind map to file:', error);
+                     this.showToast('Error saving mind map!', true);
                 }
             }
 
             loadFromFile() {
-                 // Use File System Access API if available (more modern)
-                 if ('showOpenFilePicker' in window) {
-                     window.showOpenFilePicker({
-                         types: [{ description: 'Mind Map JSON', accept: {'application/json': ['.json']} }],
-                         multiple: false
-                     }).then(([fileHandle]) => fileHandle.getFile())
-                       .then(file => file.text())
-                       .then(jsonString => this.processLoadedData(jsonString))
-                       .catch(err => {
-                            if (err.name !== 'AbortError') {
-                                console.error('Error loading file via File System Access API:', err);
-                                this.showToast('Error loading file!', true);
-                            } else {
-                                console.log('File open cancelled by user.');
-                            }
-                       });
-                 } else {
-                     // Fallback to traditional input element method
-                     const input = document.createElement('input');
-                     input.type = 'file';
-                     input.accept = '.json,application/json';
-                     input.onchange = e => {
-                         const file = e.target.files[0];
-                         if (!file) return;
-                         const reader = new FileReader();
-                         reader.onload = event => {
-                             this.processLoadedData(event.target.result);
-                         };
-                         reader.onerror = () => {
-                             this.showToast('Error reading file!', true);
-                             console.error('FileReader error:', reader.error);
-                         };
-                         reader.readAsText(file);
+                 const input = document.createElement('input');
+                 input.type = 'file';
+                 input.accept = '.json,application/json';
+                 input.onchange = e => {
+                     const file = e.target.files[0];
+                     if (!file) return;
+                     const reader = new FileReader();
+                     reader.onload = event => {
+                         try {
+                             const data = JSON.parse(event.target.result);
+                             if (!data || !Array.isArray(data.nodes) || !Array.isArray(data.connections) || typeof data.nextId !== 'number') {
+                                 throw new Error("Invalid mind map file format.");
+                             }
+                             console.log(`File loaded. Nodes: ${data.nodes.length}, Connections: ${data.connections.length}`);
+
+                             this.clearMap(); // Clear current state
+
+                             // Load data
+                             this.nodes = data.nodes;
+                             this.connections = data.connections; // Includes potential custom colors
+                             this.nextId = data.nextId;
+                             this.currentTheme = data.theme === 'dark' ? 'dark' : 'light'; // Load theme
+                             applyTheme(this.currentTheme); // Apply loaded theme
+
+                             if (data.view && data.view.offset && typeof data.view.scale === 'number') {
+                                 this.offset = data.view.offset;
+                                 this.scale = data.view.scale;
+                             } else { this.offset = { x: 0, y: 0 }; this.scale = 1; }
+
+                             // --- Data Validation & Defaulting ---
+                              const defaultNodeColor = getComputedStyle(this.htmlEl).getPropertyValue('--node-bg-color').trim() || '#ffffff';
+                              const nodeIds = new Set(this.nodes.map(n => n.id));
+
+                              this.nodes.forEach(node => {
+                                 node.color = node.color || defaultNodeColor;
+                                 node.shape = node.shape || 'rounded-rectangle';
+                                 node.parentId = node.parentId !== undefined ? node.parentId : null;
+                                 // Ensure coordinates are numbers
+                                 node.x = typeof node.x === 'number' ? node.x : 0;
+                                 node.y = typeof node.y === 'number' ? node.y : 0;
+                                 // Validate parentId based on loaded nodes
+                                 if (node.parentId !== null && !nodeIds.has(node.parentId)) {
+                                      console.warn(`Node ${node.id} has invalid parentId ${node.parentId}. Setting to null.`);
+                                      node.parentId = null;
+                                 }
+                             });
+
+                             // Validate connections (ensure both ends exist in loaded nodes & remove invalid 'color' properties)
+                             this.connections = this.connections.filter(conn => {
+                                 const fromExists = nodeIds.has(conn.from);
+                                 const toExists = nodeIds.has(conn.to);
+                                 if (!fromExists || !toExists) {
+                                     console.warn(`Removing invalid connection: ${conn.from} -> ${conn.to}`);
+                                     return false;
+                                 }
+                                 // Basic validation for color format if it exists
+                                 if (conn.color && !/^#[0-9a-fA-F]{6}$/.test(conn.color)) {
+                                     console.warn(`Invalid color format "${conn.color}" for connection ${conn.from} -> ${conn.to}. Removing color.`);
+                                     delete conn.color;
+                                 }
+                                 return true;
+                             });
+                             // Ensure parentId in node data matches connections (important consistency check)
+                             this.nodes.forEach(node => {
+                                 const actualParentId = this.connections.find(c => c.to === node.id)?.from ?? null;
+                                 if (node.parentId !== actualParentId) {
+                                     // console.warn(`Correcting parentId mismatch for node ${node.id}. Was ${node.parentId}, setting to ${actualParentId}`);
+                                     node.parentId = actualParentId;
+                                 }
+                             });
+
+                             // Rebuild DOM
+                             const tempConnections = [...this.connections];
+                             this.connections = []; // Clear temporarily
+
+                             this.nodes.forEach(nodeData => {
+                                const nodeElement = document.createElement('div');
+                                nodeElement.className = 'node';
+                                nodeElement.dataset.id = nodeData.id;
+                                this.updateNodeElementContent(nodeElement, nodeData);
+                                this.canvas.appendChild(nodeElement);
+                                this.applyNodeStyle(nodeData, nodeElement);
+                                this.updateNodeElementPosition(nodeData, nodeElement); // Position needs to be applied AFTER styles that might affect size/shape
+                             });
+                             this.connections = tempConnections; // Restore connections
+
+                             // Finalize UI
+                             this.buildRootNodeMap();
+                             this.updateCanvasTransform(); // Apply loaded view transform
+                             this.updateConnections();
+                             this.updateStructureTree();
+                             requestAnimationFrame(() => this.centerView()); // Center after everything is potentially rendered
+
+                             this.showToast('Mind map loaded successfully!');
+                             this.saveToLocalStorage(); // Save loaded map + theme
+
+                         } catch (error) {
+                             console.error('Error loading mind map from file:', error);
+                             this.showToast(`Error loading file: ${error.message}`, true);
+                             this.clearMap();
+                             this.init(); // Re-initialize empty map
+                         }
                      };
-                     input.click(); // Programmatically trigger the file input
-                 }
+                     reader.onerror = () => { this.showToast('Error reading file!', true); };
+                     reader.readAsText(file);
+                 };
+                 input.click();
             }
 
-            processLoadedData(jsonString) {
-                 try {
-                     const data = JSON.parse(jsonString);
-
-                     // --- Basic Data Validation ---
-                     if (!data || typeof data !== 'object') throw new Error("Invalid file content: Not an object.");
-                     if (!Array.isArray(data.nodes)) throw new Error("Invalid format: Missing 'nodes' array.");
-                     if (!Array.isArray(data.connections)) throw new Error("Invalid format: Missing 'connections' array.");
-                     if (typeof data.nextId !== 'number' || data.nextId < 1) throw new Error("Invalid format: Missing or invalid 'nextId'.");
-
-                     console.log(`File content parsed. Nodes: ${data.nodes.length}, Connections: ${data.connections.length}`);
-
-                     // --- Load Data and Rebuild ---
-                     this.clearMap(false); // Clear current state but keep theme/view initially
-
-                     // Load core data
-                     this.nodes = data.nodes || [];
-                     this.connections = data.connections || [];
-                     this.nextId = data.nextId || 1;
-                     // Load theme preference, default to light if missing/invalid
-                     this.currentTheme = (data.theme === 'dark' || data.theme === 'light') ? data.theme : 'light';
-                     applyTheme(this.currentTheme); // Apply loaded theme visually
-
-                     // Load view state, use defaults if missing/invalid
-                     if (data.view && data.view.offset && typeof data.view.offset.x === 'number' && typeof data.view.offset.y === 'number' && typeof data.view.scale === 'number') {
-                         this.offset = data.view.offset;
-                         this.scale = Math.max(this.minScale, Math.min(this.maxScale, data.view.scale)); // Clamp scale
-                     } else {
-                         this.offset = { x: 0, y: 0 }; this.scale = 1; // Default view
-                         console.warn("View data missing or invalid in loaded file, using defaults.");
-                     }
-
-                     // --- Data Sanitization & Defaulting ---
-                      const defaultNodeColor = getComputedStyle(this.htmlEl).getPropertyValue('--node-bg-color').trim() || '#ffffff';
-                      const nodeIds = new Set(this.nodes.map(n => n.id)); // Get all valid node IDs from the loaded set
-
-                      // Sanitize Nodes
-                      this.nodes.forEach(node => {
-                         // Ensure basic fields exist
-                         node.title = node.title || 'Untitled';
-                         node.content = node.content || '';
-                         node.x = typeof node.x === 'number' ? node.x : 0;
-                         node.y = typeof node.y === 'number' ? node.y : 0;
-                         // Sanitize/default style properties
-                         node.color = node.color && /^#[0-9a-fA-F]{6}$/.test(node.color) ? node.color : defaultNodeColor;
-                         node.shape = ['rectangle', 'rounded-rectangle', 'stadium', 'ellipse'].includes(node.shape) ? node.shape : 'rounded-rectangle';
-                         // Validate parentId based *only* on the loaded nodes
-                         if (node.parentId !== undefined && node.parentId !== null && !nodeIds.has(node.parentId)) {
-                              console.warn(`Node ${node.id} has invalid parentId ${node.parentId} (not found in loaded nodes). Setting parentId to null.`);
-                              node.parentId = null; // Make it a root node if parent is missing
-                         } else {
-                             node.parentId = node.parentId !== undefined ? node.parentId : null; // Ensure it's null if not set
-                         }
-                      });
-
-                     // Sanitize Connections
-                     this.connections = this.connections.filter(conn => {
-                         const fromExists = nodeIds.has(conn.from);
-                         const toExists = nodeIds.has(conn.to);
-                         if (!fromExists || !toExists) {
-                             console.warn(`Removing invalid connection (node missing): ${conn.from} -> ${conn.to}`);
-                             return false; // Remove connection if either node doesn't exist
-                         }
-                         // Validate custom color format if it exists
-                         if (conn.color && !/^#[0-9a-fA-F]{6}$/.test(conn.color)) {
-                             console.warn(`Invalid color format "${conn.color}" for connection ${conn.from} -> ${conn.to}. Removing custom color.`);
-                             delete conn.color; // Remove invalid color, will fallback to default/branch
-                         }
-                         return true;
-                     });
-
-                     // Ensure parentId in node data matches the validated connections (Final consistency check)
-                      const connectionParentMap = new Map(this.connections.map(c => [c.to, c.from])); // Map: childId -> parentId from connections
-                      this.nodes.forEach(node => {
-                          const actualParentId = connectionParentMap.get(node.id) ?? null;
-                          if (node.parentId !== actualParentId) {
-                              // console.warn(`Correcting node.parentId mismatch for node ${node.id}. Was ${node.parentId}, connection indicates ${actualParentId}.`);
-                              node.parentId = actualParentId; // Trust the connection data after filtering
-                          }
-                      });
-
-                     // --- Rebuild DOM Elements ---
-                     this.canvas.innerHTML = ''; // Clear existing DOM nodes
-                     this.nodes.forEach(nodeData => {
-                        const nodeElement = document.createElement('div');
-                        nodeElement.className = 'node';
-                        nodeElement.dataset.id = nodeData.id;
-                        nodeElement.setAttribute('role', 'treeitem');
-                        this.updateNodeElementContent(nodeElement, nodeData);
-                        this.canvas.appendChild(nodeElement);
-                        this.applyNodeStyle(nodeData, nodeElement);
-                        this.updateNodeElementPosition(nodeData, nodeElement);
-                     });
-
-                     // --- Finalize UI Update ---
-                     this.buildRootNodeMap();       // Rebuild root map based on loaded connections
-                     this.updateCanvasTransform();  // Apply loaded view transform
-                     this.updateConnections();      // Draw connectors for loaded data
-                     this.updateStructureTree();    // Rebuild sidebar tree
-                     requestAnimationFrame(() => this.centerView(false)); // Center view after rendering (don't treat as user action)
-
-                     this.showToast('Mind map loaded successfully!');
-                     this.saveToLocalStorage(); // Save the successfully loaded map + theme to local storage
-
-                 } catch (error) {
-                     console.error('Error processing loaded mind map data:', error);
-                     this.showToast(`Error loading file: ${error.message}`, true);
-                     // Optionally: Revert to a clean state or previous state if load fails badly
-                     this.clearMap(); // Clear potentially corrupted state
-                     this.init(); // Re-initialize an empty map
-                 }
-             }
-
-
              saveToLocalStorage() {
-                 // Saves the entire current state (nodes, connections, view, theme)
                  try {
-                      // Ensure parentId is up-to-date before saving
-                      this.nodes.forEach(n => {
-                          n.parentId = this.getParentId(n.id);
+                      this.nodes.forEach(n => { // Ensure defaults just in case
+                          const defaultNodeColor = getComputedStyle(this.htmlEl).getPropertyValue('--node-bg-color').trim() || '#ffffff';
+                          n.color = n.color || defaultNodeColor;
+                          n.shape = n.shape || 'rounded-rectangle';
+                          n.parentId = this.getParentId(n.id); // Update parentId based on current connections
+                           // Ensure coordinates are numbers
+                          n.x = typeof n.x === 'number' ? n.x : 0;
+                          n.y = typeof n.y === 'number' ? n.y : 0;
                       });
                      const data = {
                          nodes: this.nodes,
-                         connections: this.connections, // Includes optional connector colors
+                         connections: this.connections, // Includes optional colors
                          nextId: this.nextId,
-                         view: { offset: this.offset, scale: this.scale }, // Current view state
-                         theme: this.currentTheme // Current theme
+                         view: { offset: this.offset, scale: this.scale },
+                         theme: this.currentTheme // Save theme
                      };
                      localStorage.setItem('mindMapData', JSON.stringify(data));
-                     // console.log("Saved state to localStorage");
+                     // console.log("Saved to localStorage"); // Keep logging minimal
                  } catch (error) {
                      console.error("Error saving to localStorage:", error);
-                     // Consider informing the user if storage quota might be exceeded
-                     if (error.name === 'QuotaExceededError') {
-                          this.showToast('Local storage full. Could not save changes.', true);
-                     } else {
-                          this.showToast('Could not save changes locally.', true);
-                     }
+                     this.showToast('Could not save changes to local storage.', true);
                  }
              }
 
              saveViewToLocalStorage() {
-                // Saves only the view state (offset, scale) to avoid rewriting all node data on pan/zoom
                   try {
                       const currentDataStr = localStorage.getItem('mindMapData');
                       let data = {};
                       if (currentDataStr) {
-                           // Attempt to parse existing data
-                           try {
-                               data = JSON.parse(currentDataStr);
-                               // Ensure it looks like our data structure, otherwise start fresh
-                               if (!data || typeof data !== 'object' || !Array.isArray(data.nodes)) {
-                                   console.warn("Invalid data found in localStorage while saving view. Overwriting with full state.");
-                                   data = {}; // Reset data object
-                               }
-                           } catch (parseError) {
-                                console.error("Error parsing localStorage data while saving view. Overwriting.", parseError);
-                                data = {}; // Reset on parse error
-                           }
+                           data = JSON.parse(currentDataStr);
+                           if (!data.nodes) data.nodes = this.nodes; // Ensure basic structure
+                           if (!data.connections) data.connections = this.connections;
+                           if (!data.nextId) data.nextId = this.nextId;
+                           if (!data.theme) data.theme = this.currentTheme;
+                      } else { // If nothing exists, save everything
+                          data = {
+                              nodes: this.nodes, connections: this.connections, nextId: this.nextId, theme: this.currentTheme,
+                              view: { offset: this.offset, scale: this.scale } // Add current view
+                          };
+                           localStorage.setItem('mindMapData', JSON.stringify(data));
+                           return; // Exit early as we just saved everything
                       }
-
-                      // Ensure basic structure exists if we loaded partial/invalid data or started fresh
-                      if (!data.nodes) data.nodes = this.nodes;
-                      if (!data.connections) data.connections = this.connections;
-                      if (!data.nextId) data.nextId = this.nextId;
-                      if (!data.theme) data.theme = this.currentTheme;
-
-                      // Update only the view part
+                      // Update only the view part if data already existed
                       data.view = { offset: this.offset, scale: this.scale };
-
-                      // Save the updated data back to localStorage
                       localStorage.setItem('mindMapData', JSON.stringify(data));
-                      // console.log("Saved VIEW to localStorage");
+                      // console.log("Saved VIEW to localStorage"); // Keep logging minimal
                   } catch (error) {
                       console.error("Error saving view state to localStorage:", error);
-                      // Don't show toast for view state saving errors, could be too noisy
                   }
              }
 
 
              loadFromLocalStorage() {
-                 // Loads the entire state from local storage on initial page load
                  try {
                      const savedData = localStorage.getItem('mindMapData');
                      if (savedData) {
-                         const data = JSON.parse(savedData); // Can throw error if invalid JSON
-
-                         // --- Basic Validation ---
-                         if (!data || typeof data !== 'object' || !Array.isArray(data.nodes) || !Array.isArray(data.connections) || typeof data.nextId !== 'number') {
-                             console.error("Invalid data structure found in localStorage. Clearing it.");
-                             localStorage.removeItem('mindMapData');
-                             return false; // Indicate load failed
+                         const data = JSON.parse(savedData);
+                         if (!data || !Array.isArray(data.nodes) || !Array.isArray(data.connections) || typeof data.nextId !== 'number') {
+                             console.error("Invalid data structure in localStorage. Clearing.");
+                             localStorage.removeItem('mindMapData'); return false;
                          }
 
-                         // --- Load Core Data (Validation happens later in init/process) ---
+                         this.clearMap(); // Clear before loading
+
                          this.nodes = data.nodes;
-                         this.connections = data.connections; // Includes potential custom colors
+                         this.connections = data.connections; // Includes potential colors
                          this.nextId = data.nextId;
-                         // Load theme preference, default to light if missing/invalid
-                         this.currentTheme = (data.theme === 'dark' || data.theme === 'light') ? data.theme : getInitialTheme(); // Use initial theme as fallback
+                         this.currentTheme = data.theme === 'dark' ? 'dark' : 'light'; // Load theme
 
-                         // Load view state, use defaults if missing/invalid
-                         if (data.view && data.view.offset && typeof data.view.offset.x === 'number' && typeof data.view.offset.y === 'number' && typeof data.view.scale === 'number') {
+                         if (data.view && data.view.offset && typeof data.view.scale === 'number') {
                              this.offset = data.view.offset;
-                             // Clamp scale loaded from storage
-                             this.scale = Math.max(this.minScale, Math.min(this.maxScale, data.view.scale));
-                         } else {
-                              // Don't reset view here, keep potentially existing view state from constructor
-                              console.warn("View data missing or invalid in localStorage.");
-                         }
+                             this.scale = data.view.scale;
+                         } else { this.offset = { x: 0, y: 0 }; this.scale = 1; }
 
-                         // --- Perform Sanitization & Consistency Checks ---
-                         // (Similar logic as in processLoadedData, adapted slightly)
-                         const defaultNodeColor = getComputedStyle(this.htmlEl).getPropertyValue('--node-bg-color').trim() || '#ffffff';
-                         const nodeIds = new Set(this.nodes.map(n => n.id));
+                         // --- Data Validation & Defaulting ---
+                          const defaultNodeColor = getComputedStyle(this.htmlEl).getPropertyValue('--node-bg-color').trim() || '#ffffff';
+                          const nodeIds = new Set(this.nodes.map(n => n.id));
 
                          this.nodes.forEach(n => {
-                             n.color = n.color && /^#[0-9a-fA-F]{6}$/.test(n.color) ? n.color : defaultNodeColor;
-                             n.shape = ['rectangle', 'rounded-rectangle', 'stadium', 'ellipse'].includes(n.shape) ? n.shape : 'rounded-rectangle';
-                             n.parentId = n.parentId !== undefined ? n.parentId : null;
-                             if (n.parentId !== null && !nodeIds.has(n.parentId)) {
-                                 n.parentId = null; // Orphan node if parent doesn't exist in loaded data
-                             }
-                         });
+                              n.color = n.color || defaultNodeColor;
+                              n.shape = n.shape || 'rounded-rectangle';
+                              n.parentId = n.parentId !== undefined ? n.parentId : null;
+                              // Ensure coordinates are numbers
+                              n.x = typeof n.x === 'number' ? n.x : 0;
+                              n.y = typeof n.y === 'number' ? n.y : 0;
+                              if (n.parentId !== null && !nodeIds.has(n.parentId)) {
+                                  n.parentId = null;
+                              }
+                          });
 
                          this.connections = this.connections.filter(conn => {
-                             const fromExists = nodeIds.has(conn.from);
-                             const toExists = nodeIds.has(conn.to);
-                             if (!fromExists || !toExists) return false; // Remove invalid connections
-                             if (conn.color && !/^#[0-9a-fA-F]{6}$/.test(conn.color)) {
-                                  delete conn.color; // Remove invalid custom colors
-                             }
-                             return true;
-                         });
+                              const fromExists = nodeIds.has(conn.from);
+                              const toExists = nodeIds.has(conn.to);
+                              if (!fromExists || !toExists) return false;
+                              if (conn.color && !/^#[0-9a-fA-F]{6}$/.test(conn.color)) {
+                                   delete conn.color;
+                              }
+                              return true;
+                          });
 
-                         // Ensure node.parentId matches filtered connections
-                         const connectionParentMap = new Map(this.connections.map(c => [c.to, c.from]));
-                         this.nodes.forEach(node => {
-                              node.parentId = connectionParentMap.get(node.id) ?? null;
-                         });
+                          this.nodes.forEach(node => {
+                               const actualParentId = this.connections.find(c => c.to === node.id)?.from ?? null;
+                               node.parentId = actualParentId; // Ensure consistency
+                          });
 
-                         console.log(`Loaded ${this.nodes.length} nodes from localStorage.`);
+                         // console.log(`Loaded ${this.nodes.length} nodes from localStorage (data only)`); // Keep logging minimal
                          return true; // Success
                      }
                  } catch (error) {
-                     // Handle JSON parsing errors or other issues
                      console.error("Error loading from localStorage:", error);
-                     localStorage.removeItem('mindMapData'); // Clear corrupted data
+                     localStorage.removeItem('mindMapData');
                  }
-                 return false; // No data or error occurred
+                 return false; // No data or error
              }
 
-            clearMap(clearViewAndTheme = true) {
-                 console.log("Clearing map state.");
+            clearMap() {
+                 // console.log("Clearing map state."); // Keep logging minimal
                  this.nodes = [];
                  this.connections = [];
                  this.selectedNodeId = null;
                  this.contextMenuNodeId = null;
                  this.editingNodeId = null;
                  this.nextId = 1;
-                 // Clear DOM elements
                  this.canvas.innerHTML = '';
                  this.connectorSvg.innerHTML = '';
                  this.structureTree.innerHTML = '';
                  this.rootNodeMap.clear();
-                 // Optionally reset view and theme
-                 if (clearViewAndTheme) {
-                    this.offset = { x: 0, y: 0 };
-                    this.scale = 1;
-                    this.currentTheme = getInitialTheme(); // Reset to initial/system theme
-                    applyTheme(this.currentTheme);
-                    this.updateCanvasTransform(); // Apply reset view
-                 }
-                 console.log("Map cleared.");
+                 // Don't reset view or theme here, allow keeping them
             }
 
             // --- UI Feedback ---
             showToast(message, isError = false) {
-                // Remove any existing toast first
                 const existingToast = document.querySelector('.toast-notification');
                 if (existingToast) existingToast.remove();
-
-                // Create new toast element
                 const toast = document.createElement('div');
                 toast.className = 'toast-notification';
-                toast.setAttribute('role', 'alert'); // Accessibility
                 if (isError) toast.classList.add('error');
                 toast.textContent = message;
                 document.body.appendChild(toast);
-
-                // Animate toast in
-                requestAnimationFrame(() => {
-                    toast.classList.add('show');
-                });
-
-                // Set timeout to remove toast
+                requestAnimationFrame(() => { toast.classList.add('show'); });
                 setTimeout(() => {
                     toast.classList.remove('show');
-                    // Remove element from DOM after fade out transition completes
+                    // Use transitionend event for reliable removal after animation
                     toast.addEventListener('transitionend', () => {
-                         // Check if it's still in the DOM before removing
+                         // Check if the element still has a parent before removing
                          if (toast.parentNode) {
-                             toast.remove();
+                            toast.remove();
                          }
-                     }, { once: true }); // Ensure listener runs only once
-                }, 3000); // Display duration (3 seconds)
+                     }, { once: true });
+                }, 3000);
             }
+
 
             // --- Helper: Find Node and Descendants ---
             findNodeAndDescendants(startNodeId) {
-                 // Performs a breadth-first search (BFS) to find all reachable nodes starting from startNodeId
                  const resultIds = [];
                  const node = this.getNodeById(startNodeId);
-                 if (!node) return resultIds; // Return empty if start node doesn't exist
-
-                 const queue = [startNodeId]; // Initialize queue with the starting node
-                 const visited = new Set();   // Keep track of visited nodes to prevent infinite loops
-                 visited.add(startNodeId);    // Mark start node as visited
-
+                 if (!node) return resultIds;
+                 const queue = [startNodeId];
+                 const visited = new Set();
                  while (queue.length > 0) {
-                     const currentId = queue.shift(); // Dequeue the next node ID
-                     resultIds.push(currentId);       // Add it to the results
-
-                     // Find direct children of the current node
+                     const currentId = queue.shift();
+                     if (visited.has(currentId)) continue;
+                     visited.add(currentId);
+                     resultIds.push(currentId);
                      this.connections.forEach(conn => {
-                         if (conn.from === currentId) {
-                             const childId = conn.to;
-                             // Check if child exists and hasn't been visited yet
-                             if (this.getNodeById(childId) && !visited.has(childId)) {
-                                 visited.add(childId); // Mark child as visited
-                                 queue.push(childId);  // Enqueue child for processing
-                             }
+                         if (conn.from === currentId && this.getNodeById(conn.to) && !visited.has(conn.to)) {
+                             queue.push(conn.to);
                          }
                      });
                  }
-                 return resultIds; // Return array of IDs including the startNodeId and all descendants
+                 return resultIds;
              }
 
              // --- Theme Toggle ---
              toggleTheme() {
                 const newTheme = this.currentTheme === 'light' ? 'dark' : 'light';
                 this.currentTheme = newTheme;
-                applyTheme(newTheme); // Apply visually (updates CSS vars, icons)
-                localStorage.setItem(themePrefKey, newTheme); // Save user preference
-                // Re-apply node styles and redraw connections in case default colors changed
-                this.applyAllNodeStyles();
-                this.updateConnections();
-                this.saveToLocalStorage(); // Save the theme change with the rest of the data
+                applyTheme(newTheme); // Apply visually
+                localStorage.setItem(themePrefKey, newTheme); // Save preference
+                this.applyAllNodeStyles(); // Re-apply styles in case defaults changed
+                this.updateConnections(); // Re-draw connectors in case default color changed
                 console.log(`Theme changed to ${newTheme}`);
-                this.showToast(`Switched to ${newTheme} mode.`);
              }
 
              // --- Fullscreen Toggle ---
              toggleFullscreen() {
                 if (!document.fullscreenElement) {
-                    // Enter fullscreen
                     this.htmlEl.requestFullscreen()
                         .then(() => console.log("Entered fullscreen"))
-                        .catch(err => {
-                             console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
-                             this.showToast('Could not enter fullscreen.', true);
-                         });
+                        .catch(err => console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`));
                 } else {
-                    // Exit fullscreen
                     if (document.exitFullscreen) {
                         document.exitFullscreen()
                             .then(() => console.log("Exited fullscreen"))
-                            .catch(err => {
-                                console.error(`Error attempting to disable full-screen mode: ${err.message} (${err.name})`);
-                                this.showToast('Could not exit fullscreen.', true);
-                            });
+                            .catch(err => console.error(`Error attempting to disable full-screen mode: ${err.message} (${err.name})`));
                     }
                 }
              }
 
              handleFullscreenChange() {
-                // Update internal state and icon when fullscreen changes (e.g., via Esc key)
                 this.isFullscreen = !!document.fullscreenElement;
                 this.updateFullscreenIcon();
                 console.log(`Fullscreen state changed: ${this.isFullscreen}`);
-                // Optional: Recenter view slightly after fullscreen change? Might be jarring.
+                // Optional: Recenter view slightly after fullscreen change?
                 // requestAnimationFrame(() => this.centerView());
              }
 
              updateFullscreenIcon() {
                  const icon = this.fullscreenToggleBtn?.querySelector('i');
-                 const tooltipTarget = this.fullscreenToggleBtn; // Button itself has the tooltip attribute now
-                 if (!icon || !tooltipTarget) return;
-
+                 if (!icon) return;
                  if (this.isFullscreen) {
                      icon.className = 'fas fa-compress'; // Show compress icon when fullscreen
-                     tooltipTarget.setAttribute('data-tooltip', 'Exit Fullscreen');
-                     tooltipTarget.setAttribute('aria-label', 'Exit Fullscreen');
+                     this.fullscreenToggleBtn.setAttribute('data-tooltip', 'Exit Fullscreen');
                  } else {
                      icon.className = 'fas fa-expand'; // Show expand icon when not fullscreen
-                     tooltipTarget.setAttribute('data-tooltip', 'Enter Fullscreen');
-                     tooltipTarget.setAttribute('aria-label', 'Enter Fullscreen');
+                     this.fullscreenToggleBtn.setAttribute('data-tooltip', 'Enter Fullscreen');
                  }
              }
 
@@ -2521,11 +2153,9 @@
             console.log("DOM Loaded. Initializing Mind Map.");
             // Ensure initial theme is applied *before* initializing MindMap which might rely on CSS vars
             applyTheme(getInitialTheme());
-            // Create the MindMap instance
             window.mindMapInstance = new MindMap();
         });
 
     </script>
 </body>
 </html>
-```
