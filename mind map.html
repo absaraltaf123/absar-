@@ -1103,7 +1103,7 @@
                     if(this.longPressTimeout) clearTimeout(this.longPressTimeout);
                     this.longPressTimeout = setTimeout(() => {
                         if (targetNodeElement) { // Use the element found at the start
-                            this.handleContextMenu(this.dragStart); // Pass start coords
+                            this.handleContextMenu({ clientX: this.dragStart.x, clientY: this.dragStart.y }); // Pass start coords
                         }
                         this.longPressTimeout = null;
                     }, 700);
