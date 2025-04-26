@@ -41,6 +41,11 @@
             --tab-active-bg: var(--background);
             --tab-active-text: var(--primary);
             --tab-border: var(--border);
+            --danger-bg: #fee2e2;
+            --danger-text: #ef4444;
+            --danger-hover-bg: #fecaca;
+            --danger-border: #fca5a5;
+
 
             --sidebar-width: 250px;
             --header-height: 65px; /* Approximate */
@@ -80,6 +85,10 @@
             --tab-active-bg: #111827;
             --tab-active-text: var(--primary-light);
             --tab-border: #4b5563;
+            --danger-bg: #450a0a;
+            --danger-text: #f87171;
+            --danger-hover-bg: #5f1111;
+            --danger-border: #7f1d1d;
         }
 
         * {
@@ -207,6 +216,17 @@
             background-color: var(--border);
             border-color: var(--text-muted);
          }
+         /* Specific Danger Button Style */
+         .btn-danger {
+             background-color: var(--danger-bg);
+             color: var(--danger-text);
+             border-color: var(--danger-border);
+         }
+         .btn-danger:hover:not(:disabled) {
+            background-color: var(--danger-hover-bg);
+            border-color: color-mix(in srgb, var(--danger-border) 80%, black);
+         }
+
 
         /* Map Tabs */
         #map-tabs-container {
@@ -398,7 +418,7 @@
         .node-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem; color: var(--node-text-color); }
         .node-content { font-size: 0.78rem; color: var(--node-content-color); line-height: 1.4; }
 
-        /* Modal Styling (Unchanged) */
+        /* Modal Styling (Generic, used for Node Edit and Delete Map Confirm) */
          .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; align-items: center; justify-content: center; z-index: 20; visibility: hidden; opacity: 0; transition: visibility 0s 0.2s, opacity 0.2s ease; }
          html.dark-mode .modal { background-color: rgba(0, 0, 0, 0.7); }
          .modal.active { visibility: visible; opacity: 1; transition: visibility 0s, opacity 0.2s ease; }
@@ -408,6 +428,11 @@
          .modal-title { font-weight: 600; font-size: 1.15rem; color: var(--text); }
          .modal-close { background: none; border: none; cursor: pointer; font-size: 1.5rem; color: var(--text-muted); line-height: 1; }
          .modal-close:hover { color: var(--text); }
+         /* Styles specific to modal body content */
+         .modal-body { margin-bottom: 1rem; font-size: 0.95rem; line-height: 1.5; color: var(--text-muted); }
+         .modal-body strong { color: var(--text); font-weight: 600; }
+         .modal-footer { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+         /* Form specific styles (only for node edit modal) */
          .form-group { margin-bottom: 1rem; }
          .form-label { display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; color: var(--text); }
          .form-input, .form-textarea, .form-select, .form-color { width: 100%; padding: 0.75rem; border-radius: 0.375rem; border: 1px solid var(--input-border); font-size: 0.95rem; transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease; background-color: var(--input-bg); color: var(--text); }
@@ -416,7 +441,6 @@
          .form-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1.5em 1.5em; padding-right: 2.5rem; }
          html.dark-mode .form-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E"); }
          .form-color { padding: 0.25rem; height: 40px; cursor: pointer; }
-         .modal-footer { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
 
         /* Context Menu (Unchanged) */
          .contextmenu { position: absolute; background-color: var(--modal-bg); border-radius: 0.375rem; box-shadow: var(--shadow-lg); border: 1px solid var(--border); z-index: 15; overflow: hidden; display: none; min-width: 200px; }
@@ -424,13 +448,13 @@
          .contextmenu-item i { width: 16px; text-align: center; color: var(--text-muted); transition: color 0.15s ease; }
          .contextmenu-item:hover { background-color: var(--secondary); color: var(--primary); }
          .contextmenu-item:hover i { color: var(--primary); }
-         .contextmenu-item.danger:hover { background-color: #fee2e2; color: #ef4444; }
+         .contextmenu-item.danger:hover { background-color: var(--danger-bg); color: var(--danger-text); }
          html.dark-mode .contextmenu-item.danger:hover { background-color: #450a0a; color: #f87171; }
-         .contextmenu-item.danger:hover i { color: #ef4444; }
-         html.dark-mode .contextmenu-item.danger:hover i { color: #f87171; }
+         .contextmenu-item.danger:hover i { color: var(--danger-text); }
+         /* html.dark-mode .contextmenu-item.danger:hover i { color: #f87171; } */ /* Already covered */
          .contextmenu-divider { height: 1px; background-color: var(--border); margin: 0.25rem 0; }
          #change-connector-color-option { display: none; }
-         #delete-map-option { display: none; } /* Initially hidden, shown only for map roots in 'all' mode or maybe on tabs? */
+         #delete-map-option { display: none; } /* Initially hidden, shown only for map roots in 'all' mode */
 
         /* Controls (Unchanged) */
         .controls { position: absolute; bottom: 1rem; right: 1rem; display: flex; gap: 0.5rem; background-color: var(--control-bg); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); border-radius: 0.5rem; padding: 0.5rem; box-shadow: var(--shadow); z-index: 5; }
@@ -517,12 +541,11 @@
         <div class="toolbar">
              <button id="sidebar-toggle" title="Toggle Sidebar"> <i class="fas fa-bars"></i> </button>
              <button id="theme-toggle" title="Toggle Theme"> <i class="fas fa-sun"></i> </button>
-             <!-- NEW: Display All Button -->
+             <!-- Auto-Layout Button is added here dynamically by JS -->
              <button id="display-all-btn" class="btn btn-secondary" title="Show All Maps">
                  <i class="fas fa-grip-horizontal"></i>
                  <span>Display All</span>
              </button>
-             <!-- MODIFIED: Add New Map Button -->
              <button id="new-map-btn" class="btn btn-primary" title="Add New Mind Map">
                  <i class="fas fa-plus"></i>
                  <span>New Map</span>
@@ -538,7 +561,7 @@
         </div>
     </div>
 
-    <!-- NEW: Map Tabs Container -->
+    <!-- Map Tabs Container -->
     <div id="map-tabs-container">
         <!-- Tabs will be generated here by JS -->
     </div>
@@ -568,6 +591,7 @@
         <button id="fullscreen-toggle" class="control-btn mini-tooltip" data-tooltip="Toggle Fullscreen"> <i class="fas fa-expand"></i> </button>
     </div>
 
+    <!-- Node Edit Modal (Existing) -->
     <div id="node-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -605,6 +629,9 @@
             </form>
         </div>
     </div>
+
+    <!-- Confirmation Modal (for Map Deletion - Created Dynamically) -->
+    <!-- Placeholder: It will be added to the body by JS -->
 
     <div id="context-menu" class="contextmenu">
         <!-- Options relevant only in single map mode -->
@@ -650,6 +677,8 @@
             if (window.mindMapInstance) {
                 window.mindMapInstance.applyCurrentStylesToAllNodes();
                 window.mindMapInstance.updateConnections(); // Also redraw connectors
+                 // Update confirmation modal style if it exists
+                window.mindMapInstance.updateConfirmationModalStyle();
             }
         }
         function getInitialTheme() {
@@ -669,9 +698,10 @@
                 this.currentMapId = null; // ID of the map being edited/viewed in single mode
                 this.displayMode = 'single'; // 'single' or 'all'
                 this.selectedNodeId = null; // ID of the node selected within the current map
-                this.editingNodeId = null; // ID of the node being edited in the modal
+                this.editingNodeId = null; // ID of the node being edited in the node modal
                 this.contextMenuNodeId = null; // Node ID context menu was opened on
                 this.contextMenuMapId = null; // Map ID context menu was opened on (for 'all' mode)
+                this.mapIdToDelete = null; // Temp store map ID for delete confirmation
 
                 // Canvas Interaction State
                 this.scale = 1;
@@ -694,9 +724,15 @@
                     '#c7d2fe', '#fbcfe8', '#fca5a5', '#fed7aa', '#bef264',
                     '#86efac', '#67e8f9', '#a78bfa', '#f9a8d4'
                 ];
+                // Layout constants
+                this.treeLayoutHorizontalSpacing = 220;
+                this.treeLayoutVerticalSpacing = 30;
+                this.nodeHeightEstimate = 80; // Used in layout calculation
 
                 // DOM Elements
                 this.htmlEl = document.documentElement;
+                this.bodyEl = document.body;
+                this.toolbar = document.querySelector('.toolbar'); // Target toolbar for adding buttons
                 this.container = document.querySelector('.container');
                 this.sidebar = document.getElementById('sidebar');
                 this.sidebarTitle = document.getElementById('sidebar-title');
@@ -706,18 +742,32 @@
                 this.displayAllMessage = document.getElementById('display-all-message');
                 this.connectorSvg = document.getElementById('connector-svg');
                 this.mapTabsContainer = document.getElementById('map-tabs-container');
+                // Node Edit Modal Elements
                 this.nodeModal = document.getElementById('node-modal');
                 this.nodeForm = document.getElementById('node-form');
-                this.modalTitle = this.nodeModal.querySelector('.modal-title');
+                this.nodeModalTitle = this.nodeModal.querySelector('.modal-title');
                 this.nodeTitleInput = document.getElementById('node-title');
                 this.nodeContentInput = document.getElementById('node-content');
                 this.nodeColorInput = document.getElementById('node-color');
                 this.nodeShapeSelect = document.getElementById('node-shape');
                 this.saveNodeBtn = document.getElementById('save-node');
                 this.cancelNodeBtn = document.getElementById('cancel-node');
-                this.modalCloseBtn = this.nodeModal.querySelector('.modal-close');
-                this.newMapBtn = document.getElementById('new-map-btn'); // Renamed
+                this.nodeModalCloseBtn = this.nodeModal.querySelector('.modal-close');
+                // Confirmation Modal Elements (will be created dynamically)
+                this.confirmModal = null;
+                this.confirmModalTitle = null;
+                this.confirmModalBody = null;
+                this.confirmModalCancelBtn = null;
+                this.confirmModalConfirmBtn = null;
+                this.confirmModalCloseBtn = null;
+                // Toolbar Buttons
+                this.newMapBtn = document.getElementById('new-map-btn');
                 this.displayAllBtn = document.getElementById('display-all-btn');
+                this.saveBtn = document.getElementById('save-btn');
+                this.loadBtn = document.getElementById('load-btn');
+                this.themeToggleBtn = document.getElementById('theme-toggle');
+                this.autoLayoutBtn = null; // Will be created dynamically
+                // Context Menu
                 this.contextMenu = document.getElementById('context-menu');
                 this.addChildOption = document.getElementById('add-child-option');
                 this.editNodeOption = document.getElementById('edit-node-option');
@@ -727,20 +777,19 @@
                 this.deleteMapOption = document.getElementById('delete-map-option');
                 this.singleMapDivider = document.getElementById('single-map-divider');
                 this.allMapsDivider = document.getElementById('all-maps-divider');
+                // Other
                 this.connectorColorPicker = document.getElementById('connector-color-picker');
                 this.zoomInBtn = document.getElementById('zoom-in');
                 this.zoomOutBtn = document.getElementById('zoom-out');
                 this.centerViewBtn = document.getElementById('center-view');
                 this.fullscreenToggleBtn = document.getElementById('fullscreen-toggle');
-                this.themeToggleBtn = document.getElementById('theme-toggle');
-                this.saveBtn = document.getElementById('save-btn');
-                this.loadBtn = document.getElementById('load-btn');
                 this.structureTree = document.getElementById('structure-tree');
 
                 // Temporary state derived from currentMapData (used in single mode)
                 this.nodes = []; // Nodes of the current map
                 this.connections = []; // Connections of the current map
                 this.rootNodeMap = new Map(); // Root map for the current map
+                this.nodeElementCache = new Map(); // Cache node elements for layout
 
                 this.init();
             }
@@ -748,6 +797,8 @@
             // --- Initialization & Setup ---
             async init() {
                 console.log("MindMap Initializing...");
+                this.createAutoLayoutButton(); // Create and add the layout button
+                this.createConfirmationModal(); // Create the confirmation modal structure
                 this.setupEventListeners();
                 this.updateFullscreenIcon();
                 applyTheme(this.currentTheme); // Apply initial theme
@@ -756,41 +807,32 @@
                 const loaded = await this.loadFromCloud();
 
                 if (!loaded || Object.keys(this.allMapsData.maps).length === 0) {
-                    if (!loaded) console.log("No valid data from cloud or load failed.");
-                    if (Object.keys(this.allMapsData.maps).length === 0) {
-                        console.log("No maps found. Starting fresh or showing 'Display All' empty state.");
-                        // Ensure default structure if loading failed completely
-                         if (!this.allMapsData.maps) this.allMapsData.maps = {};
-                         if (!this.allMapsData.meta) this.allMapsData.meta = { theme: getInitialTheme(), displayMode: 'all', activeMapId: null };
-                        this.currentMapId = null;
-                        this.displayMode = 'all'; // Default to 'all' view if empty
-                        this.allMapsData.meta.displayMode = 'all';
-                        this.allMapsData.meta.activeMapId = null;
-                    }
+                    // Handle empty/failed load state
+                     if (!loaded) console.log("No valid data from cloud or load failed.");
+                     if (Object.keys(this.allMapsData.maps).length === 0) console.log("No maps found. Starting fresh or showing 'Display All' empty state.");
+                     if (!this.allMapsData.maps) this.allMapsData.maps = {};
+                     if (!this.allMapsData.meta) this.allMapsData.meta = { theme: getInitialTheme(), displayMode: 'all', activeMapId: null };
+                     this.currentMapId = null;
+                     this.displayMode = 'all';
+                     this.allMapsData.meta.displayMode = 'all';
+                     this.allMapsData.meta.activeMapId = null;
                 } else {
+                     // Restore state from loaded data
                      console.log(`Successfully loaded ${Object.keys(this.allMapsData.maps).length} maps from cloud.`);
-                    // Restore last state based on loaded meta
-                    this.currentTheme = this.allMapsData.meta.theme || getInitialTheme();
-                    this.displayMode = this.allMapsData.meta.displayMode || 'single';
-                    this.currentMapId = this.allMapsData.meta.activeMapId || null;
+                     this.currentTheme = this.allMapsData.meta.theme || getInitialTheme();
+                     this.displayMode = this.allMapsData.meta.displayMode || 'single';
+                     this.currentMapId = this.allMapsData.meta.activeMapId || null;
 
-                    // Validate activeMapId
-                    if (this.currentMapId && !this.allMapsData.maps[this.currentMapId]) {
+                     if (this.currentMapId && !this.allMapsData.maps[this.currentMapId]) {
                          console.warn(`Saved activeMapId ${this.currentMapId} not found. Resetting.`);
                          this.currentMapId = null;
-                         this.displayMode = 'all'; // Switch to all if active map is gone
+                         this.displayMode = 'all';
                          this.allMapsData.meta.activeMapId = null;
                          this.allMapsData.meta.displayMode = 'all';
-                    }
-                     // If no active map ID, but maps exist, try picking the first one or go to 'all'
+                     }
                      if (!this.currentMapId && Object.keys(this.allMapsData.maps).length > 0) {
-                         // Let's default to 'all' mode in this case for clarity
                          this.displayMode = 'all';
                          this.allMapsData.meta.displayMode = 'all';
-                         // this.currentMapId = Object.keys(this.allMapsData.maps)[0]; // Alternative: load first map
-                         // this.displayMode = 'single';
-                         // this.allMapsData.meta.activeMapId = this.currentMapId;
-                         // this.allMapsData.meta.displayMode = 'single';
                      }
                 }
 
@@ -799,16 +841,34 @@
 
                 // Initial Render based on state
                 if (this.displayMode === 'single' && this.currentMapId) {
-                    this.renderSingleMap(this.currentMapId, true); // true = initial load/restore view
+                    this.renderSingleMap(this.currentMapId, true);
                 } else {
                     this.renderDisplayAll();
                 }
 
+                this.updateAutoLayoutButtonState(); // Set initial state of layout button
                 console.log(`Initialization complete. Mode: ${this.displayMode}, Active Map: ${this.currentMapId}`);
             }
 
+            createAutoLayoutButton() {
+                this.autoLayoutBtn = document.createElement('button');
+                this.autoLayoutBtn.id = 'auto-layout-btn';
+                this.autoLayoutBtn.className = 'btn btn-secondary';
+                this.autoLayoutBtn.title = 'Auto-Arrange Map (Tree)';
+                this.autoLayoutBtn.innerHTML = '<i class="fas fa-sitemap"></i><span>Arrange</span>';
+                this.autoLayoutBtn.disabled = true; // Initially disabled
+
+                // Insert it before the 'Display All' button
+                const displayAllButton = document.getElementById('display-all-btn');
+                if (this.toolbar && displayAllButton) {
+                     this.toolbar.insertBefore(this.autoLayoutBtn, displayAllButton);
+                 } else if (this.toolbar) {
+                     this.toolbar.appendChild(this.autoLayoutBtn); // Fallback: append if ref not found
+                 }
+            }
+
             setupEventListeners() {
-                // Canvas Interaction (Mouse & Touch) - Adapts based on displayMode
+                // Canvas Interaction (Mouse & Touch)
                 this.canvasContainer.addEventListener('mousedown', this.handleInteractionStart.bind(this), false);
                 document.addEventListener('mousemove', this.handleInteractionMove.bind(this), false);
                 document.addEventListener('mouseup', this.handleInteractionEnd.bind(this), false);
@@ -818,7 +878,7 @@
                 this.canvasContainer.addEventListener('touchend', this.handleInteractionEnd.bind(this), false);
                 this.canvasContainer.addEventListener('touchcancel', this.handleInteractionEnd.bind(this), false);
 
-                // Context Menu
+                // Context Menu Trigger
                 this.canvasContainer.addEventListener('contextmenu', e => {
                     e.preventDefault();
                     if (!this.isTouch) {
@@ -826,100 +886,48 @@
                     }
                 });
 
-                 // Node Modal Form Submission (Only relevant in single mode)
+                // Node Edit Modal Form Submission
                  this.nodeForm.addEventListener('submit', (e) => {
                      e.preventDefault();
                      if (this.displayMode !== 'single' || !this.currentMapId) return;
-
-                     const mapData = this.getCurrentMapData();
-                     if (!mapData) return;
-
-                     const title = this.nodeTitleInput.value.trim();
-                     const content = this.nodeContentInput.value.trim();
-                     const color = this.nodeColorInput.value;
-                     const shape = this.nodeShapeSelect.value;
-
-                     if (!title) return;
-
-                     if (this.editingNodeId !== null) { // Editing existing node
-                         const node = this.getNodeById(this.editingNodeId);
-                         if (node) {
-                             node.title = title; node.content = content; node.color = color; node.shape = shape;
-                             this.updateNodeElementContent(this.getNodeElement(node.id), node);
-                             this.applyNodeStyle(node);
-                             this.updateConnections(); // Size/content might change
-                             this.updateStructureTree();
-                             // Update map name if root node title changed
-                             if (node.id === mapData.rootNodeId) {
-                                 mapData.name = title;
-                                 this.renderTabs(); // Update tab text
-                             }
-                         }
-                     } else { // Adding new node (must have contextMenuNodeId for parent)
-                         let parentId = this.contextMenuNodeId;
-                         if (parentId === null) {
-                             console.error("Cannot add node without a parent context.");
-                             this.closeModal();
-                             return;
-                         }
-                         let position = this.calculateNewNodePosition(parentId);
-                         const newNode = {
-                             id: this.getNextId(), title, content,
-                             x: position.x, y: position.y,
-                             parentId: parentId, color, shape
-                         };
-                         this.addNode(newNode); // addNode handles pushing to mapData.nodes, connections, etc.
-                         this.buildRootNodeMap(); // Rebuild map for the current map
-                         this.updateConnections();
-                         this.updateStructureTree();
-                     }
-                     this.closeModal();
-                     // No auto-save here
+                     const title = this.nodeTitleInput.value.trim(); if (!title) return;
+                     this.saveNodeEdit(); // Use dedicated function
                  });
 
+                // Node Edit Modal Buttons
+                this.cancelNodeBtn.addEventListener('click', () => this.closeNodeModal());
+                this.nodeModalCloseBtn.addEventListener('click', () => this.closeNodeModal());
 
-                // Modal Buttons
-                this.cancelNodeBtn.addEventListener('click', () => this.closeModal());
-                this.modalCloseBtn.addEventListener('click', () => this.closeModal());
+                // Confirmation Modal Buttons (listeners added when shown)
 
                 // Toolbar Buttons
                 this.newMapBtn.addEventListener('click', () => this.addNewMap());
                 this.displayAllBtn.addEventListener('click', () => this.renderDisplayAll());
                 this.saveBtn.addEventListener('click', () => this.saveToCloud());
                 this.loadBtn.addEventListener('click', async () => {
-                     if (confirm("Loading will overwrite any unsaved changes. Continue?")) {
+                     if (confirm("Loading will overwrite any unsaved changes. Continue?")) { // Standard confirm is okay here
                          await this.loadFromCloud();
                          // Re-render based on loaded state
                          if (this.allMapsData.meta.displayMode === 'single' && this.allMapsData.meta.activeMapId && this.allMapsData.maps[this.allMapsData.meta.activeMapId]) {
                              this.renderSingleMap(this.allMapsData.meta.activeMapId, true);
                          } else if (Object.keys(this.allMapsData.maps).length > 0) {
-                              this.renderDisplayAll(true); // Center the 'all' view after load
+                              this.renderDisplayAll(true);
                          } else {
-                             this.renderDisplayAll(); // Render empty 'all' view
+                             this.renderDisplayAll();
                          }
+                          this.updateAutoLayoutButtonState(); // Update button state after load
                      }
                 });
                 this.sidebarToggle.addEventListener('click', () => this.toggleSidebar());
                 this.themeToggleBtn.addEventListener('click', () => this.toggleTheme());
+                // Add listener for the dynamically created Auto-Layout button
+                this.autoLayoutBtn.addEventListener('click', () => this.applyAutoLayout());
 
                 // Context Menu Options
                 this.setupContextMenuListeners();
 
-                 // Connector Color Picker
-                this.connectorColorPicker.addEventListener('change', (e) => {
-                     if (this.displayMode !== 'single' || this.contextMenuNodeId === null) return;
-                     const mapData = this.getCurrentMapData();
-                     if (!mapData) return;
-                     const node = this.getNodeById(this.contextMenuNodeId);
-                     if (node && node.parentId !== null) {
-                         const connection = mapData.connections.find(c => c.from === node.parentId && c.to === node.id);
-                         if (connection) {
-                             connection.color = e.target.value;
-                             this.updateConnections(); // Redraw with new color
-                         } else { console.warn("Could not find connection for color change."); }
-                     }
-                     this.contextMenuNodeId = null; // Clear after use
-                 });
+                // Connector Color Picker
+                this.connectorColorPicker.addEventListener('change', (e) => this.handleConnectorColorChange(e.target.value));
 
                 // Controls
                 this.zoomInBtn.addEventListener('click', () => this.zoom(1.25));
@@ -931,7 +939,8 @@
                 // Global Click/Tap Listener
                 document.addEventListener('click', (e) => {
                     if (!this.contextMenu.contains(e.target)) this.closeContextMenu();
-                    if (e.target === this.nodeModal) this.closeModal();
+                    if (e.target === this.nodeModal) this.closeNodeModal();
+                    if (e.target === this.confirmModal) this.closeConfirmationModal(); // Close confirm modal on backdrop click
                     if (window.innerWidth <= 768 && this.sidebar.classList.contains('open') && !this.sidebar.contains(e.target) && !this.sidebarToggle.contains(e.target)) {
                         this.toggleSidebar(false);
                     }
@@ -954,29 +963,30 @@
 
                 // Keyboard Shortcuts
                 document.addEventListener('keydown', (e) => {
-                    if (this.nodeModal.classList.contains('active')) return;
+                    // Ignore shortcuts if any modal is active
+                    if (this.nodeModal.classList.contains('active') || this.confirmModal?.classList.contains('active')) return;
 
-                    // Delete Node (only in single mode)
+                    // Delete Node (single mode)
                     if ((e.key === 'Delete' || e.key === 'Backspace') && this.displayMode === 'single' && this.currentMapId) {
-                        if (this.selectedNodeId !== null) {
-                            if (e.target === document.body || e.target === this.canvasContainer || this.canvasContainer.contains(e.target)) {
-                                e.preventDefault();
-                                const nodeToDelete = this.getNodeById(this.selectedNodeId);
-                                const mapData = this.getCurrentMapData();
-                                if (nodeToDelete && mapData && nodeToDelete.id !== mapData.rootNodeId) { // Prevent deleting root node via keyboard
-                                     if (confirm(`Delete node "${nodeToDelete.title}" and all its children?`)) {
-                                         this.deleteNode(this.selectedNodeId);
-                                     }
-                                } else if (nodeToDelete && mapData && nodeToDelete.id === mapData.rootNodeId) {
-                                     this.showToast("Cannot delete the root node directly. Delete the map instead.", true);
-                                }
-                            }
+                        if (this.selectedNodeId !== null && (document.activeElement === this.bodyEl || this.canvasContainer.contains(document.activeElement))) {
+                             e.preventDefault();
+                             const nodeToDelete = this.getNodeById(this.selectedNodeId);
+                             const mapData = this.getCurrentMapData();
+                             if (nodeToDelete && mapData && nodeToDelete.id !== mapData.rootNodeId) {
+                                 this.showDeleteNodeConfirmation(this.selectedNodeId); // Use confirmation for node delete too? Maybe later. For now direct.
+                                 if (confirm(`Delete node "${nodeToDelete.title}" and all its children?`)) { // Standard confirm for node delete ok for now
+                                     this.deleteNodeAndDescendants(this.selectedNodeId);
+                                 }
+                             } else if (nodeToDelete && mapData && nodeToDelete.id === mapData.rootNodeId) {
+                                  this.showToast("Cannot delete the root node directly. Delete the map instead.", true);
+                             }
                         }
                     }
                     // Escape
                     if (e.key === 'Escape') {
                          this.closeContextMenu();
-                         this.closeModal();
+                         this.closeNodeModal();
+                         this.closeConfirmationModal();
                          this.deselectNode();
                          if (this.isFullscreen) document.exitFullscreen().catch(err => console.error("Error exiting fullscreen:", err));
                     }
@@ -993,98 +1003,109 @@
 
                  window.addEventListener('resize', () => this.centerView());
                  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-                     if (!localStorage.getItem(themePrefKey)) { // Only react if no local preference set
+                     if (!localStorage.getItem(themePrefKey)) {
                          const newTheme = e.matches ? 'dark' : 'light';
                          this.currentTheme = newTheme;
-                         this.allMapsData.meta.theme = newTheme; // Update global meta
+                         this.allMapsData.meta.theme = newTheme;
                          applyTheme(newTheme);
-                         // Styles/connections updated via applyTheme callback
                      }
                  });
             }
 
             setupContextMenuListeners() {
                  // --- Single Map Node Context ---
-                 this.addChildOption.addEventListener('click', () => {
-                     if (this.displayMode !== 'single' || this.contextMenuNodeId === null) return;
-                     this.editingNodeId = null; // Ensure we're adding, not editing
-                     this.modalTitle.textContent = 'Add Child Node';
-                     const parentNode = this.getNodeById(this.contextMenuNodeId);
-                     const defaultColor = parentNode?.color || this.getDefaultNodeColor();
-                     this.nodeColorInput.value = defaultColor;
-                     this.nodeShapeSelect.value = parentNode?.shape || 'rounded-rectangle';
-                     this.nodeTitleInput.value = ''; this.nodeContentInput.value = '';
-                     this.openModal();
-                     this.closeContextMenu();
-                 });
-
-                 this.editNodeOption.addEventListener('click', () => {
-                     if (this.displayMode !== 'single' || this.contextMenuNodeId === null) return;
-                     const node = this.getNodeById(this.contextMenuNodeId);
-                     if (node) {
-                         this.editingNodeId = this.contextMenuNodeId;
-                         this.modalTitle.textContent = 'Edit / Style Node';
-                         this.nodeTitleInput.value = node.title;
-                         this.nodeContentInput.value = node.content;
-                         this.nodeColorInput.value = node.color || this.getDefaultNodeColor();
-                         this.nodeShapeSelect.value = node.shape || 'rounded-rectangle';
-                         this.openModal();
-                     }
-                     this.closeContextMenu();
-                 });
-
-                 this.changeConnectorColorOption.addEventListener('click', () => {
-                     if (this.displayMode !== 'single' || this.contextMenuNodeId === null) return;
-                     const mapData = this.getCurrentMapData();
-                     const node = this.getNodeById(this.contextMenuNodeId);
-                     if (mapData && node && node.parentId !== null) {
-                         const connection = mapData.connections.find(c => c.from === node.parentId && c.to === node.id);
-                         this.connectorColorPicker.value = connection?.color || this.getBranchColor(node.id) || this.getDefaultConnectorColor();
-                         this.connectorColorPicker.click(); // Open the native color picker
-                     }
-                     this.closeContextMenu(); // Close menu immediately
-                 });
-
-                 this.deleteNodeOption.addEventListener('click', () => {
-                     if (this.displayMode !== 'single' || this.contextMenuNodeId === null) return;
-                     const nodeToDelete = this.getNodeById(this.contextMenuNodeId);
-                     const mapData = this.getCurrentMapData();
-                     if (nodeToDelete && mapData) {
-                         if (nodeToDelete.id === mapData.rootNodeId) {
-                             this.showToast("Cannot delete the root node. Delete the entire map instead.", true);
-                         } else if (confirm(`Delete node "${nodeToDelete.title}" and all its children?`)) {
-                             this.deleteNode(this.contextMenuNodeId);
-                         }
-                     }
-                     this.closeContextMenu();
-                 });
+                 this.addChildOption.addEventListener('click', () => this.handleAddChildNode());
+                 this.editNodeOption.addEventListener('click', () => this.handleEditNode());
+                 this.changeConnectorColorOption.addEventListener('click', () => this.handleChangeConnectorColor());
+                 this.deleteNodeOption.addEventListener('click', () => this.handleDeleteNode());
 
                  // --- All Maps Root Node Context ---
-                 this.openMapOption.addEventListener('click', () => {
-                     if (this.displayMode !== 'all' || this.contextMenuMapId === null) return;
-                     this.switchToMap(this.contextMenuMapId);
-                     this.closeContextMenu();
-                 });
+                 this.openMapOption.addEventListener('click', () => this.handleOpenMap());
+                 this.deleteMapOption.addEventListener('click', () => this.handleDeleteMap()); // This now triggers the confirmation modal
+            }
 
-                 this.deleteMapOption.addEventListener('click', () => {
-                     if (this.displayMode !== 'all' || this.contextMenuMapId === null) {
-                         this.closeContextMenu(); // Close menu even if conditions not met
-                         return;
+            // --- Context Menu Action Handlers ---
+            handleAddChildNode() {
+                 if (this.displayMode !== 'single' || this.contextMenuNodeId === null) return;
+                 this.editingNodeId = null; // Adding, not editing
+                 this.nodeModalTitle.textContent = 'Add Child Node';
+                 const parentNode = this.getNodeById(this.contextMenuNodeId);
+                 const defaultColor = parentNode?.color || this.getDefaultNodeColor();
+                 this.nodeColorInput.value = defaultColor;
+                 this.nodeShapeSelect.value = parentNode?.shape || 'rounded-rectangle';
+                 this.nodeTitleInput.value = ''; this.nodeContentInput.value = '';
+                 this.openNodeModal();
+                 this.closeContextMenu();
+             }
+
+            handleEditNode() {
+                 if (this.displayMode !== 'single' || this.contextMenuNodeId === null) return;
+                 const node = this.getNodeById(this.contextMenuNodeId);
+                 if (node) {
+                     this.editingNodeId = this.contextMenuNodeId;
+                     this.nodeModalTitle.textContent = 'Edit / Style Node';
+                     this.nodeTitleInput.value = node.title;
+                     this.nodeContentInput.value = node.content;
+                     this.nodeColorInput.value = node.color || this.getDefaultNodeColor();
+                     this.nodeShapeSelect.value = node.shape || 'rounded-rectangle';
+                     this.openNodeModal();
+                 }
+                 this.closeContextMenu();
+             }
+
+            handleChangeConnectorColor() {
+                 if (this.displayMode !== 'single' || this.contextMenuNodeId === null) return;
+                 this.connectorColorPicker.click(); // Open the native color picker
+                 // The actual color change is handled by the picker's 'change' event listener
+                 this.closeContextMenu(); // Close menu immediately
+             }
+
+            handleConnectorColorChange(newColor) {
+                if (this.displayMode !== 'single' || this.contextMenuNodeId === null) return;
+                 const mapData = this.getCurrentMapData();
+                 const node = this.getNodeById(this.contextMenuNodeId);
+                 if (mapData && node && node.parentId !== null) {
+                     const connection = this.connections.find(c => c.from === node.parentId && c.to === node.id);
+                     if (connection) {
+                         connection.color = newColor;
+                         this.updateConnections(); // Redraw with new color
+                     } else { console.warn("Could not find connection for color change."); }
+                 }
+                 // No need to clear contextMenuNodeId here, it wasn't used by the picker directly
+            }
+
+            handleDeleteNode() {
+                 if (this.displayMode !== 'single' || this.contextMenuNodeId === null) return;
+                 const nodeToDelete = this.getNodeById(this.contextMenuNodeId);
+                 const mapData = this.getCurrentMapData();
+                 if (nodeToDelete && mapData) {
+                     if (nodeToDelete.id === mapData.rootNodeId) {
+                         this.showToast("Cannot delete the root node. Delete the entire map instead.", true);
+                     } else if (confirm(`Delete node "${nodeToDelete.title}" and all its children?`)) { // Standard confirm ok for nodes
+                         this.deleteNodeAndDescendants(this.contextMenuNodeId);
                      }
+                 }
+                 this.closeContextMenu();
+             }
 
-                     const mapIdToDelete = this.contextMenuMapId; // Store before closing menu potentially clears it
-                     const mapData = this.allMapsData.maps[mapIdToDelete];
-                     const mapNameToConfirm = mapData?.name || 'Untitled Map';
+            handleOpenMap() {
+                if (this.displayMode !== 'all' || this.contextMenuMapId === null) return;
+                this.switchToMap(this.contextMenuMapId);
+                this.closeContextMenu();
+            }
 
-                     // Confirmation dialog
-                     if (confirm(`Are you sure you want to delete the entire mind map "${mapNameToConfirm}"? This cannot be undone.`)) {
-                         // Call the new function to handle deletion
-                         this.deleteMapById(mapIdToDelete);
-                     }
-                     // Note: deleteMapById handles UI updates and saving.
+            handleDeleteMap() {
+                if (this.displayMode !== 'all' || this.contextMenuMapId === null) {
+                    this.closeContextMenu();
+                    return;
+                }
+                const mapIdToDelete = this.contextMenuMapId;
+                const mapData = this.allMapsData.maps[mapIdToDelete];
+                const mapNameToConfirm = mapData?.name || 'Untitled Map';
 
-                     this.closeContextMenu(); // Close the context menu after action
-                 });
+                // Show the custom confirmation modal instead of confirm()
+                this.showDeleteMapConfirmation(mapIdToDelete, mapNameToConfirm);
+                this.closeContextMenu();
             }
 
             // --- Interaction Handlers ---
@@ -1098,7 +1119,7 @@
                 const targetElement = document.elementFromPoint(interactionPos.clientX, interactionPos.clientY);
                 const targetNodeElement = targetElement ? targetElement.closest('.node') : null;
 
-                // --- Long Press for Context Menu (Touch) ---
+                // Long Press for Context Menu (Touch)
                 if (this.isTouch) {
                     if(this.longPressTimeout) clearTimeout(this.longPressTimeout);
                     this.longPressTimeout = setTimeout(() => {
@@ -1109,7 +1130,7 @@
                     }, 700);
                 }
 
-                // --- Click/Drag Logic ---
+                // Click/Drag Logic
                 if (targetNodeElement) {
                     e.stopPropagation(); // Prevent canvas panning if node is hit
 
@@ -1119,27 +1140,25 @@
                         this.isMovingNode = true;
                         this.isPanning = false;
                         const node = this.getNodeById(nodeId);
-                        this.nodeStartPos = { x: node?.x || 0, y: node?.y || 0 }; // Use current position
+                        this.nodeStartPos = { x: node?.x || 0, y: node?.y || 0 };
                         this.canvas.style.cursor = 'grabbing';
                         document.body.style.cursor = 'grabbing';
                     } else if (this.displayMode === 'all') {
                         // Click on a root node in 'all' mode should switch to that map
                         const mapId = targetNodeElement.dataset.mapId;
                         if (mapId) {
-                           // Delay slightly to differentiate from drag/long press
                            setTimeout(() => {
-                               if (!this.isPanning && !this.longPressTimeout) { // Only switch if not panning or long pressing
+                               if (!this.isPanning && !this.longPressTimeout) {
                                    this.switchToMap(mapId);
                                }
                            }, 50);
                         }
-                        this.isPanning = true; // Allow panning even if starting on a node in 'all' mode
+                        this.isPanning = true;
                         this.isMovingNode = false;
                         this.canvas.classList.add('grabbing');
                         document.body.style.cursor = 'grabbing';
                     }
                 } else if (targetElement && (targetElement.closest('.controls') || targetElement.closest('.header') || targetElement.closest('.sidebar') || targetElement.closest('#map-tabs-container'))) {
-                    // Click on UI elements, do nothing with canvas
                     this.isPanning = false;
                     this.isMovingNode = false;
                 } else {
@@ -1149,7 +1168,7 @@
                     this.canvas.classList.add('grabbing');
                     document.body.style.cursor = 'grabbing';
                     if (this.displayMode === 'single') {
-                         this.deselectNode(); // Deselect only in single mode
+                         this.deselectNode();
                     }
                 }
             }
@@ -1162,7 +1181,6 @@
                 const dx = interactionPos.clientX - this.dragStart.x;
                 const dy = interactionPos.clientY - this.dragStart.y;
 
-                // Cancel long press if significant movement occurs
                 if (this.longPressTimeout && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
                     clearTimeout(this.longPressTimeout);
                     this.longPressTimeout = null;
@@ -1176,7 +1194,7 @@
                         node.x = this.nodeStartPos.x + deltaX;
                         node.y = this.nodeStartPos.y + deltaY;
                         this.updateNodeElementPosition(node);
-                        this.updateConnections();
+                        this.updateConnections(); // Update connections during drag
                     }
                 } else if (this.isPanning) {
                     this.offset.x += dx;
@@ -1191,18 +1209,17 @@
                     clearTimeout(this.longPressTimeout);
                     this.longPressTimeout = null;
                 }
-
                 if (this.isMovingNode) {
                     this.isMovingNode = false;
                     this.canvas.style.cursor = 'grab';
                     document.body.style.cursor = 'default';
-                    // Node position is implicitly saved when saveToCloud is called
+                    // Consider if auto-save is desired after node move
                 }
                 if (this.isPanning) {
                     this.isPanning = false;
                     this.canvas.classList.remove('grabbing');
                     document.body.style.cursor = 'default';
-                    // View state (offset, scale) is implicitly saved with saveToCloud
+                    // Consider if auto-save is desired after panning
                 }
             }
 
@@ -1221,7 +1238,7 @@
             handleContextMenu(eOrPos) {
                 let clientX, clientY;
                 if (eOrPos instanceof Event) { clientX = eOrPos.clientX; clientY = eOrPos.clientY; }
-                else if (eOrPos && typeof eOrPos.clientX === 'number') { clientX = eOrPos.clientX; clientY = eOrPos.clientY; } // Touch long press passes position
+                else if (eOrPos && typeof eOrPos.clientX === 'number') { clientX = eOrPos.clientX; clientY = eOrPos.clientY; }
                 else { console.error("Invalid context menu event/position:", eOrPos); return; }
 
                 const targetElement = document.elementFromPoint(clientX, clientY);
@@ -1263,7 +1280,6 @@
             renderTabs() {
                 this.mapTabsContainer.innerHTML = '';
                 const mapEntries = Object.entries(this.allMapsData.maps);
-                // Optional: Sort tabs alphabetically by name
                 mapEntries.sort(([, mapA], [, mapB]) => (mapA.name || 'Untitled').localeCompare(mapB.name || 'Untitled'));
 
                 mapEntries.forEach(([mapId, mapData]) => {
@@ -1277,7 +1293,6 @@
                     }
                     this.mapTabsContainer.appendChild(tab);
                 });
-                 // Scroll active tab into view if needed
                  const activeTab = this.mapTabsContainer.querySelector('.map-tab.active');
                  if (activeTab) {
                      activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
@@ -1287,66 +1302,54 @@
             renderDisplayAll(center = false) {
                 console.log("Rendering Display All mode...");
                 this.displayMode = 'all';
-                this.currentMapId = null; // No single map is active
+                this.currentMapId = null;
                 this.selectedNodeId = null;
-                this.allMapsData.meta.displayMode = 'all'; // Update meta state
+                this.allMapsData.meta.displayMode = 'all';
                 this.allMapsData.meta.activeMapId = null;
 
                 this.clearCanvasAndSidebar();
-                this.renderTabs(); // Ensure tabs reflect the non-active state
+                this.renderTabs(); // Update tab state
+                this.updateAutoLayoutButtonState(); // Disable layout button
 
                 const mapIds = Object.keys(this.allMapsData.maps);
                 if (mapIds.length === 0) {
                     this.displayAllMessage.style.display = 'block';
                     this.sidebarTitle.textContent = "No Maps";
                     this.structureTree.innerHTML = '<p style="color: var(--text-muted); font-style: italic;">Create or load a mind map.</p>';
-                    return; // Nothing to display
+                    return;
                 } else {
                     this.displayAllMessage.style.display = 'none';
                 }
 
                 this.sidebarTitle.textContent = "All Maps";
-                this.renderMapListSidebar(); // Show list of maps in sidebar
+                this.renderMapListSidebar();
 
                 // Basic Layout for Root Nodes
                 const padding = 80;
-                const nodeWidthEstimate = 180; // Estimate avg width
-                const nodeHeightEstimate = 80; // Estimate avg height
+                const nodeWidthEstimate = 180;
+                const nodeHeightEstimate = 80;
                 const containerWidth = this.canvasContainer.offsetWidth;
                 const nodesPerRow = Math.max(1, Math.floor((containerWidth - padding * 2) / (nodeWidthEstimate + padding)));
-                let currentX = padding;
-                let currentY = padding;
-                let countInRow = 0;
-
+                let currentX = padding; let currentY = padding; let countInRow = 0;
                 const fragment = document.createDocumentFragment();
 
                 mapIds.forEach(mapId => {
                     const mapData = this.allMapsData.maps[mapId];
                     if (!mapData || !mapData.rootNodeId || !mapData.nodes) return;
-
                     const rootNodeData = mapData.nodes.find(n => n.id === mapData.rootNodeId);
-                    if (!rootNodeData) {
-                         console.warn(`Root node ${mapData.rootNodeId} not found for map ${mapId}`);
-                         return;
-                    }
+                    if (!rootNodeData) return;
 
-                     // Use map name for the node in 'all' display for consistency
                     const displayNodeData = { ...rootNodeData, title: mapData.name || 'Untitled Map', content: `${mapData.nodes.length} nodes`};
-
-                    const nodeElement = this.createNodeElement(displayNodeData); // Use helper
+                    const nodeElement = this.createNodeElement(displayNodeData);
                     nodeElement.classList.add('display-all-root');
-                    nodeElement.dataset.mapId = mapId; // Add map ID for click handling
-
-                    // Assign position (overwriting node's saved position for layout)
+                    nodeElement.dataset.mapId = mapId;
                     nodeElement.style.transform = `translate(${currentX}px, ${currentY}px) scale(0.9)`;
-
+                    this.applyNodeStyle(rootNodeData, nodeElement); // Apply original node style
                     fragment.appendChild(nodeElement);
 
                     countInRow++;
                     if (countInRow >= nodesPerRow) {
-                        countInRow = 0;
-                        currentX = padding;
-                        currentY += nodeHeightEstimate + padding;
+                        countInRow = 0; currentX = padding; currentY += nodeHeightEstimate + padding;
                     } else {
                         currentX += nodeWidthEstimate + padding;
                     }
@@ -1355,13 +1358,11 @@
                 this.canvas.appendChild(fragment);
 
                 if (center) {
-                     requestAnimationFrame(() => this.centerView(true)); // Center the view on the root nodes
+                     requestAnimationFrame(() => this.centerView(true));
                 } else {
-                    // Reset view for 'all' mode if not explicitly centering
-                    this.scale = 1;
-                    this.offset = { x: 0, y: 0 };
+                    this.scale = 1; this.offset = { x: 0, y: 0 };
                     this.updateCanvasTransform();
-                    requestAnimationFrame(() => this.centerView(true)); // Still good to center initially
+                    requestAnimationFrame(() => this.centerView(true)); // Center initially
                 }
             }
 
@@ -1369,51 +1370,57 @@
                 const mapData = this.allMapsData.maps[mapId];
                 if (!mapData) {
                     console.error(`Map data not found for ID: ${mapId}. Switching to Display All.`);
-                    this.renderDisplayAll();
-                    return;
+                    this.renderDisplayAll(); return;
                 }
                 console.log(`Rendering Single Map mode: ${mapId} (${mapData.name || 'Untitled'})`);
 
                 this.displayMode = 'single';
                 this.currentMapId = mapId;
-                this.selectedNodeId = null; // Deselect node when switching maps
-                this.allMapsData.meta.displayMode = 'single'; // Update meta state
+                this.selectedNodeId = null;
+                this.allMapsData.meta.displayMode = 'single';
                 this.allMapsData.meta.activeMapId = mapId;
 
-                // Load map data into current state variables for processing
+                // Assign map data to local state FIRST
                 this.nodes = mapData.nodes || [];
                 this.connections = mapData.connections || [];
-                // Ensure nextId is correctly loaded or initialized for the map
                 mapData.nextId = mapData.nextId || (this.nodes.length > 0 ? Math.max(...this.nodes.map(n => n.id), 0) + 1 : 1);
 
-                this.clearCanvasAndSidebar();
-                this.renderTabs(); // Highlight the active tab
+                this.clearCanvasAndSidebar(); // Clears canvas, sidebar, node cache etc.
+                this.renderTabs(); // Update tabs state
 
-                this.sidebarTitle.textContent = `Structure: ${mapData.name || 'Untitled'}`;
-                 this.displayAllMessage.style.display = 'none';
+                this.sidebarTitle.textContent = `Structure: ${this.escapeHtml(mapData.name) || 'Untitled'}`;
+                this.displayAllMessage.style.display = 'none';
 
+                // Handle empty map AFTER assigning this.nodes
                 if (this.nodes.length === 0) {
                     console.warn(`Map ${mapId} has no nodes. Creating a default root.`);
-                    this.createInitialNodeForMap(mapId); // Create the first node
-                     // Re-assign after creation
+                    this.createInitialNodeForMap(mapId);
+                    // Re-assign local state after creating the node
                     this.nodes = mapData.nodes;
                     this.connections = mapData.connections;
                 }
 
-                // Create Node DOM Elements
+                // Create Node DOM Elements AFTER handling potential initial node creation
                 const fragment = document.createDocumentFragment();
+                this.nodeElementCache.clear(); // Ensure cache is clear before populating
                 this.nodes.forEach(nodeData => {
                     const nodeElement = this.createNodeElement(nodeData);
-                    this.applyNodeStyle(nodeData, nodeElement); // Apply custom styles
-                    this.updateNodeElementPosition(nodeData, nodeElement); // Set position
+                    this.applyNodeStyle(nodeData, nodeElement);
+                    this.updateNodeElementPosition(nodeData, nodeElement);
                     fragment.appendChild(nodeElement);
+                    this.nodeElementCache.set(nodeData.id, nodeElement); // Cache element
                 });
                 this.canvas.appendChild(fragment);
 
                 // Post-render updates
-                this.buildRootNodeMap(); // Build root map for connectors/tree
-                this.updateConnections(); // Draw connectors
-                this.updateStructureTree(); // Build sidebar tree
+                this.buildRootNodeMap();
+                this.updateConnections();
+                this.updateStructureTree();
+
+                // --- MOVED THIS CALL HERE ---
+                // Update button state AFTER nodes are definitely processed and populated
+                this.updateAutoLayoutButtonState();
+                // --- END MOVE ---
 
                 // Restore view or center
                 if (initialLoad && mapData.lastSavedView && mapData.lastSavedView.offset) {
@@ -1422,41 +1429,35 @@
                     this.updateCanvasTransform();
                     console.log(`Restored saved view for map ${mapId}`);
                 } else {
-                    requestAnimationFrame(() => this.centerView(true)); // Center map content
+                    // Use requestAnimationFrame to ensure layout is stable before centering
+                    requestAnimationFrame(() => this.centerView(true));
                 }
             }
 
              switchToMap(mapId) {
-                 if (this.displayMode === 'single' && this.currentMapId === mapId) {
-                     return; // Already viewing this map
-                 }
-                 if (this.isLoading) {
-                     this.showToast("Operation in progress, please wait...", true);
+                 if ((this.displayMode === 'single' && this.currentMapId === mapId) || this.isLoading) {
                      return;
                  }
-                 // Optional: Save current map state before switching?
-                 // this.updateCurrentMapData(); // Ensure current state is in allMapsData
-                 // For now, we rely on manual save.
                  console.log(`Switching to map: ${mapId}`);
                  this.renderSingleMap(mapId);
             }
 
             clearCanvasAndSidebar() {
-                 this.canvas.innerHTML = ''; // Clear nodes
-                 this.connectorSvg.innerHTML = ''; // Clear connectors
-                 this.structureTree.innerHTML = ''; // Clear sidebar content
+                 this.canvas.innerHTML = '';
+                 this.connectorSvg.innerHTML = '';
+                 this.structureTree.innerHTML = '';
                  this.selectedNodeId = null;
                  this.contextMenuNodeId = null;
                  this.contextMenuMapId = null;
-                 // Reset temporary state for the map being unloaded
                  this.nodes = [];
                  this.connections = [];
                  this.rootNodeMap.clear();
-                  this.displayAllMessage.style.display = 'none'; // Hide message by default
+                 this.nodeElementCache.clear(); // Clear node element cache
+                  this.displayAllMessage.style.display = 'none';
             }
 
             renderMapListSidebar() {
-                this.structureTree.innerHTML = ''; // Clear existing tree/list
+                this.structureTree.innerHTML = '';
                 const mapEntries = Object.entries(this.allMapsData.maps);
                 mapEntries.sort(([, mapA], [, mapB]) => (mapA.name || 'Untitled').localeCompare(mapB.name || 'Untitled'));
 
@@ -1471,12 +1472,12 @@
                     item.textContent = mapData.name || 'Untitled Map';
                     item.title = `Click to open "${mapData.name || 'Untitled Map'}"`;
                     item.dataset.mapId = mapId;
-                    item.innerHTML = `<i class="fas fa-project-diagram"></i> ${item.textContent}`; // Add icon
+                    item.innerHTML = `<i class="fas fa-project-diagram"></i> ${this.escapeHtml(item.textContent)}`; // Add icon and escape text
 
                     item.addEventListener('click', () => {
                         this.switchToMap(mapId);
                         if (window.innerWidth <= 768 && this.sidebar.classList.contains('open')) {
-                             this.toggleSidebar(false); // Close mobile sidebar on selection
+                             this.toggleSidebar(false);
                         }
                     });
                     this.structureTree.appendChild(item);
@@ -1492,39 +1493,26 @@
                  const mapName = `Untitled Map ${Object.keys(this.allMapsData.maps).length + 1}`;
                  console.log(`Creating new map: ${newMapId} - ${mapName}`);
 
-                 // Create basic map structure
                  this.allMapsData.maps[newMapId] = {
-                     name: mapName,
-                     nodes: [],
-                     connections: [],
-                     nextId: 1,
-                     rootNodeId: null, // Will be set by createInitialNodeForMap
-                     lastSavedView: null
+                     name: mapName, nodes: [], connections: [], nextId: 1,
+                     rootNodeId: null, lastSavedView: null
                  };
 
-                 this.createInitialNodeForMap(newMapId); // Create the root node
-                 this.renderTabs(); // Update tabs immediately
-                 this.switchToMap(newMapId); // Switch view to the new map
-                 // Consider auto-saving after creating a new map? For now, manual.
-                 // this.saveToCloud();
+                 this.createInitialNodeForMap(newMapId);
+                 this.renderTabs();
+                 this.switchToMap(newMapId); // Switches view and enables layout button
+                 // Consider auto-save? this.saveToCloud();
             }
 
              createInitialNodeForMap(mapId) {
                  const mapData = this.allMapsData.maps[mapId];
-                 if (!mapData || mapData.nodes.length > 0) {
-                     console.warn("Attempted to create initial node for map that already has nodes or doesn't exist:", mapId);
-                     return;
-                 }
+                 if (!mapData || mapData.nodes.length > 0) return;
 
-                 const nodeId = 1; // Start IDs at 1 for the new map
+                 const nodeId = 1;
                  const initialNode = {
-                     id: nodeId,
-                     title: mapData.name || 'Main Topic',
-                     content: 'Start adding ideas!',
-                     x: 0, y: 0, // Position relative to map canvas origin
-                     parentId: null,
-                     color: this.getDefaultNodeColor(),
-                     shape: 'rounded-rectangle'
+                     id: nodeId, title: mapData.name || 'Main Topic',
+                     content: 'Start adding ideas!', x: 0, y: 0, parentId: null,
+                     color: this.getDefaultNodeColor(), shape: 'rounded-rectangle'
                  };
                  mapData.nodes.push(initialNode);
                  mapData.rootNodeId = nodeId;
@@ -1532,71 +1520,76 @@
                  console.log(`Created initial node ${nodeId} for map ${mapId}`);
              }
 
-
             getNextId() {
-                 // Now operates on the current map's data
                  if (this.displayMode !== 'single' || !this.currentMapId) {
-                     console.error("Cannot get next ID without an active single map.");
-                     return Date.now(); // Fallback, less ideal
+                     console.error("Cannot get next ID without an active single map."); return Date.now();
                  }
                  const mapData = this.getCurrentMapData();
                  if (!mapData) return Date.now();
-                 mapData.nextId = (mapData.nextId || 1); // Ensure it's initialized
+                 mapData.nextId = (mapData.nextId || 1);
                  return mapData.nextId++;
             }
 
             getNodeById(id) {
-                 // Operates on the currently loaded this.nodes (from the active map)
                  if (this.displayMode !== 'single') return null;
                  return this.nodes.find(n => n.id === id);
             }
 
             getNodeElement(nodeId) {
-                 // Generic selector, works in both modes if elements exist
-                 return this.canvas.querySelector(`.node[data-id="${nodeId}"]`);
+                 // Use cache first for performance, especially during layout
+                 if (this.displayMode === 'single' && this.nodeElementCache.has(nodeId)) {
+                     return this.nodeElementCache.get(nodeId);
+                 }
+                 // Fallback to query selector (needed for 'all' mode or if cache missed)
+                 const element = this.canvas.querySelector(`.node[data-id="${nodeId}"]`);
+                 // Cache if found in single mode
+                 if (this.displayMode === 'single' && element && nodeId !== undefined) {
+                     this.nodeElementCache.set(nodeId, element);
+                 }
+                 return element;
             }
 
-             getParentId(nodeId) {
-                 // Operates on the currently loaded this.connections
-                 if (this.displayMode !== 'single') return null;
-                 const connection = this.connections.find(c => c.to === nodeId);
-                 return connection ? connection.from : null;
+            getChildren(parentId) {
+                 if (this.displayMode !== 'single') return [];
+                 return this.connections
+                     .filter(c => c.from === parentId)
+                     .map(c => this.getNodeById(c.to))
+                     .filter(node => node); // Filter out nulls if data inconsistency occurs
             }
+
 
             // --- Node Operations (operate on current map data) ---
 
             addNode(nodeData) {
                  if (this.displayMode !== 'single' || !this.currentMapId) return;
-                 const mapData = this.getCurrentMapData();
-                 if (!mapData) return;
+                 const mapData = this.getCurrentMapData(); if (!mapData) return;
 
-                 // Ensure defaults
                  nodeData.color = nodeData.color || this.getDefaultNodeColor();
                  nodeData.shape = nodeData.shape || 'rounded-rectangle';
                  nodeData.parentId = nodeData.parentId !== undefined ? nodeData.parentId : null;
 
-                 mapData.nodes.push(nodeData);
-                 this.nodes = mapData.nodes; // Keep local reference in sync
+                 mapData.nodes.push(nodeData); this.nodes = mapData.nodes;
 
-                 // Add connection if it has a parent
-                 if (nodeData.parentId !== null && this.getNodeById(nodeData.parentId)) {
-                     if (!mapData.connections.some(c => c.from === nodeData.parentId && c.to === nodeData.id)) {
-                         mapData.connections.push({ from: nodeData.parentId, to: nodeData.id });
-                         this.connections = mapData.connections; // Sync local reference
+                 if (nodeData.parentId !== null) {
+                     const parentExists = this.getNodeById(nodeData.parentId);
+                     if (parentExists) {
+                         if (!mapData.connections.some(c => c.from === nodeData.parentId && c.to === nodeData.id)) {
+                              mapData.connections.push({ from: nodeData.parentId, to: nodeData.id });
+                              this.connections = mapData.connections;
+                         }
+                     } else {
+                          console.warn(`Parent node ${nodeData.parentId} not found for node ${nodeData.id} in map ${this.currentMapId}. Setting parentId to null.`);
+                          nodeData.parentId = null; // Correct data
                      }
-                 } else if (nodeData.parentId !== null) {
-                      console.warn(`Parent node ${nodeData.parentId} not found for node ${nodeData.id} in map ${this.currentMapId}. Setting parentId to null.`);
-                      nodeData.parentId = null; // Correct data
                  }
 
-                 // Create and add element to DOM
                  const nodeElement = this.createNodeElement(nodeData);
                  this.applyNodeStyle(nodeData, nodeElement);
                  this.updateNodeElementPosition(nodeData, nodeElement);
                  this.canvas.appendChild(nodeElement);
+                 this.nodeElementCache.set(nodeData.id, nodeElement); // Add to cache
 
-                 // Update UI related to this map
-                 this.buildRootNodeMap(); // Rebuild for current map
+                 this.buildRootNodeMap();
                  this.updateStructureTree();
                  this.updateConnections();
                  this.selectNode(nodeData.id);
@@ -1604,13 +1597,12 @@
                  console.log(`Node added to map ${this.currentMapId}: ID=${nodeData.id}`);
             }
 
-            deleteNode(nodeId) {
+            deleteNodeAndDescendants(nodeId) {
+                 // Renamed to be clear it removes children too
                  if (this.displayMode !== 'single' || !this.currentMapId) return;
                  const mapData = this.getCurrentMapData();
                  if (!mapData || nodeId === mapData.rootNodeId) {
-                     console.warn("Cannot delete root node this way.");
-                     this.showToast("Cannot delete the root node.", true);
-                     return;
+                     this.showToast("Cannot delete the root node.", true); return;
                  }
 
                  const nodesToDeleteIds = this.findNodeAndDescendants(nodeId);
@@ -1623,97 +1615,71 @@
                      if (element) {
                          gsap.to(element, { scale: 0.5, opacity: 0, duration: 0.2, onComplete: () => element.remove() });
                      }
-                     this.rootNodeMap.delete(id); // Remove from current map's root map
+                     this.rootNodeMap.delete(id);
+                     this.nodeElementCache.delete(id); // Remove from cache
                  });
 
-                 // Filter data arrays for the current map
+                 // Filter data arrays
                  mapData.nodes = mapData.nodes.filter(node => !nodesToDeleteIds.includes(node.id));
                  mapData.connections = mapData.connections.filter(conn =>
                      !nodesToDeleteIds.includes(conn.from) && !nodesToDeleteIds.includes(conn.to)
                  );
-
-                 // Update local references
-                 this.nodes = mapData.nodes;
-                 this.connections = mapData.connections;
+                 this.nodes = mapData.nodes; // Sync local state
+                 this.connections = mapData.connections; // Sync local state
 
                  // Reset selection if deleted
                  if (this.selectedNodeId !== null && nodesToDeleteIds.includes(this.selectedNodeId)) {
                      this.selectedNodeId = null;
                  }
                  if (this.contextMenuNodeId !== null && nodesToDeleteIds.includes(this.contextMenuNodeId)) {
-                     this.contextMenuNodeId = null;
-                     this.closeContextMenu();
+                     this.contextMenuNodeId = null; this.closeContextMenu();
                  }
 
-                 // Update UI
                  this.updateConnections();
                  this.updateStructureTree();
             }
 
-            // --- Map & Node Management --- (Paste near here)
-
             deleteMapById(mapIdToDelete) {
-                if (this.isLoading) {
-                    this.showToast("Operation in progress, please wait...", true);
-                    return;
-                }
-                if (!this.allMapsData.maps[mapIdToDelete]) {
+                if (this.isLoading || !this.allMapsData.maps[mapIdToDelete]) {
                     console.error(`Attempted to delete non-existent map: ${mapIdToDelete}`);
-                    this.showToast("Map not found.", true);
-                    return;
+                    this.showToast("Map not found.", true); return;
                 }
 
                 const mapName = this.allMapsData.maps[mapIdToDelete]?.name || 'Untitled Map';
                 console.log(`Deleting map: ${mapIdToDelete} ("${mapName}")`);
-
-                // --- Data Deletion ---
                 delete this.allMapsData.maps[mapIdToDelete];
 
-                // --- State Update ---
                 let needsUIRefresh = false;
-                // If the currently viewed map (single mode) was deleted
                 if (this.displayMode === 'single' && this.currentMapId === mapIdToDelete) {
                     console.log("Active map was deleted. Switching to 'Display All' mode.");
-                    this.currentMapId = null;
-                    this.allMapsData.meta.activeMapId = null;
-                    this.displayMode = 'all';
-                    this.allMapsData.meta.displayMode = 'all';
-                    needsUIRefresh = true; // Need to render the 'all' view
+                    this.currentMapId = null; this.allMapsData.meta.activeMapId = null;
+                    this.displayMode = 'all'; this.allMapsData.meta.displayMode = 'all';
+                    needsUIRefresh = true;
                 }
 
-                // --- UI Update ---
                 this.renderTabs(); // Always update tabs
 
                 if (needsUIRefresh || this.displayMode === 'all') {
-                    // If we switched to 'all' mode OR were already in 'all' mode, refresh the canvas
                     this.renderDisplayAll(true); // Re-render the 'all' view canvas and center
                 }
-                // If we were in 'single' mode viewing a *different* map,
-                // only the tabs need updating, which is already done.
+                this.updateAutoLayoutButtonState(); // Update button state (will be disabled)
 
-                // --- Persistence ---
-                this.showToast(`Map "${mapName}" deleted.`);
-                this.saveToCloud(); // Automatically save the deletion to the cloud
-                // You can comment out the line above if you prefer manual saving via the button
+                this.showToast(`Map "${this.escapeHtml(mapName)}" deleted.`);
+                this.saveToCloud(); // Save deletion immediately
             }
-
-            // Other methods like createInitialNodeForMap, getNextId etc. follow...
-
 
              createNodeElement(nodeData) {
                  const element = document.createElement('div');
                  element.className = 'node';
-                 element.dataset.id = nodeData.id; // Keep internal node ID
+                 element.dataset.id = nodeData.id;
                  this.updateNodeElementContent(element, nodeData);
-                 // Style and position applied separately
                  return element;
              }
 
-
              updateNodeElementContent(element, nodeData) {
                  if (!element) return;
-                 const safeTitle = nodeData.title?.replace(/</g, "&lt;") || 'Untitled';
-                 const safeContent = nodeData.content?.replace(/</g, "&lt;").replace(/\n/g, '<br>') || '';
+                 const safeTitle = this.escapeHtml(nodeData.title) || 'Untitled';
+                 const safeContent = nodeData.content ? this.escapeHtml(nodeData.content).replace(/\n/g, '<br>') : '';
                  element.innerHTML = `
                      <div class="node-title">${safeTitle}</div>
                      ${safeContent ? `<div class="node-content">${safeContent}</div>` : ''}
@@ -1723,21 +1689,24 @@
              applyNodeStyle(node, element = null) {
                  const targetElement = element || this.getNodeElement(node.id);
                  if (!targetElement) return;
-                 targetElement.style.setProperty('--node-bg-color', node.color || this.getDefaultNodeColor());
+                 const bgColor = node.color || this.getDefaultNodeColor();
+                 targetElement.style.setProperty('--node-bg-color', bgColor);
+                 // Ensure text color contrasts with background (simple check)
+                 const titleColor = this.getContrastingTextColor(bgColor);
+                 targetElement.style.setProperty('--node-text-color', titleColor);
+                 targetElement.style.setProperty('--node-content-color', titleColor === '#ffffff' ? 'rgba(255,255,255,0.85)' : 'rgba(0,0,0,0.7)'); // Slightly dimmer content
                  targetElement.classList.remove('node-shape-rectangle', 'node-shape-rounded-rectangle', 'node-shape-stadium', 'node-shape-ellipse');
                  targetElement.classList.add(`node-shape-${node.shape || 'rounded-rectangle'}`);
              }
 
              applyCurrentStylesToAllNodes() {
-                 // Apply styles based on theme change etc.
                  if (this.displayMode === 'single' && this.nodes) {
                      this.nodes.forEach(node => this.applyNodeStyle(node));
                  } else if (this.displayMode === 'all') {
-                     // Re-apply styles to the root nodes shown
                      Object.values(this.allMapsData.maps).forEach(mapData => {
-                         if (mapData.rootNodeId) {
+                         if (mapData.rootNodeId && mapData.nodes) {
                              const rootNodeData = mapData.nodes.find(n => n.id === mapData.rootNodeId);
-                             const element = this.getNodeElement(mapData.rootNodeId); // Get the element shown in 'all' mode
+                             const element = this.getNodeElement(mapData.rootNodeId);
                              if (rootNodeData && element) {
                                  this.applyNodeStyle(rootNodeData, element);
                              }
@@ -1746,33 +1715,30 @@
                  }
              }
 
-
              updateNodeElementPosition(node, element = null) {
                  const targetElement = element || this.getNodeElement(node.id);
                  if (targetElement) {
                      const xPos = typeof node.x === 'number' ? node.x : 0;
                      const yPos = typeof node.y === 'number' ? node.y : 0;
+                     // Don't use GSAP here, just set the initial/dragged position
                      targetElement.style.transform = `translate(${xPos}px, ${yPos}px)`;
                  }
              }
 
-
              selectNode(nodeId) {
-                 // Only relevant in single mode
                  if (this.displayMode !== 'single') return;
                  if (this.selectedNodeId !== nodeId) {
-                     this.deselectNode(); // Deselect previous
+                     this.deselectNode();
                      this.selectedNodeId = nodeId;
                  }
                  const element = this.getNodeElement(nodeId);
                  if (element) {
                       element.classList.add('selected');
                  }
-                 this.updateStructureTree(); // Update tree selection highlight
+                 this.updateStructureTree();
              }
 
              deselectNode() {
-                  // Only relevant in single mode
                  if (this.displayMode !== 'single' || this.selectedNodeId === null) return;
                  const prevElement = this.getNodeElement(this.selectedNodeId);
                  if (prevElement) {
@@ -1782,35 +1748,31 @@
                  this.updateStructureTree();
              }
 
-
-            // --- Root Finding & Connections (operate on current map) ---
+            // --- Root Finding & Connections ---
              buildRootNodeMap() {
-                 // Operates on this.nodes and this.connections of the current map
                  this.rootNodeMap.clear();
                  if (this.displayMode !== 'single' || !this.nodes || this.nodes.length === 0) return;
-
                  const parentMap = new Map();
                  this.connections.forEach(c => parentMap.set(c.to, c.from));
-
-                 const findRootRecursive = (currentId) => {
+                 const findRootRecursive = (currentId, path = new Set()) => { // Add path for loop detection
                      if (this.rootNodeMap.has(currentId)) return this.rootNodeMap.get(currentId);
+                     if (path.has(currentId)) { // Loop detected
+                         console.warn(`Loop detected involving node ${currentId}. Treating as root.`);
+                         this.rootNodeMap.set(currentId, currentId);
+                         return currentId;
+                     }
+                     path.add(currentId);
                      const parentId = parentMap.get(currentId);
                      if (parentId === undefined || parentId === null) { // It's a root
                          this.rootNodeMap.set(currentId, currentId);
+                         path.delete(currentId); // Clean up path
                          return currentId;
                      }
-                     // Basic loop detection
-                     if (this.rootNodeMap.has(parentId) && this.rootNodeMap.get(parentId) === currentId) {
-                         console.warn(`Loop detected involving ${currentId}. Treating as root.`);
-                         this.rootNodeMap.set(currentId, currentId);
-                         return currentId;
-                     }
-
-                     const rootId = findRootRecursive(parentId);
+                     const rootId = findRootRecursive(parentId, path);
                      this.rootNodeMap.set(currentId, rootId);
+                     path.delete(currentId); // Clean up path
                      return rootId;
                  };
-
                  this.nodes.forEach(node => {
                      if (!this.rootNodeMap.has(node.id)) {
                          findRootRecursive(node.id);
@@ -1819,7 +1781,6 @@
              }
 
              getBranchColor(nodeId) {
-                 // Uses the current map's rootNodeMap
                  if (this.displayMode !== 'single') return null;
                  const rootId = this.rootNodeMap.get(nodeId);
                  if (rootId !== undefined && rootId !== nodeId && this.branchColors.length > 0) {
@@ -1833,7 +1794,6 @@
              }
 
              updateConnections() {
-                // Only draws connections in single mode
                 this.connectorSvg.innerHTML = '';
                 if (this.displayMode !== 'single' || !this.connections || this.connections.length === 0) return;
 
@@ -1843,13 +1803,15 @@
 
                 this.connections.forEach(conn => {
                     try {
-                        const fromNode = this.getNodeById(conn.from); // Uses current map's nodes
+                        const fromNode = this.getNodeById(conn.from);
                         const toNode = this.getNodeById(conn.to);
                         if (!fromNode || !toNode) return;
+                        // Use cached elements for performance
                         const fromElement = this.getNodeElement(fromNode.id);
                         const toElement = this.getNodeElement(toNode.id);
 
                         if (fromElement && toElement && fromElement.offsetWidth > 0 && toElement.offsetWidth > 0) {
+                            // Calculate center points based on node data (x,y) and element dimensions
                             const fromX = (fromNode.x || 0) + fromElement.offsetWidth / 2;
                             const fromY = (fromNode.y || 0) + fromElement.offsetHeight / 2;
                             const toX = (toNode.x || 0) + toElement.offsetWidth / 2;
@@ -1867,14 +1829,13 @@
                     } catch (error) { console.error("Error creating connection:", error, conn); }
                 });
                 this.connectorSvg.appendChild(fragment);
-                // console.log(`Drew ${visibleConnectionCount} connections for map ${this.currentMapId}`);
             }
 
              // --- Canvas Transformation, Zoom, Center ---
              updateCanvasTransform() {
                  const transform = `translate(${this.offset.x}px, ${this.offset.y}px) scale(${this.scale})`;
                  this.canvas.style.transform = transform;
-                 this.connectorSvg.style.transform = transform; // Apply to connectors SVG too
+                 this.connectorSvg.style.transform = transform;
              }
 
              zoom(factor) {
@@ -1893,194 +1854,280 @@
                  this.offset.y = screenY - pointY * newScale;
                  this.scale = newScale;
                  this.updateCanvasTransform();
-                 // View state saved on global save
              }
 
              centerView(userInitiated = false) {
                  let elementsToCenter = [];
                  if (this.displayMode === 'single' && this.nodes && this.nodes.length > 0) {
-                     elementsToCenter = this.nodes.map(n => ({ node: n, element: this.getNodeElement(n.id) }));
+                      // Use cached elements for centering calculation
+                     elementsToCenter = this.nodes.map(node => ({ node, element: this.getNodeElement(node.id) }))
+                                            .filter(item => item.element && item.element.offsetWidth > 0);
                  } else if (this.displayMode === 'all') {
                      elementsToCenter = Object.entries(this.allMapsData.maps).map(([mapId, mapData]) => {
-                         const rootNodeData = mapData?.nodes?.find(n => n.id === mapData.rootNodeId);
+                         if (!mapData?.nodes || !mapData.rootNodeId) return null;
+                         const rootNodeData = mapData.nodes.find(n => n.id === mapData.rootNodeId);
                          const element = this.getNodeElement(mapData.rootNodeId); // Get element from canvas
-                         return { node: rootNodeData, element: element }; // Use root node data, but element's layout position
-                     }).filter(item => item.node && item.element);
+                         return { node: rootNodeData, element: element };
+                     }).filter(item => item && item.node && item.element && item.element.offsetWidth > 0);
                  }
 
                  if (elementsToCenter.length === 0) {
-                      // Default centering if no nodes
                       this.offset = { x: this.canvasContainer.offsetWidth / 2, y: this.canvasContainer.offsetHeight / 3 };
                       this.scale = 1;
-                      this.updateCanvasTransform();
-                      return;
+                      this.updateCanvasTransform(); return;
                  }
 
                  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-                 let nodeCount = 0;
-
                  elementsToCenter.forEach(({ node, element }) => {
-                      if (element && element.offsetWidth > 0 && element.offsetHeight > 0) {
-                         // Use the element's rendered position/size for bounding box in 'all' mode
-                         // Use node's data position/size in 'single' mode
-                         const transform = element.style.transform; // e.g., "translate(100px, 50px) scale(0.9)"
-                         let currentX = node.x || 0; // Default to node data
-                         let currentY = node.y || 0;
-                         if (this.displayMode === 'all' && transform) {
-                            const match = transform.match(/translate\(\s*(-?\d+(?:\.\d+)?px)\s*,\s*(-?\d+(?:\.\d+)?px)\s*\)/);
-                             if (match) {
-                                 currentX = parseFloat(match[1]);
-                                 currentY = parseFloat(match[2]);
-                             }
-                         }
-
-                         minX = Math.min(minX, currentX);
-                         maxX = Math.max(maxX, currentX + element.offsetWidth);
-                         minY = Math.min(minY, currentY);
-                         maxY = Math.max(maxY, currentY + element.offsetHeight);
-                         nodeCount++;
+                     let currentX = node.x || 0;
+                     let currentY = node.y || 0;
+                     // Use element's layout position if in 'all' mode
+                     if (this.displayMode === 'all') {
+                         const transform = element.style.transform;
+                         const match = transform.match(/translate\(\s*(-?\d+(?:\.\d+)?px)\s*,\s*(-?\d+(?:\.\d+)?px)\s*\)/);
+                         if (match) { currentX = parseFloat(match[1]); currentY = parseFloat(match[2]); }
                      }
+                     minX = Math.min(minX, currentX);
+                     maxX = Math.max(maxX, currentX + element.offsetWidth);
+                     minY = Math.min(minY, currentY);
+                     maxY = Math.max(maxY, currentY + element.offsetHeight);
                  });
 
-                 if (nodeCount === 0) { // Should not happen if elementsToCenter > 0, but safe check
-                      this.offset = { x: this.canvasContainer.offsetWidth / 2, y: this.canvasContainer.offsetHeight / 3 };
-                      this.scale = 1;
-                      this.updateCanvasTransform();
-                      return;
-                 }
-
-                 const nodesWidth = Math.max(maxX - minX, 150); // Min width
-                 const nodesHeight = Math.max(maxY - minY, 50); // Min height
+                 const nodesWidth = Math.max(maxX - minX, 150);
+                 const nodesHeight = Math.max(maxY - minY, 50);
                  const nodesCenterX = minX + nodesWidth / 2;
                  const nodesCenterY = minY + nodesHeight / 2;
-
                  const containerRect = this.canvasContainer.getBoundingClientRect();
-                 const containerWidth = containerRect.width;
-                 const containerHeight = containerRect.height;
-                 const padding = Math.min(containerWidth, containerHeight) * 0.1; // 10% padding
-
-                 const scaleX = (containerWidth - padding * 2) / nodesWidth;
-                 const scaleY = (containerHeight - padding * 2) / nodesHeight;
-                 // Limit max zoom during centerView, especially for single nodes
-                 const targetScale = Math.max(this.minScale, Math.min(this.maxScale, scaleX, scaleY, 1.5));
-
-                 const targetOffsetX = containerWidth / 2 - nodesCenterX * targetScale;
-                 const targetOffsetY = containerHeight / 2 - nodesCenterY * targetScale;
+                 const padding = Math.min(containerRect.width, containerRect.height) * 0.1;
+                 const scaleX = (containerRect.width - padding * 2) / nodesWidth;
+                 const scaleY = (containerRect.height - padding * 2) / nodesHeight;
+                 const targetScale = Math.max(this.minScale, Math.min(this.maxScale, scaleX, scaleY, 1.5)); // Limit max zoom
+                 const targetOffsetX = containerRect.width / 2 - nodesCenterX * targetScale;
+                 const targetOffsetY = containerRect.height / 2 - nodesCenterY * targetScale;
 
                  if (userInitiated) {
                       gsap.to(this, {
                           scale: targetScale,
                           offset: { x: targetOffsetX, y: targetOffsetY },
-                          duration: 0.4,
-                          ease: "power2.out",
+                          duration: 0.4, ease: "power2.out",
                           onUpdate: () => this.updateCanvasTransform(),
-                          // onComplete: () => {} // No auto-save
                       });
                  } else {
                       this.scale = targetScale;
-                      this.offset.x = targetOffsetX;
-                      this.offset.y = targetOffsetY;
+                      this.offset.x = targetOffsetX; this.offset.y = targetOffsetY;
                       this.updateCanvasTransform();
                  }
              }
 
-             // --- Modals & Menus ---
-             openModal() { this.nodeModal.classList.add('active'); setTimeout(() => this.nodeTitleInput.focus(), 50); }
-             closeModal() {
+             // --- Node Edit Modal ---
+             openNodeModal() { this.nodeModal.classList.add('active'); setTimeout(() => this.nodeTitleInput.focus(), 50); }
+             closeNodeModal() {
                  this.nodeModal.classList.remove('active');
                  this.nodeForm.reset();
-                 this.nodeColorInput.value = this.getDefaultNodeColor(); // Reset color picker
-                 this.editingNodeId = null; // Clear editing state
-                 this.contextMenuNodeId = null; // Also clear context
+                 this.nodeColorInput.value = this.getDefaultNodeColor();
+                 this.editingNodeId = null;
+                 this.contextMenuNodeId = null; // Clear context if modal was opened from it
+             }
+             saveNodeEdit() {
+                  if (this.displayMode !== 'single' || !this.currentMapId) return;
+                  const mapData = this.getCurrentMapData(); if (!mapData) return;
+
+                  const title = this.nodeTitleInput.value.trim();
+                  const content = this.nodeContentInput.value.trim();
+                  const color = this.nodeColorInput.value;
+                  const shape = this.nodeShapeSelect.value;
+
+                  if (this.editingNodeId !== null) { // Editing existing node
+                      const node = this.getNodeById(this.editingNodeId);
+                      if (node) {
+                          node.title = title; node.content = content; node.color = color; node.shape = shape;
+                          this.updateNodeElementContent(this.getNodeElement(node.id), node);
+                          this.applyNodeStyle(node);
+                          this.updateConnections(); // Size might change
+                          this.updateStructureTree();
+                          if (node.id === mapData.rootNodeId) {
+                              mapData.name = title;
+                              this.renderTabs(); // Update tab text
+                              this.sidebarTitle.textContent = `Structure: ${mapData.name || 'Untitled'}`; // Update sidebar title too
+                          }
+                      }
+                  } else { // Adding new node (parent ID from context menu)
+                      let parentId = this.contextMenuNodeId;
+                      if (parentId === null) {
+                           console.error("Cannot add node without a parent context."); this.closeNodeModal(); return;
+                      }
+                      let position = this.calculateNewNodePosition(parentId);
+                      const newNode = {
+                          id: this.getNextId(), title, content, x: position.x, y: position.y,
+                          parentId: parentId, color, shape
+                      };
+                      this.addNode(newNode); // Handles adding to mapData, connections, DOM etc.
+                      // No need to call buildRootNodeMap or updateStructureTree here, addNode does it
+                  }
+                  this.closeNodeModal();
              }
 
-             showContextMenu(x, y, mode) { // mode is 'single' or 'all'
-                 this.closeContextMenu(); // Close existing first
+
+             // --- Map Delete Confirmation Modal ---
+             createConfirmationModal() {
+                this.confirmModal = document.createElement('div');
+                this.confirmModal.id = 'confirm-modal';
+                this.confirmModal.className = 'modal'; // Use existing modal styles
+
+                const content = document.createElement('div');
+                content.className = 'modal-content';
+
+                const header = document.createElement('div');
+                header.className = 'modal-header';
+                this.confirmModalTitle = document.createElement('h3');
+                this.confirmModalTitle.className = 'modal-title';
+                this.confirmModalCloseBtn = document.createElement('button');
+                this.confirmModalCloseBtn.className = 'modal-close';
+                this.confirmModalCloseBtn.innerHTML = '&times;';
+                this.confirmModalCloseBtn.title = 'Close';
+                header.appendChild(this.confirmModalTitle);
+                header.appendChild(this.confirmModalCloseBtn);
+
+                this.confirmModalBody = document.createElement('div');
+                this.confirmModalBody.className = 'modal-body'; // Use new class for body text
+
+                const footer = document.createElement('div');
+                footer.className = 'modal-footer';
+                this.confirmModalCancelBtn = document.createElement('button');
+                this.confirmModalCancelBtn.type = 'button';
+                this.confirmModalCancelBtn.className = 'btn btn-secondary';
+                this.confirmModalCancelBtn.textContent = 'Cancel';
+                this.confirmModalConfirmBtn = document.createElement('button');
+                this.confirmModalConfirmBtn.type = 'button';
+                this.confirmModalConfirmBtn.className = 'btn btn-danger'; // Use danger style
+                this.confirmModalConfirmBtn.textContent = 'Delete';
+                footer.appendChild(this.confirmModalCancelBtn);
+                footer.appendChild(this.confirmModalConfirmBtn);
+
+                content.appendChild(header);
+                content.appendChild(this.confirmModalBody);
+                content.appendChild(footer);
+                this.confirmModal.appendChild(content);
+
+                this.bodyEl.appendChild(this.confirmModal); // Add to body
+
+                // Add event listeners for the modal itself
+                this.confirmModalCloseBtn.addEventListener('click', () => this.closeConfirmationModal());
+                this.confirmModalCancelBtn.addEventListener('click', () => this.closeConfirmationModal());
+                // Confirm button listener is added when the modal is shown
+             }
+
+             showDeleteMapConfirmation(mapId, mapName) {
+                 if (!this.confirmModal) this.createConfirmationModal(); // Ensure exists
+
+                 this.mapIdToDelete = mapId; // Store the ID temporarily
+                 this.confirmModalTitle.textContent = 'Confirm Deletion';
+                 this.confirmModalBody.innerHTML = `Are you sure you want to permanently delete the mind map "<strong>${this.escapeHtml(mapName)}</strong>"?<br>This action cannot be undone.`;
+                 this.confirmModalConfirmBtn.textContent = 'Delete Map';
+
+                 // Remove previous listener if any and add new one
+                 const confirmHandler = () => {
+                     this.deleteMapById(this.mapIdToDelete);
+                     this.closeConfirmationModal();
+                 };
+                 this.confirmModalConfirmBtn.replaceWith(this.confirmModalConfirmBtn.cloneNode(true)); // Clone to remove old listeners
+                 this.confirmModalConfirmBtn = this.confirmModal.querySelector('.btn-danger'); // Re-select the cloned button
+                 this.confirmModalConfirmBtn.addEventListener('click', confirmHandler, { once: true }); // Add listener to the new button
+
+
+                 this.confirmModal.classList.add('active');
+             }
+
+             closeConfirmationModal() {
+                 if (this.confirmModal) {
+                     this.confirmModal.classList.remove('active');
+                 }
+                 this.mapIdToDelete = null; // Clear temp ID
+             }
+
+             updateConfirmationModalStyle() {
+                 // This function might be needed if the modal style depends heavily on CSS variables
+                 // that change with the theme and aren't automatically inherited.
+                 // For now, relying on existing modal CSS seems sufficient.
+                 // Example: If button styles needed explicit updates:
+                 // if (this.confirmModalConfirmBtn) {
+                 //     this.confirmModalConfirmBtn.style.backgroundColor = getComputedStyle(this.htmlEl).getPropertyValue('--danger-bg');
+                 //     // etc.
+                 // }
+             }
+
+             // --- Context Menu ---
+             showContextMenu(x, y, mode) {
+                 this.closeContextMenu();
                  this.contextMenu.style.display = 'block';
 
-                 // Toggle visibility based on mode
                  const singleOptions = [this.addChildOption, this.editNodeOption, this.changeConnectorColorOption, this.deleteNodeOption, this.singleMapDivider];
                  const allOptions = [this.openMapOption, this.deleteMapOption, this.allMapsDivider];
 
                  singleOptions.forEach(el => el.style.display = (mode === 'single') ? 'flex' : 'none');
                  allOptions.forEach(el => el.style.display = (mode === 'all') ? 'flex' : 'none');
 
-                 // Special case: Hide connector color change if node has no parent
                  if (mode === 'single' && this.contextMenuNodeId !== null) {
                      const node = this.getNodeById(this.contextMenuNodeId);
                      const mapData = this.getCurrentMapData();
                      const isRoot = node && mapData && node.id === mapData.rootNodeId;
                      const hasParentConnection = node && !isRoot && this.connections.some(c => c.to === node.id);
                      this.changeConnectorColorOption.style.display = hasParentConnection ? 'flex' : 'none';
-                     // Hide delete option for root node in single mode context
                      this.deleteNodeOption.style.display = (node && !isRoot) ? 'flex' : 'none';
-                     this.singleMapDivider.style.display = (hasParentConnection || (node && !isRoot)) ? 'block' : 'none'; // Show divider if delete or color is shown
+                     this.singleMapDivider.style.display = (hasParentConnection || (node && !isRoot)) ? 'block' : 'none';
                  }
 
-
-                 // Position Menu (adjust for screen edges)
-                 let adjustedX = x;
-                 let adjustedY = y;
-                 this.contextMenu.style.left = `${adjustedX}px`;
-                 this.contextMenu.style.top = `${adjustedY}px`;
-
-                 requestAnimationFrame(() => {
+                 // Position Menu
+                 let adjustedX = x; let adjustedY = y;
+                 this.contextMenu.style.left = `${adjustedX}px`; this.contextMenu.style.top = `${adjustedY}px`;
+                 requestAnimationFrame(() => { // Adjust after initial placement
                     const menuRect = this.contextMenu.getBoundingClientRect();
-                    const winWidth = window.innerWidth;
-                    const winHeight = window.innerHeight;
+                    const winWidth = window.innerWidth; const winHeight = window.innerHeight;
                     if (menuRect.right > winWidth - 10) adjustedX = x - menuRect.width;
                     if (menuRect.bottom > winHeight - 10) adjustedY = y - menuRect.height;
-                    if (adjustedX < 10) adjustedX = 10;
-                    if (adjustedY < 10) adjustedY = 10;
-                    this.contextMenu.style.left = `${adjustedX}px`;
-                    this.contextMenu.style.top = `${adjustedY}px`;
+                    if (adjustedX < 10) adjustedX = 10; if (adjustedY < 10) adjustedY = 10;
+                    this.contextMenu.style.left = `${adjustedX}px`; this.contextMenu.style.top = `${adjustedY}px`;
                  });
              }
              closeContextMenu() {
                  if (this.contextMenu.style.display === 'block') {
                       this.contextMenu.style.display = 'none';
                  }
-                 // Don't reset contextMenuNodeId/MapId here, might be needed by subsequent actions (like color picker)
+                 // Don't clear context IDs here, might be needed by modals/pickers
              }
 
-             // --- Structure Tree (operates on current map) ---
+             // --- Structure Tree ---
              updateStructureTree() {
-                 // Only shows tree in single mode
                  this.structureTree.innerHTML = '';
-                 if (this.displayMode !== 'single' || !this.nodes || this.nodes.length === 0) {
-                     if (this.displayMode === 'single') {
-                         this.structureTree.innerHTML = '<p style="color: var(--text-muted); font-style: italic;">Map is empty.</p>';
-                     } else {
-                         // In 'all' mode, the sidebar content is handled by renderMapListSidebar
-                         this.renderMapListSidebar();
-                     }
+                 if (this.displayMode !== 'single') {
+                     this.renderMapListSidebar(); // Show map list in 'all' mode
+                     return;
+                 }
+                 if (!this.nodes || this.nodes.length === 0) {
+                     this.structureTree.innerHTML = '<p style="color: var(--text-muted); font-style: italic;">Map is empty.</p>';
                      return;
                  }
 
                  const nodesMap = new Map();
-                 this.nodes.forEach(node => {
-                     nodesMap.set(node.id, { ...node, children: [] });
-                 });
-
+                 this.nodes.forEach(node => { nodesMap.set(node.id, { ...node, children: [] }); });
                  this.connections.forEach(conn => {
-                     const parentNode = nodesMap.get(conn.from);
-                     const childNode = nodesMap.get(conn.to);
+                     const parentNode = nodesMap.get(conn.from); const childNode = nodesMap.get(conn.to);
                      if(parentNode && childNode){ parentNode.children.push(childNode); }
                  });
 
-                 // Find root nodes for the *current* map
                  const childIds = new Set(this.connections.map(conn => conn.to));
-                 const rootNodes = this.nodes
-                     .filter(node => !childIds.has(node.id))
-                     .map(node => nodesMap.get(node.id))
-                     .sort((a, b) => (a?.title || '').localeCompare(b?.title || '')); // Safer sort
+                 const rootNodes = this.nodes.filter(node => !childIds.has(node.id))
+                                         .map(node => nodesMap.get(node.id))
+                                         .sort((a, b) => (a?.title || '').localeCompare(b?.title || ''));
 
                  if (rootNodes.length === 0 && this.nodes.length > 0) {
-                     console.warn("Could not find root nodes for structure tree, but nodes exist.");
-                     // Fallback: treat the map's designated root as the tree root
                      const mapData = this.getCurrentMapData();
                      if (mapData && mapData.rootNodeId && nodesMap.has(mapData.rootNodeId)) {
                          rootNodes.push(nodesMap.get(mapData.rootNodeId));
+                         console.warn("Using designated rootNodeId for tree as no parentless nodes found.");
+                     } else if (this.nodes.length > 0) {
+                         rootNodes.push(nodesMap.get(this.nodes[0].id)); // Fallback: first node
+                          console.warn("Could not find root for tree. Using first node as root.");
                      }
                  }
 
@@ -2091,32 +2138,22 @@
              }
 
              createTreeElement(node) {
-                 // Recursive function for sidebar tree (single mode)
                  if (!node) return null;
                  const container = document.createElement('div');
                  const nodeElement = document.createElement('div');
                  nodeElement.classList.add('tree-node');
                  nodeElement.textContent = node.title || 'Untitled';
                  nodeElement.title = node.title || 'Untitled';
-                 if (node.id === this.selectedNodeId) {
-                     nodeElement.classList.add('selected');
-                 }
-
+                 if (node.id === this.selectedNodeId) { nodeElement.classList.add('selected'); }
                  nodeElement.addEventListener('click', (e) => {
-                     e.stopPropagation();
-                     this.selectNode(node.id);
-                     this.scrollToNode(node.id);
-                      if (window.innerWidth <= 768 && this.sidebar.classList.contains('open')) {
-                          this.toggleSidebar(false);
-                      }
+                     e.stopPropagation(); this.selectNode(node.id); this.scrollToNode(node.id);
+                      if (window.innerWidth <= 768 && this.sidebar.classList.contains('open')) { this.toggleSidebar(false); }
                  });
                  container.appendChild(nodeElement);
-
                  if (node.children && node.children.length > 0) {
                      const childrenContainer = document.createElement('div');
                      childrenContainer.classList.add('tree-children');
-                     node.children
-                         .sort((a, b) => (a?.title || '').localeCompare(b?.title || '')) // Safer sort
+                     node.children.sort((a, b) => (a?.title || '').localeCompare(b?.title || ''))
                          .forEach(child => {
                              const childElement = this.createTreeElement(child);
                              if (childElement) childrenContainer.appendChild(childElement);
@@ -2127,73 +2164,49 @@
              }
 
               scrollToNode(nodeId) {
-                 // Scrolls canvas to center the node (single mode)
                  if (this.displayMode !== 'single') return;
-                 const node = this.getNodeById(nodeId);
-                 const element = this.getNodeElement(nodeId);
+                 const node = this.getNodeById(nodeId); const element = this.getNodeElement(nodeId);
                  if (!node || !element) return;
-
-                 const nodeX = node.x || 0;
-                 const nodeY = node.y || 0;
-                 const nodeWidth = element.offsetWidth;
-                 const nodeHeight = element.offsetHeight;
-
+                 const nodeX = node.x || 0; const nodeY = node.y || 0;
+                 const nodeWidth = element.offsetWidth; const nodeHeight = element.offsetHeight;
                  const containerRect = this.canvasContainer.getBoundingClientRect();
-                 const targetX = nodeX + nodeWidth / 2;
-                 const targetY = nodeY + nodeHeight / 2;
+                 const targetX = nodeX + nodeWidth / 2; const targetY = nodeY + nodeHeight / 2;
                  const desiredOffsetX = containerRect.width / 2 - targetX * this.scale;
                  const desiredOffsetY = containerRect.height / 2 - targetY * this.scale;
-
-                 gsap.to(this.offset, {
-                     x: desiredOffsetX,
-                     y: desiredOffsetY,
-                     duration: 0.4,
-                     ease: "power2.out",
-                     onUpdate: () => this.updateCanvasTransform(),
-                 });
+                 gsap.to(this.offset, { x: desiredOffsetX, y: desiredOffsetY, duration: 0.4, ease: "power2.out", onUpdate: () => this.updateCanvasTransform() });
              }
 
-             // --- New Node Position Calculation (operates on current map) ---
+             // --- New Node Position Calculation ---
               calculateNewNodePosition(parentId) {
-                 if (this.displayMode !== 'single') return {x: 0, y: 0}; // Should not be called
-
+                 if (this.displayMode !== 'single') return {x: 0, y: 0};
                  const parentNode = this.getNodeById(parentId);
                  const parentElement = this.getNodeElement(parentId);
-                 const parentX = parentNode?.x || 0;
-                 const parentY = parentNode?.y || 0;
+                 const parentX = parentNode?.x || 0; const parentY = parentNode?.y || 0;
 
                  if(parentNode && parentElement && parentElement.offsetWidth > 0) {
                      const parentWidth = parentElement.offsetWidth;
-                     const baseSpacingX = 180; const baseSpacingY = 50; // Base spacing at scale 1
-                     // Don't divide spacing by scale - keep visual distance consistent regardless of zoom
-                     // const spacingX = baseSpacingX / this.scale;
-                     // const spacingY = baseSpacingY / this.scale;
-                     const spacingX = baseSpacingX;
-                     const spacingY = baseSpacingY;
+                     // Use layout constants
+                     const spacingX = this.treeLayoutHorizontalSpacing;
+                     const spacingY = this.treeLayoutVerticalSpacing;
 
-                     const children = this.connections
-                         .filter(c => c.from === parentId)
-                         .map(c => ({ node: this.getNodeById(c.to), element: this.getNodeElement(c.to) }))
+                     const children = this.getChildren(parentId)
+                         .map(node => ({ node, element: this.getNodeElement(node.id) }))
                          .filter(data => data.node && data.element && data.element.offsetHeight > 0)
-                         .sort((a,b) => (a.node.y || 0) - (b.node.y || 0)); // Sort by Y position
+                         .sort((a,b) => (a.node.y || 0) - (b.node.y || 0));
 
                      let targetX = parentX + parentWidth + spacingX;
                      let targetY;
                      if (children.length > 0) {
-                         // Position below the last child
                          const lastChild = children[children.length - 1];
                          targetY = (lastChild.node.y || 0) + lastChild.element.offsetHeight + spacingY;
                      } else {
-                         // Position slightly offset from parent Y if first child
                          targetY = parentY + spacingY / 2;
                      }
                      return { x: targetX, y: targetY };
                  } else {
-                     // Fallback for adding child to node without element or adding root (though add root is now Add Map)
                      console.warn("Calculating position without valid parent element.");
                      const screenCenter = { x: this.canvasContainer.offsetWidth / 2, y: this.canvasContainer.offsetHeight / 3 };
-                     const canvasCoords = this.screenToCanvasCoords(screenCenter.x, screenCenter.y);
-                     return canvasCoords;
+                     return this.screenToCanvasCoords(screenCenter.x, screenCenter.y);
                  }
              }
 
@@ -2202,6 +2215,127 @@
                  const canvasX = (screenX - rect.left - this.offset.x) / this.scale;
                  const canvasY = (screenY - rect.top - this.offset.y) / this.scale;
                  return { x: canvasX, y: canvasY };
+            }
+
+            // --- Auto Layout ---
+            updateAutoLayoutButtonState() {
+                 if (this.autoLayoutBtn) {
+                      this.autoLayoutBtn.disabled = !(this.displayMode === 'single' && this.currentMapId && this.nodes.length > 0);
+                 }
+             }
+
+            applyAutoLayout() {
+                 if (this.displayMode !== 'single' || !this.currentMapId || !this.nodes || this.nodes.length === 0) {
+                     this.showToast("Auto-layout only available when viewing a single map with nodes.", true);
+                     return;
+                 }
+                 const mapData = this.getCurrentMapData();
+                 if (!mapData || !mapData.rootNodeId) {
+                      this.showToast("Cannot apply layout: Root node not found.", true);
+                      return;
+                 }
+                 const rootNode = this.getNodeById(mapData.rootNodeId);
+                 if (!rootNode) {
+                     this.showToast("Cannot apply layout: Root node data missing.", true);
+                     return;
+                 }
+
+                 console.log("Applying Tree Layout...");
+                 this.showToast("Applying tree layout...", false);
+
+                 // Prepare data structure for layout calculation
+                 const nodePositions = new Map(); // Stores calculated { x, y } for each nodeId
+                 const nodeSubtreeHeights = new Map(); // Stores calculated height for each node's subtree
+
+                 // --- Step 1: Calculate subtree heights recursively (bottom-up) ---
+                 const calculateSubtreeHeight = (nodeId) => {
+                     if (nodeSubtreeHeights.has(nodeId)) return nodeSubtreeHeights.get(nodeId);
+
+                     const element = this.getNodeElement(nodeId);
+                     const nodeHeight = element?.offsetHeight || this.nodeHeightEstimate;
+                     const children = this.getChildren(nodeId);
+
+                     if (children.length === 0) {
+                         nodeSubtreeHeights.set(nodeId, nodeHeight);
+                         return nodeHeight;
+                     }
+
+                     let totalChildrenHeight = 0;
+                     children.forEach(child => {
+                         totalChildrenHeight += calculateSubtreeHeight(child.id);
+                     });
+
+                     // Add spacing between children
+                     const totalSpacing = (children.length - 1) * this.treeLayoutVerticalSpacing;
+                     const subtreeHeight = Math.max(nodeHeight, totalChildrenHeight + totalSpacing); // Subtree height is max of node or children block
+                     nodeSubtreeHeights.set(nodeId, subtreeHeight);
+                     return subtreeHeight;
+                 };
+
+                 // --- Step 2: Position nodes recursively (top-down) ---
+                 const positionNodesRecursive = (nodeId, currentX, startY) => {
+                     const element = this.getNodeElement(nodeId);
+                     const nodeHeight = element?.offsetHeight || this.nodeHeightEstimate;
+                     const subtreeHeight = nodeSubtreeHeights.get(nodeId) || nodeHeight;
+
+                     // Center node vertically within its allocated subtree space
+                     const currentY = startY + (subtreeHeight / 2) - (nodeHeight / 2);
+                     nodePositions.set(nodeId, { x: currentX, y: currentY });
+
+                     const children = this.getChildren(nodeId);
+                     if (children.length > 0) {
+                         const childX = currentX + (element?.offsetWidth || 150) + this.treeLayoutHorizontalSpacing;
+                         let childStartY = startY;
+
+                         children.forEach(child => {
+                             const childSubtreeHeight = nodeSubtreeHeights.get(child.id) || this.nodeHeightEstimate;
+                             positionNodesRecursive(child.id, childX, childStartY);
+                             childStartY += childSubtreeHeight + this.treeLayoutVerticalSpacing; // Move startY for the next sibling
+                         });
+                     }
+                 };
+
+                 // --- Run calculations ---
+                 calculateSubtreeHeight(mapData.rootNodeId); // Start height calculation from root
+                 positionNodesRecursive(mapData.rootNodeId, 0, 0); // Start positioning from root at (0,0)
+
+                 // --- Step 3: Apply calculated positions with animation ---
+                 const tl = gsap.timeline({
+                     onComplete: () => {
+                         this.updateConnections(); // Update connectors after animation
+                         this.centerView(true); // Center view after layout
+                         this.showToast("Layout applied!", false);
+                         console.log("Tree Layout Animation Complete.");
+                     }
+                 });
+
+                 this.nodes.forEach(node => {
+                     const newPos = nodePositions.get(node.id);
+                     const element = this.getNodeElement(node.id);
+                     if (newPos && element) {
+                         // Update node data immediately
+                         node.x = newPos.x;
+                         node.y = newPos.y;
+                         // Add animation to timeline
+                         tl.to(element, {
+                             x: newPos.x, // GSAP can animate translate directly via x/y
+                             y: newPos.y,
+                             duration: 0.5,
+                             ease: "power2.inOut"
+                         }, 0); // "<" means start at the same time as the previous animation
+                     } else if (element) {
+                         console.warn(`No calculated position for node ${node.id}. Skipping animation.`);
+                          // Ensure it's still drawn if it exists but wasn't positioned (e.g., disconnected node)
+                          const currentTransform = element.style.transform;
+                          const match = currentTransform.match(/translate\(\s*(-?\d+(?:\.\d+)?px)\s*,\s*(-?\d+(?:\.\d+)?px)\s*\)/);
+                          if (match) { node.x = parseFloat(match[1]); node.y = parseFloat(match[2]); }
+                          else { node.x = node.x || 0; node.y = node.y || 0; } // Keep existing or default
+                     }
+                 });
+
+                 // Update connections *during* animation for a slightly better feel? Or just at end? Let's try at end.
+                 // tl.add(this.updateConnections.bind(this), ">-0.1"); // Add connection update near the end
+
             }
 
 
@@ -2218,27 +2352,18 @@
             }
 
             updateCurrentMapData() {
-                 // Call this before saving to ensure the current map's state (nodes, connections, view) is stored back into allMapsData
                  if (this.displayMode === 'single' && this.currentMapId) {
                      const mapData = this.allMapsData.maps[this.currentMapId];
                      if (mapData) {
-                         // Update arrays from local state
-                         mapData.nodes = this.nodes;
-                         mapData.connections = this.connections;
-                         // Ensure rootNodeId is correct (might change if initial node was created)
-                         if (mapData.nodes.length > 0 && mapData.rootNodeId === null) {
-                             const potentialRoot = mapData.nodes.find(n => n.parentId === null);
-                             mapData.rootNodeId = potentialRoot ? potentialRoot.id : mapData.nodes[0].id; // Fallback to first node if no explicit root
+                         mapData.nodes = this.nodes; mapData.connections = this.connections;
+                         if (mapData.nodes.length > 0 && !mapData.rootNodeId) {
+                             const potentialRoot = mapData.nodes.find(n => n.parentId === null) || mapData.nodes[0];
+                             mapData.rootNodeId = potentialRoot.id;
                          }
-                         // Update map name from root node title if necessary
                          const rootNode = mapData.nodes.find(n => n.id === mapData.rootNodeId);
-                         if (rootNode && rootNode.title !== mapData.name) {
-                             mapData.name = rootNode.title;
-                              // No need to re-render tabs here, save does not imply immediate UI change
-                         }
-                         // Save the current view state *for this map*
+                         if (rootNode && rootNode.title !== mapData.name) { mapData.name = rootNode.title; }
                          mapData.lastSavedView = { offset: { ...this.offset }, scale: this.scale };
-                         // nextId is already updated within the mapData object by getNextId()
+                         // nextId is updated within mapData by getNextId()
                          console.log(`Updated map data in memory for ${this.currentMapId} before save.`);
                      }
                  }
@@ -2247,55 +2372,35 @@
 
             async saveToCloud() {
                 if (this.isLoading || !this.checkApiConfig()) return;
-
                 this.isLoading = true; this.setLoadingState(true);
                 console.log("Saving all maps to cloud...");
 
                 try {
-                    // Ensure the currently viewed map's data is up-to-date in the main object
-                    this.updateCurrentMapData();
+                    this.updateCurrentMapData(); // Ensure current map state is captured
+                    this.allMapsData.meta.theme = this.currentTheme;
+                    this.allMapsData.meta.displayMode = this.displayMode;
+                    this.allMapsData.meta.activeMapId = this.currentMapId;
 
-                    // Prepare the final payload (ensure meta is updated)
-                     this.allMapsData.meta.theme = this.currentTheme;
-                     this.allMapsData.meta.displayMode = this.displayMode;
-                     this.allMapsData.meta.activeMapId = this.currentMapId;
-
-                     // Basic validation before saving (optional but good)
-                     Object.values(this.allMapsData.maps).forEach(map => {
-                         if (!map.nodes) map.nodes = [];
-                         if (!map.connections) map.connections = [];
-                         if (map.nodes.length > 0 && !map.rootNodeId) {
+                    // Basic validation before saving
+                    Object.values(this.allMapsData.maps).forEach(map => {
+                         if (!map.nodes) map.nodes = []; if (!map.connections) map.connections = [];
+                         if (map.nodes.length > 0 && (!map.rootNodeId || !map.nodes.some(n => n.id === map.rootNodeId))) {
                             const root = map.nodes.find(n => n.parentId === null) || map.nodes[0];
-                            map.rootNodeId = root.id;
-                            console.warn(`Auto-assigned rootNodeId ${root.id} to map "${map.name || 'Untitled'}"`);
+                            map.rootNodeId = root.id; console.warn(`Auto-assigned rootNodeId ${root.id} to map "${map.name || 'Untitled'}"`);
                          }
-                         if(!map.name && map.rootNodeId) {
-                             const root = map.nodes.find(n => n.id === map.rootNodeId);
-                             map.name = root?.title || 'Untitled Map';
-                         }
-                         if (map.nodes.length === 0) map.rootNodeId = null; // Ensure rootId is null if no nodes
-                     });
-
+                         if(!map.name && map.rootNodeId) { const root = map.nodes.find(n => n.id === map.rootNodeId); map.name = root?.title || 'Untitled Map'; }
+                         if (map.nodes.length === 0) map.rootNodeId = null;
+                    });
 
                     const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
                         method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Master-Key': JSONBIN_API_KEY,
-                            'X-Bin-Versioning': 'false'
-                        },
-                        body: JSON.stringify(this.allMapsData) // Save the entire structure
+                        headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_API_KEY, 'X-Bin-Versioning': 'false' },
+                        body: JSON.stringify(this.allMapsData)
                     });
-
-                    if (!response.ok) {
-                        const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
-                        throw new Error(`API Error (${response.status}): ${errorData.message || response.statusText}`);
-                    }
-
+                    if (!response.ok) { const errorData = await response.json().catch(() => ({})); throw new Error(`API Error (${response.status}): ${errorData.message || response.statusText}`); }
                     const result = await response.json();
                     console.log('Save successful:', result.metadata.id);
                     this.showToast('All mind maps saved to cloud!');
-
                 } catch (error) {
                      console.error('Error saving mind maps to cloud:', error);
                      this.showToast(`Error saving: ${error.message}`, true);
@@ -2306,105 +2411,74 @@
 
             async loadFromCloud() {
                  if (this.isLoading || !this.checkApiConfig()) return false;
-
                  this.isLoading = true; this.setLoadingState(true);
-                 console.log("Loading all maps from cloud...");
-                 let loadedSuccessfully = false;
+                 console.log("Loading all maps from cloud..."); let loadedSuccessfully = false;
 
                  try {
                      const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
-                         method: 'GET',
-                         headers: { 'X-Master-Key': JSONBIN_API_KEY }
+                         method: 'GET', headers: { 'X-Master-Key': JSONBIN_API_KEY }
                      });
-
                      if (!response.ok) {
-                         if (response.status === 404) { // Bin empty or doesn't exist
+                         if (response.status === 404) { // Bin empty/doesn't exist
                              console.log("Bin not found or is empty. Initializing fresh state.");
                              this.allMapsData = { maps: {}, meta: { theme: getInitialTheme(), displayMode: 'all', activeMapId: null } };
-                             this.currentMapId = null;
-                             this.displayMode = 'all';
-                             this.currentTheme = getInitialTheme();
-                             // No error toast, this is expected on first run
-                             loadedSuccessfully = true; // Considered successful load of 'empty' state
-                             return true; // Return true indicating we handled the state
-                         } else {
-                             const errorData = await response.json().catch(() => ({}));
-                             throw new Error(`API Error (${response.status}): ${errorData.message || response.statusText}`);
-                         }
+                             this.currentMapId = null; this.displayMode = 'all'; this.currentTheme = getInitialTheme();
+                             loadedSuccessfully = true; return true;
+                         } else { const errorData = await response.json().catch(() => ({})); throw new Error(`API Error (${response.status}): ${errorData.message || response.statusText}`); }
                      }
+                     const data = await response.json(); const loadedData = data.record;
 
-                     const data = await response.json();
-                     const loadedData = data.record; // Data is under 'record'
+                     if (!loadedData || typeof loadedData.maps !== 'object' || typeof loadedData.meta !== 'object') { throw new Error("Invalid data structure received."); }
 
-                     // --- Validate Loaded Data ---
-                     if (!loadedData || typeof loadedData.maps !== 'object' || typeof loadedData.meta !== 'object') {
-                         throw new Error("Invalid data structure received from cloud. Expected 'maps' and 'meta' objects.");
-                     }
-                     // More granular validation (basic examples)
-                     for (const map of Object.values(loadedData.maps)) {
-                         if (!Array.isArray(map.nodes) || !Array.isArray(map.connections)) {
-                             throw new Error(`Invalid map data for map "${map.name || 'ID:...'}"`);
+                     // Validate and sanitize loaded data
+                     for (const mapId in loadedData.maps) {
+                         const map = loadedData.maps[mapId];
+                         if (!map || !Array.isArray(map.nodes) || !Array.isArray(map.connections)) {
+                              console.warn(`Removing invalid map data for ID: ${mapId}`); delete loadedData.maps[mapId]; continue;
                          }
-                         // Ensure rootNodeId exists if nodes exist
                          if (map.nodes.length > 0 && (!map.rootNodeId || !map.nodes.some(n => n.id === map.rootNodeId))) {
                               const newRoot = map.nodes.find(n => n.parentId === null) || map.nodes[0];
-                              map.rootNodeId = newRoot.id;
-                              console.warn(`Corrected missing/invalid rootNodeId for map "${map.name || '...'}". Set to ${newRoot.id}`);
+                              map.rootNodeId = newRoot.id; console.warn(`Corrected rootNodeId for map "${map.name || mapId}". Set to ${newRoot.id}`);
                          }
                          if (map.nodes.length === 0) map.rootNodeId = null;
-                         // Ensure name exists
-                         if (!map.name && map.rootNodeId) {
-                            map.name = map.nodes.find(n => n.id === map.rootNodeId)?.title || 'Untitled Map';
-                         }
-                         // Ensure nextId
+                         if (!map.name && map.rootNodeId) { map.name = map.nodes.find(n => n.id === map.rootNodeId)?.title || 'Untitled Map'; }
                          map.nextId = map.nextId || (map.nodes.length > 0 ? Math.max(...map.nodes.map(n => n.id), 0) + 1 : 1);
-                         // Ensure lastSavedView structure (optional)
-                         if (map.lastSavedView && (typeof map.lastSavedView.offset !== 'object' || typeof map.lastSavedView.scale !== 'number')) {
-                            delete map.lastSavedView;
-                            console.warn(`Removed invalid lastSavedView for map "${map.name || '...'}"`);
-                         }
+                         if (map.lastSavedView && (typeof map.lastSavedView.offset !== 'object' || typeof map.lastSavedView.scale !== 'number')) { delete map.lastSavedView; }
+                         // Sanitize node positions
+                         map.nodes.forEach(n => {
+                            n.x = typeof n.x === 'number' ? n.x : 0;
+                            n.y = typeof n.y === 'number' ? n.y : 0;
+                            n.shape = n.shape || 'rounded-rectangle';
+                         });
                      }
 
-                     // Load validated data into state
                      this.allMapsData = loadedData;
                      this.currentTheme = this.allMapsData.meta.theme || getInitialTheme();
                      this.displayMode = this.allMapsData.meta.displayMode || 'single';
                      this.currentMapId = this.allMapsData.meta.activeMapId || null;
 
-                     // If active map ID from meta doesn't exist anymore, reset
                      if (this.currentMapId && !this.allMapsData.maps[this.currentMapId]) {
                          console.warn(`Loaded activeMapId ${this.currentMapId} no longer exists. Resetting view.`);
-                         this.currentMapId = null;
-                         this.displayMode = 'all';
-                         this.allMapsData.meta.activeMapId = null;
-                         this.allMapsData.meta.displayMode = 'all';
+                         this.currentMapId = null; this.displayMode = 'all';
+                         this.allMapsData.meta.activeMapId = null; this.allMapsData.meta.displayMode = 'all';
                      }
-                      // If no active map, but maps exist, default to 'all'
                       if (!this.currentMapId && Object.keys(this.allMapsData.maps).length > 0) {
-                         this.displayMode = 'all';
-                         this.allMapsData.meta.displayMode = 'all';
+                         this.displayMode = 'all'; this.allMapsData.meta.displayMode = 'all';
                       }
 
-
-                     applyTheme(this.currentTheme);
-                     localStorage.setItem(themePrefKey, this.currentTheme);
-
+                     applyTheme(this.currentTheme); localStorage.setItem(themePrefKey, this.currentTheme);
                      console.log(`Cloud data processed. Maps: ${Object.keys(this.allMapsData.maps).length}. Initial Mode: ${this.displayMode}, Map: ${this.currentMapId}`);
                      this.showToast('Mind maps loaded from cloud!');
                      loadedSuccessfully = true;
-
                  } catch (error) {
                      console.error('Error loading mind maps from cloud:', error);
                      this.showToast(`Error loading: ${error.message}`, true);
-                     // Keep potentially partially loaded data or revert to safe default?
-                      // For now, keep what was loaded before error, but log it.
-                      if (!this.allMapsData.maps) this.allMapsData.maps = {}; // Ensure base structure exists
+                      if (!this.allMapsData.maps) this.allMapsData.maps = {}; // Ensure base structure
                       if (!this.allMapsData.meta) this.allMapsData.meta = { theme: getInitialTheme(), displayMode: 'all', activeMapId: null };
                      loadedSuccessfully = false;
                  } finally {
                      this.isLoading = false; this.setLoadingState(false);
                  }
-                 // Render happens in the event listener that calls loadFromCloud
                  return loadedSuccessfully;
             }
 
@@ -2413,45 +2487,12 @@
                  this.saveBtn.disabled = isLoading;
                  this.loadBtn.disabled = isLoading;
                  this.newMapBtn.disabled = isLoading;
-                 // Maybe add a visual loading indicator later
+                 if (this.autoLayoutBtn) this.autoLayoutBtn.disabled = isLoading || !(this.displayMode === 'single' && this.currentMapId && this.nodes.length > 0);
             }
 
 
              // --- UI Feedback & Helpers ---
-            showToast(message, isError = false) { /* ... (toast code unchanged) ... */ }
-            findNodeAndDescendants(startNodeId) { /* ... (unchanged, operates on current this.nodes/this.connections) ... */ }
-            toggleTheme() { /* ... (theme toggle code, ensures meta.theme is updated) ... */
-                const newTheme = this.currentTheme === 'light' ? 'dark' : 'light';
-                this.currentTheme = newTheme;
-                this.allMapsData.meta.theme = newTheme; // Update meta state
-                applyTheme(newTheme);
-                localStorage.setItem(themePrefKey, newTheme);
-                console.log(`Theme changed to ${newTheme}`);
-                // applyTheme callback handles style updates
-            }
-            toggleFullscreen() { /* ... (unchanged) ... */ }
-            handleFullscreenChange() { /* ... (unchanged) ... */ }
-            updateFullscreenIcon() { /* ... (unchanged) ... */ }
-
-            // Helper to get default colors respecting theme
-            getDefaultNodeColor() {
-                return getComputedStyle(this.htmlEl).getPropertyValue('--node-bg-color').trim() || '#ffffff';
-            }
-            getDefaultConnectorColor() {
-                 return getComputedStyle(this.htmlEl).getPropertyValue('--connector-default-color').trim() || '#cbd5e1';
-            }
-            getCurrentMapData() {
-                 if (this.displayMode === 'single' && this.currentMapId && this.allMapsData.maps[this.currentMapId]) {
-                     return this.allMapsData.maps[this.currentMapId];
-                 }
-                 return null;
-             }
-
-             // --- Existing Helper Methods (mostly unchanged, operate on current map state) ---
-             // These methods were mostly okay but ensure they use this.nodes/this.connections when relevant
-
-             // showToast method implementation (as before)
-             showToast(message, isError = false) {
+            showToast(message, isError = false) {
                  const existingToast = document.querySelector('.toast-notification');
                  if (existingToast) existingToast.remove();
                  const toast = document.createElement('div');
@@ -2462,65 +2503,75 @@
                  requestAnimationFrame(() => { toast.classList.add('show'); });
                  setTimeout(() => {
                      toast.classList.remove('show');
-                     toast.addEventListener('transitionend', () => {
-                          if (toast.parentNode) { toast.remove(); }
-                      }, { once: true });
-                 }, 3000);
+                     toast.addEventListener('transitionend', () => { if (toast.parentNode) { toast.remove(); } }, { once: true });
+                 }, isError ? 4000 : 3000); // Longer display for errors
              }
 
-             // findNodeAndDescendants method implementation (as before)
-             findNodeAndDescendants(startNodeId) {
-                  if (this.displayMode !== 'single') return []; // Only relevant for a single map's hierarchy
-                  const resultIds = [];
-                  const node = this.getNodeById(startNodeId); // Uses current map's nodes
-                  if (!node) return resultIds;
-                  const queue = [startNodeId];
-                  const visited = new Set();
+            findNodeAndDescendants(startNodeId) {
+                  if (this.displayMode !== 'single') return [];
+                  const resultIds = []; const node = this.getNodeById(startNodeId); if (!node) return resultIds;
+                  const queue = [startNodeId]; const visited = new Set();
                   while (queue.length > 0) {
-                      const currentId = queue.shift();
-                      if (visited.has(currentId)) continue;
-                      visited.add(currentId);
-                      resultIds.push(currentId);
-                      // Use current map's connections
+                      const currentId = queue.shift(); if (visited.has(currentId)) continue;
+                      visited.add(currentId); resultIds.push(currentId);
                       this.connections.forEach(conn => {
-                          if (conn.from === currentId && this.getNodeById(conn.to) && !visited.has(conn.to)) {
-                              queue.push(conn.to);
-                          }
+                          if (conn.from === currentId && this.getNodeById(conn.to) && !visited.has(conn.to)) { queue.push(conn.to); }
                       });
                   }
                   return resultIds;
               }
 
-
-            // toggleFullscreen method implementation (as before)
-            toggleFullscreen() {
-               if (!document.fullscreenElement) {
-                   this.htmlEl.requestFullscreen().catch(err => console.error(`Fullscreen error: ${err.message}`));
-               } else if (document.exitFullscreen) {
-                   document.exitFullscreen().catch(err => console.error(`Exit fullscreen error: ${err.message}`));
-               }
+            toggleTheme() {
+                const newTheme = this.currentTheme === 'light' ? 'dark' : 'light';
+                this.currentTheme = newTheme;
+                this.allMapsData.meta.theme = newTheme; // Update meta state
+                applyTheme(newTheme); // applies theme and triggers style updates
+                localStorage.setItem(themePrefKey, newTheme);
+                console.log(`Theme changed to ${newTheme}`);
             }
 
-            // handleFullscreenChange method implementation (as before)
-            handleFullscreenChange() {
-               this.isFullscreen = !!document.fullscreenElement;
-               this.updateFullscreenIcon();
-               console.log(`Fullscreen state: ${this.isFullscreen}`);
+            toggleFullscreen() { /* ... (unchanged) ... */
+               if (!document.fullscreenElement) { this.htmlEl.requestFullscreen().catch(err => console.error(`Fullscreen error: ${err.message}`)); }
+               else if (document.exitFullscreen) { document.exitFullscreen().catch(err => console.error(`Exit fullscreen error: ${err.message}`)); }
+            }
+            handleFullscreenChange() { /* ... (unchanged) ... */
+               this.isFullscreen = !!document.fullscreenElement; this.updateFullscreenIcon(); console.log(`Fullscreen state: ${this.isFullscreen}`);
+            }
+            updateFullscreenIcon() { /* ... (unchanged) ... */
+                const icon = this.fullscreenToggleBtn?.querySelector('i'); if (!icon) return;
+                if (this.isFullscreen) { icon.className = 'fas fa-compress'; this.fullscreenToggleBtn.setAttribute('data-tooltip', 'Exit Fullscreen'); }
+                else { icon.className = 'fas fa-expand'; this.fullscreenToggleBtn.setAttribute('data-tooltip', 'Enter Fullscreen'); }
             }
 
-            // updateFullscreenIcon method implementation (as before)
-            updateFullscreenIcon() {
-                const icon = this.fullscreenToggleBtn?.querySelector('i');
-                if (!icon) return;
-                if (this.isFullscreen) {
-                    icon.className = 'fas fa-compress';
-                    this.fullscreenToggleBtn.setAttribute('data-tooltip', 'Exit Fullscreen');
-                } else {
-                    icon.className = 'fas fa-expand';
-                    this.fullscreenToggleBtn.setAttribute('data-tooltip', 'Enter Fullscreen');
-                }
+            // Helper to get default colors respecting theme
+            getDefaultNodeColor() { return getComputedStyle(this.htmlEl).getPropertyValue('--node-bg-color').trim() || '#ffffff'; }
+            getDefaultConnectorColor() { return getComputedStyle(this.htmlEl).getPropertyValue('--connector-default-color').trim() || '#cbd5e1'; }
+            getCurrentMapData() {
+                 if (this.displayMode === 'single' && this.currentMapId && this.allMapsData.maps[this.currentMapId]) { return this.allMapsData.maps[this.currentMapId]; }
+                 return null;
+             }
+             escapeHtml(unsafe) {
+                 if (!unsafe) return '';
+                 return unsafe.toString()
+                      .replace(/&/g, "&amp;")
+                      .replace(/</g, "&lt;")
+                      .replace(/>/g, "&gt;")
+                      .replace(/"/g, "&quot;")
+                      .replace(/'/g, "&#039;");
             }
-
+            // Simple contrast checker
+            getContrastingTextColor(hexcolor){
+                if (!hexcolor) return 'var(--node-text-color)'; // fallback to default CSS var
+                hexcolor = hexcolor.replace("#", "");
+                if (hexcolor.length === 3) { hexcolor = hexcolor.split('').map(c => c + c).join(''); }
+                const r = parseInt(hexcolor.substring(0, 2), 16);
+                const g = parseInt(hexcolor.substring(2, 4), 16);
+                const b = parseInt(hexcolor.substring(4, 6), 16);
+                const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+                // Use CSS variables for text color to respect theme overrides
+                return (yiq >= 128) ? (this.currentTheme === 'dark' ? 'var(--text)' : '#1f2937') // Dark text on light bg
+                                    : (this.currentTheme === 'dark' ? '#f9fafb' : 'var(--text)'); // Light text on dark bg
+            }
 
         } // End MindMap Class
 
