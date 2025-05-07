@@ -1,323 +1,658 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Tools Hub</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
- <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #0f172a;
-      color: white;
-    }
-    
-    .gradient-bg {
-      background: linear-gradient(135deg, #0ea5e9 0%, #7c3aed 100%);
-    }
-    
-    .card-gradient {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .tool-card {
-      transition: all 0.3s ease;
-    }
-    
-    .tool-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-    }
-    
-    .blob {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(60px);
-      opacity: 0.4;
-      z-index: -1;
-    }
-    
-    .stroke-animation {
-      stroke-dasharray: 1500;
-      stroke-dashoffset: 1500;
-      animation: draw 3s ease forwards;
-    }
-    
-    @keyframes draw {
-      to {
-        stroke-dashoffset: 0;
-      }
-    }
-    
-    .floating {
-      animation: float 6s ease-in-out infinite;
-    }
-    
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-20px); }
-      100% { transform: translateY(0px); }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mind Mapp - Ultimate Experience</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Luckiest+Guy&family=Nunito:wght@400;700&display=swap'); /* Added Wonder fonts */
+
+        :root {
+            /* --- From Premium (with some Wonder influences for the animation part) --- */
+            --node-container-size: clamp(300px, 80vw, 450px); /* Responsive animation area */
+            --node-distance-factor: 0.35; /* Multiplier for container size to get node distance */
+
+            --linkage-width: 2px;
+            --link-draw-duration: 0.8s;
+            --node-appear-duration: 1.0s; /* Used for bubble appear */
+            --content-fade-duration: 0.8s;
+
+            --bg-color: #050914;
+            --bg-gradient: radial-gradient(ellipse at center, #0c1528 0%, #050914 70%);
+
+            --particle-color-1: rgba(56, 189, 248, 0.5);
+            --particle-color-2: rgba(99, 102, 241, 0.5);
+            --particle-color-3: rgba(167, 139, 250, 0.5);
+            --particle-connection-opacity: 0.2;
+
+            /* Node/Bubble specific colors from Wonder, adapted */
+            --wonder-pink: #ff85c0;
+            --wonder-light-blue: #79e0f2;
+            --wonder-purple: #e0b0ff;
+            --wonder-orange: #ffc96f;
+            --wonder-yellow: #fff07c;
+            --wonder-greenish: #90f5d0;
+            --wonder-dark-text: #102a43;
+            --wonder-black-outline: #000000;
+            --wonder-white-text: #ffffff;
+            --wonder-line-color: rgba(230, 230, 255, 0.8);
+            --wonder-pulse-color: rgba(255, 255, 255, 0.9);
+
+            /* Accent & UI Colors from Premium */
+            --text-color-light: #f1f5f9;
+            --text-color-medium: rgba(203, 213, 225, 0.65);
+            --text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+
+            --button-grad-start: #38bdf8;
+            --button-grad-end: #6366f1;
+            --button-shadow: rgba(56, 189, 248, 0.3);
+            --button-glow: rgba(99, 102, 241, 0.15);
+
+            /* Specific Premium node gradients (kept for logo icon potentially) */
+            --node-color-1a: #38bdf8;
+            --node-color-1b: #6366f1;
+            --node-bg-gradient-1: linear-gradient(140deg, var(--node-color-1a), var(--node-color-1b));
+            --node-shadow-1: rgba(79, 70, 229, 0.4);
+            --node-glow-1: rgba(56, 189, 248, 0.25);
+        }
+
+        /* --- Base Styles (Premium) --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        html, body { height: 100%; width: 100%; overflow: hidden; background: var(--bg-gradient); color: var(--text-color-light); }
+
+        /* --- Layout Containers (Premium) --- */
+        .splash-screen {
+            position: fixed; inset: 0;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 100; opacity: 1; transition: opacity 0.9s ease-in-out;
+            padding: 20px;
+            background: var(--bg-gradient);
+            perspective: 1000px;
+        }
+        .splash-screen.hidden { opacity: 0; pointer-events: none; }
+
+        /* --- Canvas & Parallax (Premium) --- */
+        #particleCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 101; pointer-events: none; }
+        .parallax-container {
+            position: relative; z-index: 105;
+            will-change: transform; transition: transform 0.1s linear;
+            display: flex; flex-direction: column; align-items: center; /* For centering content inside */
+        }
+
+        /* --- Logo (Premium Styling, Wonder Animation for Text) --- */
+        .logo-container {
+            position: relative; margin-bottom: clamp(20px, 5vh, 40px); z-index: 110;
+            display: flex; align-items: center;
+            opacity: 0; /* Start hidden for GSAP */
+        }
+        .logo-icon-wrapper { /* Wrapper for icon, separate from text for independent animation */
+            font-size: clamp(2rem, 6vw, 2.5rem);
+            background: var(--node-bg-gradient-1);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 8px var(--node-glow-1));
+            opacity: 0; transform: scale(0);
+            will-change: transform, opacity;
+            margin-right: clamp(8px, 2vw, 12px);
+        }
+        .logo-text-word { /* For "Mind" and "Mapp" */
+            display: flex; /* For letter-by-letter */
+            margin: 0 clamp(1px, 0.5vw, 3px); /* Small space between words */
+        }
+        .logo-text-word .letter { /* Wonder title letter style */
+            font-family: 'Bangers', cursive;
+            font-size: clamp(1.8rem, 7vw, 2.8rem); /* Adjusted size for logo */
+            color: var(--wonder-white-text);
+            text-shadow:
+                -1px -1px 0 var(--wonder-black-outline), 1px -1px 0 var(--wonder-black-outline),
+                -1px 1px 0 var(--wonder-black-outline), 1px 1px 0 var(--wonder-black-outline),
+                0 0 10px var(--wonder-purple), 2px 2px 0 var(--wonder-purple);
+            opacity: 0;
+            transform: translateY(15px) scale(0.7) rotateX(-70deg);
+            transition: opacity 0.4s ease-out, transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: inline-block; will-change: transform, opacity;
+        }
+        .logo-text-word .letter.visible {
+            opacity: 1; transform: translateY(0px) scale(1) rotateX(0deg);
+        }
+
+        /* --- Wonder Mind Map Animation Area (Integrated into Premium) --- */
+        .wonder-animation-area {
+            position: relative;
+            width: var(--node-container-size); height: var(--node-container-size);
+            display: flex; justify-content: center; align-items: center;
+            margin-bottom: clamp(20px, 4vh, 35px);
+        }
+
+        /* Pencil Icon (Wonder) */
+        .pencil-icon {
+            font-size: clamp(3rem, 8vw, 5rem); /* Responsive size */
+            position: absolute; z-index: 115; /* Above bubbles, but mind map text is above it */
+            filter: drop-shadow(3px 3px 0px var(--wonder-black-outline));
+            opacity: 0;
+            transform: translateX(-100vw) translateY(-50vh) rotate(-120deg) scale(0.5);
+            will-change: transform, opacity;
+        }
+        @keyframes wonderPencilHover {
+            0%, 100% { transform: translateY(0px) rotate(-5deg); }
+            50% { transform: translateY(-8px) rotate(5deg); } /* Smaller hover */
+        }
+        @keyframes wonderPencilWriteTap {
+            0% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(-8deg) translateY(-4px); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        /* Idea Bubbles (Wonder) */
+        .idea-bubble {
+            position: absolute;
+            border: 3px solid var(--wonder-black-outline); /* Slightly thinner border */
+            border-radius: clamp(20px, 5vw, 30px);
+            padding: clamp(10px, 2vw, 18px);
+            width: clamp(160px, 40vw, 210px); /* Responsive width */
+            box-shadow: 6px 6px 0px rgba(0,0,0,0.25), 0 0 12px rgba(0,0,0,0.1);
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.1) rotateZ(var(--initial-spin, 0deg));
+            left: 50%; top: 50%;
+            transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.34, 1.8, 0.64, 1);
+            will-change: transform, opacity; z-index: 110;
+        }
+        .idea-bubble.visible { opacity: 1; }
+        .idea-bubble.idle-float { animation: wonderIdleFloat 4s ease-in-out infinite var(--float-delay, 0s); }
+        @keyframes wonderIdleFloat { /* Naming convention for clarity */
+            0%, 100% { transform: translate(var(--tx), var(--ty)) scale(1) rotateZ(0deg); }
+            25% { transform: translate(var(--tx), calc(var(--ty) - 6px)) scale(1.02) rotateZ(-1.5deg); }
+            75% { transform: translate(var(--tx), calc(var(--ty) + 3px)) scale(0.99) rotateZ(1.5deg); }
+        }
+        .bubble-header {
+            background-color: var(--wonder-white-text);
+            border: 2px solid var(--wonder-black-outline);
+            border-radius: clamp(10px, 3vw, 15px);
+            padding: clamp(5px, 1.5vw, 8px) clamp(8px, 2vw, 14px);
+            margin-bottom: clamp(8px, 2vh, 15px);
+            display: flex; align-items: center; box-shadow: inset 0 0 4px rgba(0,0,0,0.1);
+        }
+        .bubble-number {
+            background-color: var(--wonder-purple); color: var(--wonder-white-text);
+            font-family: 'Luckiest Guy', cursive;
+            border-radius: 50%;
+            width: clamp(24px, 6vw, 30px); height: clamp(24px, 6vw, 30px);
+            display: inline-flex; justify-content: center; align-items: center;
+            font-size: clamp(0.8em, 2.5vw, 1em);
+            margin-right: clamp(8px, 2vw, 12px);
+            border: 1.5px solid var(--wonder-black-outline);
+            box-shadow: inset 1px 1px 2px rgba(0,0,0,0.2), 0 0 4px var(--wonder-purple);
+        }
+        .bubble-title {
+            font-weight: 700; /* Poppins bold */
+            color: var(--wonder-dark-text);
+            font-size: clamp(0.8em, 2.8vw, 1em);
+        }
+        .bubble-text {
+            font-size: clamp(0.7em, 2.2vw, 0.85em);
+            color: var(--wonder-dark-text); line-height: 1.45;
+        }
+        #bubble-1 { background-color: var(--wonder-pink); }
+        #bubble-2 { background-color: var(--wonder-light-blue); }
+        #bubble-3 { background-color: var(--wonder-purple); }
+        #bubble-4 { background-color: var(--wonder-orange); }
+        #bubble-5 { background-color: var(--wonder-yellow); }
+        #bubble-6 { background-color: var(--wonder-greenish); }
+
+        /* Connecting Lines (Wonder) */
+        .connecting-line-wrapper {
+            position: absolute; left: 50%; top: 50%;
+            height: clamp(2.5px, 0.6vw, 3.5px); /* Line thickness */
+            transform-origin: 0% 50%; z-index: 108; /* Behind bubbles */
+            will-change: transform;
+        }
+        .connecting-line {
+            width: 100%; height: 100%;
+            background-color: var(--wonder-line-color);
+            transform: scaleX(0); transform-origin: 0% 50%;
+            border-radius: 2px;
+            transition: transform 0.7s cubic-bezier(0.65, 0.05, 0.36, 1) 0.1s;
+            position: relative; overflow: hidden;
+        }
+        .connecting-line.visible { transform: scaleX(1); }
+        .connecting-line::after { /* Pulse element */
+            content: ''; position: absolute;
+            top: -1px; left: 0; width: 15px; height: calc(100% + 2px);
+            background-color: var(--wonder-pulse-color);
+            border-radius: 2px; box-shadow: 0 0 6px var(--wonder-pulse-color), 0 0 10px var(--wonder-white-text);
+            opacity: 0; transform: translateX(-100%);
+            animation: wonderLinePulse 1.2s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+            will-change: transform, opacity;
+        }
+        .connecting-line.visible.pulsing::after { opacity: 1; }
+        @keyframes wonderLinePulse {
+            0% { transform: translateX(-100%); opacity: 0.5; }
+            30% { opacity: 1; }
+            100% { transform: translateX(calc(var(--line-length) - 8px)); opacity: 0;}
+        }
+
+        /* Decorative Icons (Wonder) */
+        .decorative-icon {
+            position: absolute;
+            font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+            opacity: 0; transform: scale(0) rotate(0deg) translateY(40px);
+            transition: opacity 0.7s ease-out, transform 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            filter: drop-shadow(2px 2px 0px var(--wonder-black-outline));
+            will-change: transform, opacity; z-index: 109;
+        }
+        .decorative-icon.visible { opacity: 1; transform: scale(1) rotate(var(--random-rotate, 0deg)) translateY(0px); }
+        .decorative-icon.star-spin.visible { animation: wonderStarSpin 5s linear infinite var(--spin-delay, 0s); }
+        @keyframes wonderStarSpin {
+            from { transform: scale(1) rotate(var(--random-rotate, 0deg)) translateY(0px); }
+            to { transform: scale(1) rotate(calc(var(--random-rotate, 0deg) + 360deg)) translateY(0px); }
+        }
+        .decorative-icon.lightbulb-flicker.visible { animation: wonderLightbulbFlicker 3s ease-in-out infinite 0.5s; }
+        @keyframes wonderLightbulbFlicker {
+            0%, 100% { opacity: 1; filter: drop-shadow(2px 2px 0px var(--wonder-black-outline)) brightness(100%); }
+            5% { opacity: 0.7; filter: drop-shadow(2px 2px 0px var(--wonder-black-outline)) brightness(80%); }
+            10% { opacity: 1; filter: drop-shadow(2px 2px 0px var(--wonder-black-outline)) brightness(130%) drop-shadow(0 0 10px var(--wonder-yellow)); }
+            15% { opacity: 0.8; filter: drop-shadow(2px 2px 0px var(--wonder-black-outline)) brightness(90%); }
+            20% { opacity: 1; filter: drop-shadow(2px 2px 0px var(--wonder-black-outline)) brightness(100%); }
+            50% { filter: drop-shadow(2px 2px 0px var(--wonder-black-outline)) brightness(150%) drop-shadow(0 0 12px var(--wonder-yellow)); }
+        }
+
+        /* --- UI Elements below the animation (Premium) --- */
+        .bottom-content {
+            position: relative; z-index: 120; /* Above animation elements */
+            display: flex; flex-direction: column; align-items: center;
+            width: 100%; max-width: clamp(300px, 90vw, 450px);
+        }
+        .tag-line {
+            font-size: clamp(1rem, 3.5vw, 1.2rem); font-weight: 400; color: var(--text-color-medium);
+            text-align: center; margin-bottom: clamp(1.5rem, 4vh, 2rem); letter-spacing: 0.4px;
+            opacity: 0; transform: translateY(25px); text-shadow: var(--text-shadow);
+            will-change: transform, opacity;
+        }
+        .enter-app {
+            padding: clamp(12px, 3vh, 16px) clamp(30px, 8vw, 45px);
+            background: linear-gradient(110deg, var(--button-grad-start), var(--button-grad-end));
+            border: none; border-radius: clamp(10px, 2vw, 14px);
+            color: white; font-weight: 500; font-size: clamp(1rem, 3.5vw, 1.2rem); letter-spacing: 0.7px;
+            cursor: pointer; margin-bottom: clamp(1.2rem, 3vh, 1.8rem);
+            box-shadow: 0 8px 20px var(--button-shadow), 0 0 12px var(--button-glow);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            opacity: 0; visibility: hidden; transform: translateY(30px);
+            position: relative; overflow: hidden; will-change: transform, opacity, box-shadow;
+        }
+        .enter-app:hover {
+            box-shadow: 0 12px 28px rgba(79, 70, 229, 0.45), 0 0 18px var(--button-glow);
+            transform: translateY(-4px) scale(1.03); filter: brightness(1.1);
+        }
+        .enter-app:active {
+            transform: translateY(0) scale(0.97);
+            box-shadow: 0 6px 15px var(--button-shadow), 0 0 8px var(--button-glow);
+        }
+        .enter-app::after {
+            content: ''; position: absolute; top: -50%; left: -100%;
+            width: 40%; height: 200%;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.25) 50%, rgba(255, 255, 255, 0) 100%);
+            transform: rotate(25deg); transition: left 0.75s cubic-bezier(0.25, 1, 0.5, 1);
+            pointer-events: none;
+        }
+        .enter-app:hover::after { left: 120%; }
+        .designer-credit {
+            font-size: clamp(0.7rem, 2vw, 0.8rem); font-weight: 300; color: var(--text-color-medium);
+            letter-spacing: 0.5px; text-align: center;
+            opacity: 0; visibility: hidden; transform: translateY(20px);
+            text-shadow: var(--text-shadow); will-change: transform, opacity;
+        }
+
+        /* --- Main App Frame (Premium) --- */
+        .frame-container {
+            position: fixed; inset: 0; z-index: 50; opacity: 0; pointer-events: none;
+            transition: opacity 0.9s ease-in-out 0.3s;
+            background-color: #ffffff; /* Assume app BG is white */
+        }
+        .frame-container.visible { opacity: 1; pointer-events: auto; }
+        iframe { width: 100%; height: 100%; border: none; background-color: transparent; }
+
+        /* Basic responsiveness from Premium, may need further refinement based on content */
+        @media (max-height: 600px) { /* Adjust for shorter screens */
+            .logo-container { margin-bottom: 20px; }
+            .wonder-animation-area { margin-bottom: 20px; transform: scale(0.9); }
+            .tag-line { margin-bottom: 1.2rem; }
+            .enter-app { margin-bottom: 1rem; }
+        }
+    </style>
 </head>
 <body>
-  <!-- Background blobs -->
-  <div class="blob" style="width: 600px; height: 600px; background: #0ea5e9; top: -200px; right: -100px;"></div>
-  <div class="blob" style="width: 500px; height: 500px; background: #7c3aed; bottom: -100px; left: -100px;"></div>
-  
-  <!-- Header -->
-  <header class="relative z-10 pt-12 pb-6">
-    <div class="container mx-auto px-4">
-      <div class="flex flex-col items-center justify-center text-center">
-        <div class="w-40 h-40 mb-6 relative">
-          <svg viewBox="0 0 100 100" class="w-full h-full stroke-animation">
-            <circle cx="50" cy="50" r="40" stroke="white" stroke-width="1" fill="none" />
-            <path d="M30,50 L70,50 M50,30 L50,70" stroke="white" stroke-width="1" fill="none" />
-          </svg>
-          <div class="absolute inset-0 flex items-center justify-center">
-            <span class="text-4xl font-bold text-transparent bg-clip-text gradient-bg">ST</span>
-          </div>
+
+<div class="splash-screen">
+    <canvas id="particleCanvas"></canvas>
+
+    <div class="parallax-container">
+        <div class="logo-container">
+            <div class="logo-icon-wrapper">
+                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em">
+                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
+                     <circle cx="12" cy="12" r="2.5"/>
+                 </svg>
+            </div>
+            <div class="logo-text"> <!-- Wrapper for both words -->
+                <div class="logo-text-word" id="logoWordMind"></div>
+                <div class="logo-text-word" id="logoWordMapp"></div>
+            </div>
         </div>
-        <h1 class="text-5xl font-bold mb-4 text-transparent bg-clip-text gradient-bg">Student Tools Hub</h1>
-        <p class="text-xl text-gray-300 max-w-2xl">Elevate your academic experience with our suite of powerful learning tools</p>
-      </div>
+
+        <div class="wonder-animation-area" id="wonderAnimationArea">
+            <!-- Wonder Pencil Icon -->
+            <div class="pencil-icon" id="pencilIconMain">✏️</div>
+
+            <!-- Wonder Bubbles (content is template, JS fills text) -->
+            <div class="idea-bubble" id="bubble-1" data-text="Spark brilliant concepts!">
+                <div class="bubble-header"><span class="bubble-number">1</span><span class="bubble-title">CREATIVE IDEA</span></div>
+                <div class="bubble-text"></div>
+            </div>
+            <div class="idea-bubble" id="bubble-2" data-text="Build amazing connections.">
+                <div class="bubble-header"><span class="bubble-number">2</span><span class="bubble-title">AWESOME IDEA</span></div>
+                <div class="bubble-text"></div>
+            </div>
+            <div class="idea-bubble" id="bubble-3" data-text="Achieve grand visions.">
+                <div class="bubble-header"><span class="bubble-number">3</span><span class="bubble-title">GREAT IDEA</span></div>
+                <div class="bubble-text"></div>
+            </div>
+            <div class="idea-bubble" id="bubble-4" data-text="Illuminate complex thoughts.">
+                <div class="bubble-header"><span class="bubble-number">4</span><span class="bubble-title">BRIGHT IDEA</span></div>
+                <div class="bubble-text"></div>
+            </div>
+            <div class="idea-bubble" id="bubble-5" data-text="Simplify intricate plans.">
+                <div class="bubble-header"><span class="bubble-number">5</span><span class="bubble-title">SIMPLE IDEA</span></div>
+                <div class="bubble-text"></div>
+            </div>
+            <div class="idea-bubble" id="bubble-6" data-text="Innovate with modern tools.">
+                <div class="bubble-header"><span class="bubble-number">6</span><span class="bubble-title">MODERN IDEA</span></div>
+                <div class="bubble-text"></div>
+            </div>
+
+            <!-- Wonder Decorative Icons -->
+            <div class="decorative-icon star-spin" id="decoStar1">🌟</div>
+            <div class="decorative-icon star-spin" id="decoStar2">✨</div>
+            <div class="decorative-icon lightbulb-flicker" id="decoLightbulb">💡</div>
+            <div class="decorative-icon" id="decoMagnify">🔎</div>
+        </div>
     </div>
-  </header>
-  
-  <!-- Main content -->
-  <main class="relative z-10 py-16">
-    <div class="container mx-auto px-4">
-       <!-- Tools Grid -->
-      <div id="tools-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        
-        <!-- Ink to LaTeX -->
-        <div class="tool-card card-gradient rounded-xl overflow-hidden p-6">
-          <div class="h-48 mb-6 flex items-center justify-center relative">
-            <div class="floating">
-              <svg viewBox="0 0 100 100" class="w-32 h-32 stroke-animation">
-                <path d="M20,50 C20,30 80,30 80,50 C80,70 20,70 20,50 Z" stroke="#0ea5e9" stroke-width="1" fill="none" />
-                <path d="M30,40 L70,40 M30,50 L70,50 M30,60 L50,60" stroke="#0ea5e9" stroke-width="1" fill="none" />
-              </svg>
-            </div>
-          </div>
-          <h3 class="text-2xl font-bold mb-2 text-transparent bg-clip-text gradient-bg">Ink to LaTeX</h3>
-          <p class="text-gray-300 mb-4">Transform your handwritten mathematical equations into perfectly formatted LaTeX code instantly.</p>
-          <button class="bg-white bg-opacity-10 hover:bg-opacity-20 text-white rounded-lg py-2 px-4 transition duration-300">
-            Launch Tool
-          </button>
-        </div>
-        
-        <!-- Memory Palace Builder -->
-        <div class="tool-card card-gradient rounded-xl overflow-hidden p-6">
-          <div class="h-48 mb-6 flex items-center justify-center">
-            <div class="floating">
-              <svg viewBox="0 0 100 100" class="w-32 h-32 stroke-animation">
-                <rect x="25" y="25" width="50" height="50" stroke="#7c3aed" stroke-width="1" fill="none" />
-                <line x1="25" y1="25" x2="35" y2="15" stroke="#7c3aed" stroke-width="1" />
-                <line x1="75" y1="25" x2="85" y2="15" stroke="#7c3aed" stroke-width="1" />
-                <line x1="25" y1="75" x2="35" y2="85" stroke="#7c3aed" stroke-width="1" />
-                <line x1="75" y1="75" x2="85" y2="85" stroke="#7c3aed" stroke-width="1" />
-                <rect x="35" y="15" width="50" height="10" stroke="#7c3aed" stroke-width="1" fill="none" />
-              </svg>
-            </div>
-          </div>
-          <h3 class="text-2xl font-bold mb-2 text-transparent bg-clip-text gradient-bg">Memory Palace Builder</h3>
-          <p class="text-gray-300 mb-4">Create powerful spatial memory systems to improve recall and retention of complex information.</p>
-          <button class="bg-white bg-opacity-10 hover:bg-opacity-20 text-white rounded-lg py-2 px-4 transition duration-300">
-            Launch Tool
-          </button>
-        </div>
-        
-        <!-- Matrix Solver -->
-        <div class="tool-card card-gradient rounded-xl overflow-hidden p-6">
-          <div class="h-48 mb-6 flex items-center justify-center">
-            <div class="floating">
-              <svg viewBox="0 0 100 100" class="w-32 h-32 stroke-animation">
-                <rect x="25" y="25" width="50" height="50" stroke="#0ea5e9" stroke-width="1" fill="none" />
-                <line x1="25" y1="37" x2="75" y2="37" stroke="#0ea5e9" stroke-width="1" />
-                <line x1="25" y1="50" x2="75" y2="50" stroke="#0ea5e9" stroke-width="1" />
-                <line x1="25" y1="63" x2="75" y2="63" stroke="#0ea5e9" stroke-width="1" />
-                <line x1="37" y1="25" x2="37" y2="75" stroke="#0ea5e9" stroke-width="1" />
-                <line x1="50" y1="25" x2="50" y2="75" stroke="#0ea5e9" stroke-width="1" />
-                <line x1="63" y1="25" x2="63" y2="75" stroke="#0ea5e9" stroke-width="1" />
-              </svg>
-            </div>
-          </div>
-          <h3 class="text-2xl font-bold mb-2 text-transparent bg-clip-text gradient-bg">Matrix Solver</h3>
-          <p class="text-gray-300 mb-4">Solve complex matrix operations with step-by-step solutions and visual representations.</p>
-          <button class="bg-white bg-opacity-10 hover:bg-opacity-20 text-white rounded-lg py-2 px-4 transition duration-300">
-            Launch Tool
-          </button>
-        </div>
-        
-        <!-- Flash Card Creator -->
-        <div class="tool-card card-gradient rounded-xl overflow-hidden p-6">
-          <div class="h-48 mb-6 flex items-center justify-center">
-            <div class="floating">
-              <svg viewBox="0 0 100 100" class="w-32 h-32 stroke-animation">
-                <rect x="20" y="30" width="40" height="50" rx="2" stroke="#7c3aed" stroke-width="1" fill="none" />
-                <rect x="30" y="20" width="40" height="50" rx="2" stroke="#7c3aed" stroke-width="1" fill="none" />
-                <rect x="40" y="40" width="20" height="5" stroke="#7c3aed" stroke-width="1" fill="none" />
-                <rect x="40" y="50" width="30" height="2" stroke="#7c3aed" stroke-width="1" fill="none" />
-                <rect x="40" y="55" width="25" height="2" stroke="#7c3aed" stroke-width="1" fill="none" />
-              </svg>
-            </div>
-          </div>
-          <h3 class="text-2xl font-bold mb-2 text-transparent bg-clip-text gradient-bg">Flash Card Creator</h3>
-          <p class="text-gray-300 mb-4">Design interactive flash cards with spaced repetition algorithms for efficient memorization.</p>
-          <button class="bg-white bg-opacity-10 hover:bg-opacity-20 text-white rounded-lg py-2 px-4 transition duration-300">
-            Launch Tool
-          </button>
-        </div>
-        
-        <!-- Graph Creator -->
-        <div class="tool-card card-gradient rounded-xl overflow-hidden p-6">
-          <div class="h-48 mb-6 flex items-center justify-center">
-            <div class="floating">
-              <svg viewBox="0 0 100 100" class="w-32 h-32 stroke-animation">
-                <circle cx="30" cy="30" r="5" stroke="#0ea5e9" stroke-width="1" fill="none" />
-                <circle cx="70" cy="30" r="5" stroke="#0ea5e9" stroke-width="1" fill="none" />
-                <circle cx="30" cy="70" r="5" stroke="#0ea5e9" stroke-width="1" fill="none" />
-                <circle cx="70" cy="70" r="5" stroke="#0ea5e9" stroke-width="1" fill="none" />
-                <circle cx="50" cy="50" r="5" stroke="#0ea5e9" stroke-width="1" fill="none" />
-                <line x1="30" y1="30" x2="70" y2="30" stroke="#0ea5e9" stroke-width="1" />
-                <line x1="30" y1="30" x2="30" y2="70" stroke="#0ea5e9" stroke-width="1" />
-                <line x1="30" y1="70" x2="70" y2="70" stroke="#0ea5e9" stroke-width="1" />
-                <line x1="70" y1="30" x2="70" y2="70" stroke="#0ea5e9" stroke-width="1" />
-                <line x1="30" y1="30" x2="50" y2="50" stroke="#0ea5e9" stroke-width="1" />
-                <line x1="70" y1="30" x2="50" y2="50" stroke="#0ea5e9" stroke-width="1" />
-                <line x1="30" y1="70" x2="50" y2="50" stroke="#0ea5e9" stroke-width="1" />
-                <line x1="70" y1="70" x2="50" y2="50" stroke="#0ea5e9" stroke-width="1" />
-              </svg>
-            </div>
-          </div>
-          <h3 class="text-2xl font-bold mb-2 text-transparent bg-clip-text gradient-bg">Graph Creator</h3>
-          <p class="text-gray-300 mb-4">Visualize complex data relationships and mathematical functions with customizable graphs.</p>
-          <button class="bg-white bg-opacity-10 hover:bg-opacity-20 text-white rounded-lg py-2 px-4 transition duration-300">
-            Launch Tool
-          </button>
-        </div>
-        
-        <!-- Coming Soon -->
-        <div class="tool-card card-gradient rounded-xl overflow-hidden p-6">
-          <div class="h-48 mb-6 flex items-center justify-center">
-            <div class="floating">
-              <svg viewBox="0 0 100 100" class="w-32 h-32 stroke-animation">
-                <circle cx="50" cy="50" r="35" stroke="#7c3aed" stroke-width="1" fill="none" />
-                <line x1="50" y1="30" x2="50" y2="55" stroke="#7c3aed" stroke-width="1" />
-                <line x1="50" y1="65" x2="50" y2="70" stroke="#7c3aed" stroke-width="1" />
-              </svg>
-            </div>
-          </div>
-          <h3 class="text-2xl font-bold mb-2 text-transparent bg-clip-text gradient-bg">Coming Soon</h3>
-          <p class="text-gray-300 mb-4">More innovative learning tools are in development. Stay tuned for exciting additions.</p>
-          <button class="bg-white bg-opacity-10 hover:bg-opacity-20 text-white rounded-lg py-2 px-4 opacity-50 cursor-not-allowed transition duration-300">
-            Coming Soon
-          </button>
-        </div>
-        
-      </div>
+
+    <div class="bottom-content">
+        <div class="tag-line">Unleash Your Ideas. Visually. Brilliantly.</div>
+        <button class="enter-app">Explore Mind Mapp</button>
+        <p class="designer-credit">Interface by Absar Altaf Shah (Inspired Enhancement)</p>
     </div>
-  </main>
-  
-  <!-- Feature section -->
-  <section class="relative z-10 py-16 bg-black bg-opacity-30">
-    <div class="container mx-auto px-4">
-      <h2 class="text-4xl font-bold mb-16 text-center text-transparent bg-clip-text gradient-bg">Why Students Love Our Tools</h2>
-      
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-        <div class="text-center">
-          <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-white bg-opacity-5 flex items-center justify-center">
-            <svg class="w-12 h-12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2V6M12 18V22M4.93 4.93L7.76 7.76M16.24 16.24L19.07 19.07M2 12H6M18 12H22M4.93 19.07L7.76 16.24M16.24 7.76L19.07 4.93" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <h3 class="text-xl font-bold mb-3">Intuitive Design</h3>
-          <p class="text-gray-300">Tools designed with students in mind, making complex tasks simple and accessible.</p>
-        </div>
+</div>
+
+<!-- Main Content Frame -->
+<div class="frame-container">
+    <iframe src="https://absar-jet.vercel.app/mind%20map.html" title="Mind Map Creator" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
+</div>
+
+<!-- GSAP Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // --- Element Caching ---
+    const splashScreen = document.querySelector('.splash-screen');
+    const frameContainer = document.querySelector('.frame-container');
+    const canvasEl = document.getElementById('particleCanvas');
+    const ctx = canvasEl.getContext('2d');
+    const parallaxContainer = document.querySelector('.parallax-container');
+    const logoContainer = document.querySelector('.logo-container');
+    const logoIconWrapper = logoContainer.querySelector('.logo-icon-wrapper');
+    const logoWordMindEl = document.getElementById('logoWordMind');
+    const logoWordMappEl = document.getElementById('logoWordMapp');
+    const enterButton = document.querySelector('.enter-app');
+    const tagLine = document.querySelector('.tag-line');
+    const designerCredit = document.querySelector('.designer-credit');
+
+    // Wonder Animation Elements
+    const wonderAnimationArea = document.getElementById('wonderAnimationArea');
+    const pencilMain = document.getElementById('pencilIconMain');
+    const bubbles = gsap.utils.toArray('.idea-bubble');
+    const decorativeIcons = gsap.utils.toArray('.decorative-icon');
+
+    // --- Configuration & State ---
+    const cssVars = { // Read relevant CSS variables
+        particleColors: [
+            getComputedStyle(document.documentElement).getPropertyValue('--particle-color-1').trim(),
+            getComputedStyle(document.documentElement).getPropertyValue('--particle-color-2').trim(),
+            getComputedStyle(document.documentElement).getPropertyValue('--particle-color-3').trim()
+        ],
+        particleConnectionOpacity: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--particle-connection-opacity')),
+        nodeContainerSize: () => parseFloat(getComputedStyle(wonderAnimationArea).width), // Function to get current size
+        nodeDistanceFactor: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--node-distance-factor'))
+    };
+    const numBubbles = bubbles.length;
+    let particles = [];
+    let canvasWidth = window.innerWidth;
+    let canvasHeight = window.innerHeight;
+    let particleRAFId;
+    let parallaxRAFId;
+    let mouse = { x: canvasWidth / 2, y: canvasHeight / 2 };
+    let isLoadingComplete = false;
+    let introAnimationComplete = false;
+
+    // --- Particle System (from Premium) ---
+    class Particle {
+        constructor() { this.reset(); this.baseSize = Math.random()*1.5+0.5; this.alpha=Math.random()*0.4+0.1; this.targetAlpha=this.alpha; this.repulsion=0; }
+        reset(){ this.x=Math.random()*canvasWidth; this.y=Math.random()*canvasHeight; this.vx=Math.random()*0.2-0.1; this.vy=Math.random()*0.2-0.1; this.color=cssVars.particleColors[Math.floor(Math.random()*cssVars.particleColors.length)]; this.connections=[]; this.connectionDistance=Math.random()*80+70; }
+        update(mousePos){ const dxMouse=this.x-mousePos.x; const dyMouse=this.y-mousePos.y; const distMouse=Math.sqrt(dxMouse*dxMouse+dyMouse*dyMouse); const repelForce=Math.max(0,1-distMouse/100); this.repulsion+=(repelForce-this.repulsion)*0.1; this.vx+=(dxMouse/distMouse)*this.repulsion*0.05; this.vy+=(dyMouse/distMouse)*this.repulsion*0.05; if(Math.random()<0.02){this.vx+=(Math.random()*0.1-0.05);this.vy+=(Math.random()*0.1-0.05);} this.x+=this.vx; this.y+=this.vy; this.vx*=0.98; this.vy*=0.98; const edgeThreshold=50; let targetAlpha=this.targetAlpha; if(this.x<edgeThreshold||this.x>canvasWidth-edgeThreshold||this.y<edgeThreshold||this.y>canvasHeight-edgeThreshold){targetAlpha=Math.min(this.alpha,Math.max(0,this.alpha*(1-Math.abs(this.x-canvasWidth/2)/(canvasWidth/2-edgeThreshold))),Math.max(0,this.alpha*(1-Math.abs(this.y-canvasHeight/2)/(canvasHeight/2-edgeThreshold))))*0.5;} this.alpha+=(targetAlpha-this.alpha)*0.05; if(this.x<-10)this.x=canvasWidth+10; if(this.x>canvasWidth+10)this.x=-10; if(this.y<-10)this.y=canvasHeight+10; if(this.y>canvasHeight+10)this.y=-10; }
+        draw(ctx){ if(this.alpha<=0.01)return; ctx.beginPath(); ctx.arc(this.x,this.y,this.baseSize,0,Math.PI*2); const colorMatch=this.color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/); if(colorMatch){ctx.fillStyle=`rgba(${colorMatch[1]},${colorMatch[2]},${colorMatch[3]},${this.alpha})`;}else{ctx.fillStyle=this.color;} ctx.fill(); }
+        findConnections(allParticles){ this.connections=[]; for(let other of allParticles){ if(other===this||other.alpha<=0.01)continue; const dx=this.x-other.x; const dy=this.y-other.y; const distance=Math.sqrt(dx*dx+dy*dy); if(distance<this.connectionDistance){const opacity=(1-distance/this.connectionDistance)*Math.min(this.alpha,other.alpha)*cssVars.particleConnectionOpacity; if(opacity>0.01){this.connections.push({other,opacity});}}} }
+        drawConnections(ctx){ if(this.alpha<=0.01)return; for(let conn of this.connections){ if(conn.opacity<=0.01)continue; ctx.beginPath(); ctx.moveTo(this.x,this.y); ctx.lineTo(conn.other.x,conn.other.y); const colorMatch=this.color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/); if(colorMatch){ctx.strokeStyle=`rgba(${colorMatch[1]},${colorMatch[2]},${colorMatch[3]},${conn.opacity})`;}else{ctx.strokeStyle=`rgba(200,200,255,${conn.opacity})`;} ctx.lineWidth=0.5; ctx.stroke();}}
+    }
+    function setupParticleCanvas() {
+        canvasWidth = window.innerWidth; canvasHeight = window.innerHeight;
+        canvasEl.width = canvasWidth; canvasEl.height = canvasHeight; particles = [];
+        const particleCount = Math.min(Math.max(Math.floor((canvasWidth*canvasHeight)/18000),40),150);
+        for (let i = 0; i < particleCount; i++) particles.push(new Particle());
+        if (particleRAFId) cancelAnimationFrame(particleRAFId);
+        animateParticles();
+    }
+    function animateParticles() {
+        ctx.clearRect(0,0,canvasWidth,canvasHeight);
+        const currentMouse = {x:mouse.x,y:mouse.y};
+        particles.forEach(p=>p.update(currentMouse)); particles.forEach(p=>p.findConnections(particles));
+        particles.forEach(p=>p.drawConnections(ctx)); particles.forEach(p=>p.draw(ctx));
+        particleRAFId = requestAnimationFrame(animateParticles);
+    }
+
+    // --- Wonder Animation Helpers ---
+    function typeWriter(element, text, speed = 25) { /* ... (same as Wonder) ... */
+        let i = 0; element.innerHTML = ""; function type() { if (i < text.length) { element.innerHTML += text.charAt(i); i++; setTimeout(type, speed + Math.random() * 20 - 10); } } type();
+    }
+    function injectLetters(wordElement, text) { /* ... (same as Wonder) ... */
+        text.split('').forEach(char => { const letterSpan = document.createElement('span'); letterSpan.classList.add('letter'); letterSpan.textContent = char; wordElement.appendChild(letterSpan); }); return wordElement.querySelectorAll('.letter');
+    }
+    async function animatePencilTo(targetX, targetY, rotation, scale = 1, duration = 600) { /* ... (same as Wonder, using pencilMain) ... */
+        return new Promise(resolve => { pencilMain.style.transition = `transform ${duration}ms cubic-bezier(0.45,0.05,0.55,0.95), opacity ${duration/2}ms ease-out`; pencilMain.style.transform = `translateX(${targetX}px) translateY(${targetY}px) rotate(${rotation}deg) scale(${scale})`; pencilMain.style.opacity='1'; setTimeout(resolve, duration); });
+    }
+    async function animateLogoLetters(letterElements, staggerDelay = 70) { /* ... (similar to Wonder's animateLetters) ... */
+        for (let i = 0; i < letterElements.length; i++) { await new Promise(resolve => setTimeout(() => { letterElements[i].classList.add('visible'); resolve(); }, staggerDelay)); }
+    }
+
+    // --- Simulation of Loading ---
+    function simulateLoading(callback) { /* ... (same as Premium) ... */
+        const loadTime = Math.random() * 500 + 800; // 0.8 to 1.3 seconds
+        setTimeout(() => { isLoadingComplete = true; if (callback) callback(); }, loadTime);
+    }
+
+    // --- Main Animation Sequence (Combined) ---
+    function startIntroAnimation() {
+        if (!isLoadingComplete) { setTimeout(startIntroAnimation, 100); return; }
+
+        const tl = gsap.timeline({ onComplete: () => { introAnimationComplete = true; /* Maybe add idle for logo/pencil here too */ } });
+
+        // 1. Premium Logo Reveal (Icon + Wonder-style Text)
+        tl.to(logoContainer, { opacity: 1, duration: 0.1 }, 0) // Make container visible for children
+          .to(logoIconWrapper, { opacity: 1, scale: 1, duration: 0.7, ease: "expo.out" }, 0.2);
+
+        const lettersMind = injectLetters(logoWordMindEl, "Mind");
+        const lettersMapp = injectLetters(logoWordMappEl, "Mapp");
         
-        <div class="text-center">
-          <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-white bg-opacity-5 flex items-center justify-center">
-            <svg class="w-12 h-12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M9 3.5V2M5.06 5.06L4 4M5.06 11.94L4 13M12.94 5.06L14 4M9 13.5V15M16.94 11.94L18 13M16.94 5.06L18 4M9 6.5C7.067 6.5 5.5 8.067 5.5 10C5.5 11.5913 6.53215 12.9175 7.99976 13.3809C8.17511 12.7816 8.89464 12.5 9.49994 12.5H14.5C15.1053 12.5 15.8248 12.7816 16.0002 13.3809C17.4678 12.9175 18.5 11.5913 18.5 10C18.5 8.067 16.933 6.5 15 6.5C14.0182 6.5 13.1342 6.95509 12.575 7.6722C12.225 7.57213 11.8525 7.51798 11.4687 7.51798C10.2688 7.51798 9.19346 8.03063 8.42494 8.82541C8.36969 8.0565 8.30512 6.5 9 6.5ZM9.5 16.5V17C9.5 17.8284 10.1716 18.5 11 18.5H13C13.8284 18.5 14.5 17.8284 14.5 17V16.5H9.5Z" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <h3 class="text-xl font-bold mb-3">Boost Creativity</h3>
-          <p class="text-gray-300">Unleash your creative potential with tools that inspire innovative thinking and problem solving.</p>
-        </div>
-        
-        <div class="text-center">
-          <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-white bg-opacity-5 flex items-center justify-center">
-            <svg class="w-12 h-12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2Z" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M8 14.5L10 11.5L12.5 14.5L16 10" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <h3 class="text-xl font-bold mb-3">Improve Grades</h3>
-          <p class="text-gray-300">Students who use our tools consistently report improved academic performance and understanding.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-  
-  <!-- CTA section -->
-  <section class="relative z-10 py-20">
-    <div class="container mx-auto px-4">
-      <div class="card-gradient rounded-2xl p-10 max-w-4xl mx-auto text-center">
-        <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text gradient-bg">Ready to Level Up Your Learning?</h2>
-        <p class="text-xl text-gray-300 mb-8">All tools are free for college students. No sign-up required.</p>
-        <div class="flex flex-wrap gap-4 justify-center">
-          <button id="explore-tools-btn" class="gradient-bg text-white font-medium rounded-lg py-3 px-6 text-lg shadow-lg hover:opacity-90 transition duration-300">
-            Explore All Tools
-          </button>
-          <button class="bg-white bg-opacity-10 hover:bg-opacity-20 text-white font-medium rounded-lg py-3 px-6 text-lg transition duration-300">
-            View Tutorials
-          </button>
-        </div>
-      </div>
-    </div>
-  </section>
-  
-  <!-- Footer -->
-  <footer class="relative z-10 py-10 border-t border-gray-800">
-    <div class="container mx-auto px-4">
-      <div class="flex flex-col md:flex-row justify-between items-center">
-        <div class="mb-6 md:mb-0">
-          <h2 class="text-2xl font-bold text-transparent bg-clip-text gradient-bg">Student Tools Hub</h2>
-          <p class="text-gray-400">Made for students, by students</p>
-        </div>
-        <div class="flex space-x-8">
-          <a href="#" class="text-gray-300 hover:text-white">About</a>
-          <a href="#" class="text-gray-300 hover:text-white">Contact</a>
-          <a href="#" class="text-gray-300 hover:text-white">Help</a>
-        </div>
-      </div>
-      <div class="mt-8 text-center text-gray-500 text-sm">
-        &copy; 2025 Student Tools Hub. All tools are free for educational use.
-      </div>
-    </div>
-  </footer>
-  <script>
-    // JavaScript to handle button click and scroll to tools section
-    document.addEventListener('DOMContentLoaded', function() {
-      const exploreToolsBtn = document.getElementById('explore-tools-btn');
-      
-      if (exploreToolsBtn) {
-        exploreToolsBtn.addEventListener('click', function() {
-          const toolsGrid = document.getElementById('tools-grid');
-          
-          if (toolsGrid) {
-            // Smooth scroll to the tools grid section
-            toolsGrid.scrollIntoView({ behavior: 'smooth' });
-          }
+        // Animate "Mind" letters
+        lettersMind.forEach((letter, i) => {
+            tl.to(letter, { opacity: 1, y: 0, scale: 1, rotateX: 0, duration: 0.6, ease: "elastic.out(1, 0.6)" }, 0.4 + i * 0.07);
         });
-      }
-    });
-  </script>
+        // Animate "Mapp" letters
+        lettersMapp.forEach((letter, i) => {
+            tl.to(letter, { opacity: 1, y: 0, scale: 1, rotateX: 0, duration: 0.6, ease: "elastic.out(1, 0.6)" }, 0.5 + lettersMind.length * 0.07 + i * 0.07);
+        });
+
+
+        // 2. Wonder Pencil intro (swoops in near logo)
+        const logoRect = logoContainer.getBoundingClientRect();
+        const wonderAreaRect = wonderAnimationArea.getBoundingClientRect();
+        // Target pencil near the end of "Mapp"
+        const lastLetterMapp = lettersMapp[lettersMapp.length - 1];
+        const pencilTargetX = lastLetterMapp ? 
+            (lastLetterMapp.getBoundingClientRect().right - wonderAreaRect.left - pencilMain.offsetWidth / 2) : 
+            (logoRect.right - wonderAreaRect.left - pencilMain.offsetWidth);
+        const pencilTargetY = logoRect.top - wonderAreaRect.top + logoRect.height / 2 - pencilMain.offsetHeight / 1.5;
+
+        tl.to(pencilMain, {
+            x: pencilTargetX, y: pencilTargetY, rotation: -15, scale: 1, opacity: 1,
+            duration: 0.8, ease: "power3.out"
+        }, ">-0.5"); // Start after logo text starts appearing
+
+        tl.call(() => { pencilMain.style.animation = 'wonderPencilHover 2s ease-in-out infinite'; }, [], ">");
+
+
+        // 3. Wonder Bubbles and Connecting Lines
+        const currentContainerSize = cssVars.nodeContainerSize();
+        const radius = currentContainerSize * cssVars.nodeDistanceFactor;
+        const angleStep = 360 / numBubbles;
+
+        bubbles.forEach((bubble, index) => {
+            const angleRad = (angleStep * index - 90) * (Math.PI / 180); // Start top
+            const targetX = radius * Math.cos(angleRad);
+            const targetY = radius * Math.sin(angleRad);
+
+            // Line
+            const lineWrapper = document.createElement('div');
+            lineWrapper.classList.add('connecting-line-wrapper');
+            const line = document.createElement('div');
+            line.classList.add('connecting-line');
+            const distanceToBubble = Math.sqrt(targetX*targetX + targetY*targetY);
+            lineWrapper.style.width = `${distanceToBubble}px`;
+            lineWrapper.style.transform = `rotate(${angleStep * index - 90}deg)`;
+            line.style.setProperty('--line-length', `${distanceToBubble}px`);
+            lineWrapper.appendChild(line);
+            wonderAnimationArea.insertBefore(lineWrapper, pencilMain);
+
+            tl.add(() => { // Use tl.add for precise timing control within the loop
+                // Bubble
+                const initialSpin = (Math.random() - 0.5) * 70;
+                bubble.style.setProperty('--initial-spin', `${initialSpin}deg`);
+                gsap.to(bubble, {
+                    opacity: 1,
+                    transform: `translate(calc(-50% + ${targetX}px), calc(-50% + ${targetY}px)) scale(1) rotateZ(0deg)`,
+                    duration: cssVars.nodeAppearDuration,
+                    ease: "elastic.out(1, 0.75)",
+                    onComplete: () => {
+                        bubble.style.setProperty('--tx', `calc(-50% + ${targetX}px)`);
+                        bubble.style.setProperty('--ty', `calc(-50% + ${targetY}px)`);
+                        bubble.style.setProperty('--float-delay', `${Math.random() * 0.8}s`);
+                        bubble.classList.add('idle-float');
+                        const textEl = bubble.querySelector('.bubble-text');
+                        const textToType = bubble.dataset.text;
+                        if(textEl && textToType) setTimeout(()=>typeWriter(textEl, textToType), 200);
+                    }
+                });
+                // Line
+                setTimeout(() => { // Slight delay for line to appear after bubble starts its journey
+                    line.classList.add('visible');
+                    setTimeout(() => line.classList.add('pulsing'), 500);
+                }, 150);
+            }, ">-=" + (cssVars.nodeAppearDuration * 0.7 - index * 0.05) ); // Staggered start for bubbles, relative to previous animation
+        });
+
+        // 4. Wonder Decorative Icons
+        decorativeIcons.forEach((icon, index) => {
+            tl.add(() => {
+                const cRect = wonderAnimationArea.getBoundingClientRect();
+                let randX, randY, attempts = 0;
+                const iconSize = Math.max(icon.offsetWidth, icon.offsetHeight);
+                do {
+                    randX = (Math.random() * 0.85 + 0.075) * cRect.width - cRect.width / 2;
+                    randY = (Math.random() * 0.85 + 0.075) * cRect.height - cRect.height / 2;
+                    attempts++;
+                } while (Math.sqrt(randX*randX + randY*randY) < radius * 0.3 && attempts < 10); // Avoid dead center
+
+                icon.style.left = `calc(50% + ${randX}px - ${icon.offsetWidth/2}px)`;
+                icon.style.top = `calc(50% + ${randY}px - ${icon.offsetHeight/2}px)`;
+                const randomRotation = (Math.random() - 0.5) * 50;
+                icon.style.setProperty('--random-rotate', `${randomRotation}deg`);
+                if (icon.classList.contains('star-spin')) {
+                    icon.style.setProperty('--spin-delay', `${Math.random() * 1.5}s`);
+                }
+                icon.classList.add('visible');
+            }, ">-0.6"); // Stagger after bubbles are mostly out
+        });
+
+        // 5. Fade In Bottom Content (Premium)
+        tl.to([tagLine, enterButton, designerCredit], {
+            visibility: "visible", opacity: 1, y: 0, duration: cssVars.contentFadeDuration, stagger: 0.15, ease: "power2.out"
+        }, ">-0.3"); // Start after decorative icons start
+    }
+
+    // --- Event Handlers ---
+    function handleMouseMove(event) { /* ... (same as Premium, using parallaxRAFId) ... */
+        mouse.x = event.clientX; mouse.y = event.clientY;
+        if (!parallaxRAFId) { parallaxRAFId = requestAnimationFrame(updateParallax); }
+    }
+    function updateParallax() { /* ... (same as Premium) ... */
+        const offsetX = (mouse.x / window.innerWidth) - 0.5; const offsetY = (mouse.y / window.innerHeight) - 0.5;
+        if (parallaxContainer) { gsap.to(parallaxContainer, { x: offsetX * -25, y: offsetY * -25, rotationY: offsetX * 4, rotationX: -offsetY * 4, duration: 0.4, ease: "power1.out", overwrite: true }); }
+        parallaxRAFId = null;
+    }
+    function handleResize() { /* ... (Combined logic) ... */
+        setupParticleCanvas(); // Recalc particles
+        // Recalculate wonder animation area for bubble positions
+        // No need to update SVG viewBox as Wonder lines are divs
+        // If bubbles/lines are already animated, their positions might need nudging or a full reset of that part of animation.
+        // For simplicity, this resize won't re-trigger the main intro if complete.
+        // Dynamic recalculation of bubble positions on resize if intro is ongoing is complex.
+    }
+    function handleEnterApp() { /* ... (same as Premium, with particleRAFId cleanup) ... */
+        if (!introAnimationComplete) return;
+        gsap.to(enterButton, { scale: 0.95, duration: 0.15, yoyo: true, repeat: 1, ease: "power2.inOut"});
+        gsap.to(splashScreen, {
+            opacity: 0, duration: 0.8, ease: "power2.in",
+            onComplete: () => {
+                splashScreen.classList.add('hidden');
+                if (particleRAFId) { cancelAnimationFrame(particleRAFId); particleRAFId = null; }
+                if (parallaxRAFId) { cancelAnimationFrame(parallaxRAFId); parallaxRAFId = null; }
+                // Stop GSAP idle animations if any global ones were set
+                gsap.killTweensOf('.idea-bubble.idle-float'); // Stop specific idle
+                gsap.killTweensOf('.decorative-icon');
+                window.removeEventListener('mousemove', handleMouseMove);
+            }
+        });
+        frameContainer.classList.add('visible');
+    }
+
+    // --- Initialize ---
+    function init() {
+        // Set initial states for GSAP animations
+        gsap.set(logoContainer, { opacity: 0 });
+        gsap.set(logoIconWrapper, { scale: 0, opacity: 0 });
+        gsap.set([tagLine, enterButton, designerCredit], { opacity: 0, y: 20, visibility: 'hidden' });
+        gsap.set(pencilMain, { opacity: 0 }); // Ensure pencil starts hidden
+
+        setupParticleCanvas();
+        simulateLoading(startIntroAnimation);
+
+        window.addEventListener('resize', handleResize);
+        window.addEventListener('mousemove', handleMouseMove);
+        enterButton.addEventListener('click', handleEnterApp);
+    }
+
+    init();
+});
+</script>
+
 </body>
 </html>
