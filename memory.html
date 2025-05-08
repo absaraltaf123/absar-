@@ -2344,10 +2344,10 @@
 
             checkApiConfig() {
                 if (!JSONBIN_API_KEY || JSONBIN_API_KEY.startsWith('$2a$10$YOUR_KEY_')) {
-                    this.showToast('Error: jsonbin.io API Key is not set!', true); console.error('This is test demo app - you cannot save a mindmap.'); return false;
+                    this.showToast('This is test demo app - you cannot save a mindmap.', true); console.error('This is test demo app - you cannot save a mindmap.'); return false;
                 }
                 if (!JSONBIN_BIN_ID || JSONBIN_BIN_ID === 'YOUR_BIN_ID_HERE') {
-                     this.showToast('Error: jsonbin.io Bin ID is not set!', true); console.error('Error: jsonbin.io Bin ID not set.'); return false;
+                     this.showToast('This is test demo app - you cannot save a mindmap.', true); console.error('This is test demo app - you cannot save a mindmap.'); return false;
                 }
                 return true;
             }
