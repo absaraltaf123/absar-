@@ -2344,7 +2344,7 @@
 
             checkApiConfig() {
                 if (!JSONBIN_API_KEY || JSONBIN_API_KEY.startsWith('$2a$10$YOUR_KEY_')) {
-                    this.showToast('This is a test  demo - you can't save your mind map', true); console.error('Error: jsonbin.io API Key not set.'); return false;
+                    this.showToast('Error: jsonbin.io API Key is not set!', true); console.error('This is test demo app - you can't save mindmap.'); return false;
                 }
                 if (!JSONBIN_BIN_ID || JSONBIN_BIN_ID === 'YOUR_BIN_ID_HERE') {
                      this.showToast('Error: jsonbin.io Bin ID is not set!', true); console.error('Error: jsonbin.io Bin ID not set.'); return false;
